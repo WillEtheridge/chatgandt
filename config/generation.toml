@@ -1,0 +1,75 @@
+# Canonical primary comparison profile. Values must be explicit at runtime.
+[primary]
+do_sample = true
+temperature = 0.7
+top_p = 0.8
+top_k = 20
+repetition_penalty = 1.1
+max_new_tokens = 512
+batch_size = 1
+num_beams = 1
+num_return_sequences = 1
+use_cache = true
+cache_implementation = "dynamic"
+return_dict_in_generate = false
+output_scores = false
+output_logits = false
+min_new_tokens = 0
+
+[stopping]
+eos_token_ids = [151645, 151643]
+pad_token_id = 151643
+stop_strings = []
+
+[decoding]
+skip_special_tokens = true
+clean_up_tokenization_spaces = false
+strip_whitespace = false
+unicode_normalization = false
+
+[token_accounting]
+generated_count_includes_terminal_token = true
+visible_count_excludes_special_tokens = true
+input_count_uses_complete_rendered_prompt = true
+
+[input_policy]
+truncation = false
+overlength_action = "record-error"
+
+[seed_policy]
+strategy = "derived-per-prompt"
+components = ["run_seed", "prompt_id", "repeat_index"]
+include_system_id = false
+primary_samples_per_system_prompt = 1
+rng_application = "forked-device-state-v1"
+
+[constraints]
+constrained_decoding = false
+beam_search = false
+automatic_retries = false
+output_repair = false
+
+[timing]
+metric = "synchronized-model-generate"
+clock = "time.perf_counter_ns"
+cuda_synchronize = true
+include_prompt_prefill = true
+include_output_generation = true
+include_tokenization = false
+include_model_loading = false
+warmups_per_loaded_runtime = 1
+batch_size = 1
+order_strategy = "seeded-random"
+reusable_conversation_cache = false
+
+[failure_policy]
+preflight_failure_action = "abort-before-run"
+attempt_statuses = ["success", "input_context_exceeded", "generation_error"]
+record_exception_type = true
+record_exception_message = true
+automatic_retries = false
+continue_after_isolated_generation_error = true
+cuda_runtime_error_action = "record-then-abort"
+preserve_partial_run = true
+impute_missing_attempts = false
+completion_rule = "exactly-one-record-per-scheduled-combination"

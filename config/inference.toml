@@ -1,0 +1,17 @@
+# Canonical runtime-loading profile for formal CUDA evaluation.
+[runtime]
+dtype = "bfloat16"
+attention_implementation = "sdpa"
+device_map_strategy = "single-device"
+quantization = false
+compile = false
+offload = false
+low_cpu_mem_usage = true
+
+[adapter]
+adapter_name = "chatgnt"
+is_trainable = false
+autocast_adapter_dtype = true
+ephemeral_gpu_offload = false
+low_cpu_mem_usage = false
+merged = false

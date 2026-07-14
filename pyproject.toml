@@ -1,0 +1,19 @@
+[project]
+name = "chatgnt"
+version = "0.1.0"
+description = "A reproducible LoRA fine-tuning experiment comparing prompt engineering with adaptation."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "accelerate==1.14.0",
+    "datasets==5.0.0",
+    "huggingface-hub==1.23.0",
+    "peft==0.19.1",
+    "psutil==7.2.2",
+    "torch==2.12.1",
+    "transformers==5.12.1",
+    "trl==1.7.1",
+]
+
+[tool.uv]
+package = false
+required-version = "==0.11.28"

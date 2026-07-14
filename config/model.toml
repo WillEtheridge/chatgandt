@@ -1,0 +1,20 @@
+[base_model]
+id = "Qwen/Qwen2.5-1.5B-Instruct"
+revision = "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+source = "https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct"
+license = "apache-2.0"
+architecture = "Qwen2ForCausalLM"
+parameter_count = 1543714304
+weight_dtype = "bfloat16"
+weights_sha256 = "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee"
+max_context_tokens = 32768
+
+[tokenizer]
+class = "Qwen2Tokenizer"
+chat_template_sha256 = "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f"
+reported_model_max_length = 131072
+
+[canonical_chat]
+vendor_system_message = false
+minimal_system_message = ""
+add_generation_prompt = true

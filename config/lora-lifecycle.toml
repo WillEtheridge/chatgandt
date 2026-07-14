@@ -1,0 +1,16 @@
+# Disposable feasibility settings. These are not ChatG&T training hyperparameters.
+[adapter]
+target_modules = ["q_proj", "v_proj"]
+rank = 8
+alpha = 16
+dropout = 0.0
+bias = "none"
+task_type = "CAUSAL_LM"
+init_lora_weights = true
+
+[diagnostic]
+seed = 20260714
+learning_rate = 0.001
+weight_decay = 0.01
+training_steps = 1
+adapter_output = "artifacts/diagnostics/lora-lifecycle-adapter"

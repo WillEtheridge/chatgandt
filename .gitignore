@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.env
+.env.*
+
+# Local model and experiment caches must not be committed accidentally.
+.cache/
+artifacts/models/
+artifacts/diagnostics/
