@@ -308,3 +308,11 @@ A structural validator is measurement instrumentation. If two reasonable impleme
 Adversarial review of ChatG&T's validator specification exposed several such details. Python's ordinary numeric conversions do not cover every JSON number lexeme; nested recipe arrays complicated surrounding-text discovery; multiple top-level values overlapped with that category; a same-identifier but modified schema could introduce unmapped errors; Markdown fences needed exact precedence and grammar; duplicate keys needed pair-preserving objects to retain nested paths; and escaped surrogate keys could break otherwise deterministic UTF-8 evidence serialization.
 
 The broader lesson is not that every application needs an elaborate parser. It is that a research metric needs an explicit operational definition at every boundary that can change classification. Exact schema identity, stable label precedence, project-owned diagnostics, and adversarial boundary cases turn “valid JSON” from an intuition into reproducible evidence.
+
+## 2026-07-14 — What is a prompt-development set for?
+
+A prompt-development set is an engineering workbench, not a miniature held-out evaluation. Its outputs may be inspected repeatedly, and observed failures may directly influence the system prompt. That makes the set useful for getting the system working but disqualifies its results from supporting final generalisation claims.
+
+Freezing the development inputs before model generation still matters. It prevents difficult prompts from being silently replaced after their failures are seen and makes successive system-prompt versions comparable on the same tasks and random streams. Purposeful roles—clean, naturalistic, constrained, and robustness—provide more diagnostic value than a larger collection of loosely varied questions.
+
+Once inspected, a development prompt and its close paraphrases are spent for held-out purposes. Keeping them out of training data, validation data, five-shot examples, and the final test set preserves clear evidence boundaries. Formal cross-domain status must also wait until the training topics are known; a topic cannot be called withheld before the source domain has been defined.

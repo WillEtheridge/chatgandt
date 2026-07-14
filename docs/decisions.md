@@ -766,3 +766,30 @@ JSON Schema is portable to later Python and web consumers, while an explicit str
 - Step 8 requires no model or GPU and is complete only when the frozen acceptance suite passes.
 
 The implementation, 33 focused acceptance tests, and complete 73-test regression suite pass as recorded in [Schema validation implementation check](schema-validation-check.md).
+
+## D-025 — Use a fixed 20-prompt development workbench
+
+- **Date:** 2026-07-14
+- **Status:** Adopted; version 1 frozen and verified
+
+### Decision
+
+ChatG&T prompt development will use exactly 20 user prompts: four prompts in each of the five intent families. Every family contains one clean, naturalistic, constrained, and robustness prompt.
+
+The set is an inspectable engineering workbench for developing the five-shot system prompt and comparing Systems A and B. It contains user prompts and metadata rather than ideal responses, and its outputs are development evidence rather than headline experimental results.
+
+The complete scenario blueprint and authoring rules are recorded in [Prompt-development set plan](prompt-development-set-plan.md).
+
+The exact version 1 artefact is [`data/development/prompts-v1.jsonl`](../data/development/prompts-v1.jsonl), frozen at SHA-256 `0f9b594b3e8388ee803a31e69882bf8a6822eb147cfecaf4e16a9bf6fbd96bd1`. It passed the closed composition, metadata, serialization, and identity contract before any model output was generated, as recorded in [Prompt-development set check](prompt-development-set-check.md).
+
+### Rationale
+
+The repeated four-role structure creates purposeful diagnostic variation without turning a portfolio-scale development activity into a large pseudo-benchmark. Writing the set before generation prevents individual outputs from determining which tasks are retained, while later held-out prompts provide the genuine generalisation test.
+
+### Implications
+
+- All exact prompt wording will be reviewed and frozen before model outputs are inspected.
+- Development prompts and close paraphrases are excluded from training, fine-tuning validation, five-shot examples, and held-out evaluation.
+- System A is run once; System B prompt versions use the same development inputs, settings, and derived seeds.
+- Development percentages are diagnostic and will not be reported as final performance estimates.
+- Formal cross-domain labels remain deferred until training topics and withheld domains are defined.
