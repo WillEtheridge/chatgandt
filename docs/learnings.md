@@ -276,3 +276,15 @@ The wider lesson is that implementation-grade specifications should be challenge
 3. **Executable:** Do the pinned libraries and hardware expose the assumed behavior?
 
 A specification is not solid merely because it is detailed. It becomes solid when its important claims survive attempts to falsify them against the real environment.
+
+## 2026-07-14 — What does an end-to-end CUDA acceptance test prove?
+
+Environment discovery and actual execution answer different questions. `nvidia-smi` can identify a GPU and host driver, while `torch.cuda.is_available()` can show that PyTorch sees a device. Neither proves that the project's pinned model, adapter wrapper, generation settings, RNG handling, synchronization, timing, and evidence writer work together.
+
+ChatG&T therefore accepted its inference harness only after the frozen environment performed a real BF16 tensor calculation and then completed sampled inference through two independently loaded CUDA runtimes: the untouched base model and the same base with an unmerged LoRA lifecycle adapter. The inspector found exactly two scheduled response records with no missing, duplicate, malformed, unexpected, or integrity-failing entries.
+
+This is technical acceptance, not model-quality evidence. The lifecycle adapter exists to exercise attachment, loading, and inference machinery; it was not trained to produce ChatG&T responses. A good diagnostic is deliberately narrow about the claim it supports.
+
+Observability failures should also remain visible. The run succeeded even though the attempted PyTorch CUDA-driver metadata accessor did not exist in the pinned version. The manifest retained that collection error, while `nvidia-smi` independently supplied the driver version. Optional metadata failure need not invalidate successful model execution, but it should be fixed before formal evidence collection rather than silently omitted.
+
+Finally, short-lived GPU verification can be very inexpensive when setup is prepared and the pod is terminated promptly. The end-to-end L4 session cost $0.10; together with the earlier $0.14 training-feasibility session, recorded Runpod spend was $0.24 against the $20 training budget.

@@ -479,10 +479,12 @@ The preferred RTX 4090 and a CUDA 13-compatible L4 were unavailable when the che
 
 The full result, including the rejected R570-driver L4 and measured memory, is recorded in [Rented-GPU feasibility check](gpu-feasibility-check.md).
 
+A later Step 7 acceptance session used an available 24 GB NVIDIA L4 with driver 580.126.20. The locked CUDA 13 environment completed real BF16 computation and the two-runtime inference diagnostic for a final charge of $0.10. Total recorded Runpod expenditure across the feasibility and acceptance sessions is therefore $0.24.
+
 ## D-018 — Use immutable run artefacts and content-addressed system definitions
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; implemented, real-CUDA acceptance pending
+- **Status:** Adopted; implemented and accepted on real CUDA
 
 ### Decision
 
@@ -526,7 +528,7 @@ Separating the stable factorial meaning of A–D from the versioned artefacts us
 ## D-019 — Use explicit sampled generation with paired per-prompt seeds
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; implemented, real-CUDA acceptance pending
+- **Status:** Adopted; implemented and accepted on real CUDA
 
 ### Decision
 
@@ -574,7 +576,7 @@ A 512-token ceiling gives the model room to close a complete JSON object while b
 ## D-020 — Preserve generated tokens and define user-visible raw output precisely
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; implemented, real-CUDA acceptance pending
+- **Status:** Adopted; implemented and accepted on real CUDA
 
 ### Decision
 
@@ -632,7 +634,7 @@ Explicit termination and no-truncation policies prevent the harness from making 
 ## D-021 — Measure one synchronized generation latency
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; implemented, real-CUDA acceptance pending
+- **Status:** Adopted; implemented and accepted on real CUDA
 
 ### Decision
 
@@ -672,7 +674,7 @@ CUDA synchronization is required because GPU work is asynchronous; without it, a
 ## D-022 — Use simple, explicit generation failure semantics
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; implemented, real-CUDA acceptance pending
+- **Status:** Adopted; implemented and accepted on real CUDA
 
 ### Decision
 
@@ -709,7 +711,7 @@ Sharing the inference engine keeps evaluation and deployment behaviour aligned w
 ## D-023 — Freeze the reviewed inference-harness specification
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; implemented, real-CUDA acceptance pending
+- **Status:** Adopted; implemented and accepted on real CUDA
 
 ### Decision
 

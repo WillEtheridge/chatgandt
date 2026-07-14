@@ -9,4 +9,13 @@ __pycache__/
 # Local model and experiment caches must not be committed accidentally.
 .cache/
 artifacts/models/
-artifacts/diagnostics/
+artifacts/diagnostics/*
+
+# Preserve the small, immutable Step 7 CUDA evidence bundles while continuing
+# to ignore model adapters and other disposable diagnostic artefacts.
+!artifacts/diagnostics/inference-harness-cuda/
+artifacts/diagnostics/inference-harness-cuda/*
+!artifacts/diagnostics/inference-harness-cuda/*/
+!artifacts/diagnostics/inference-harness-cuda/*/manifest.json
+!artifacts/diagnostics/inference-harness-cuda/*/prompts.jsonl
+!artifacts/diagnostics/inference-harness-cuda/*/responses.jsonl

@@ -44,6 +44,8 @@ The locked Linux PyTorch distribution includes CUDA 13.0 support and its CUDA ru
 
 The same dependency lock was subsequently reproduced on an RTX 3090 with driver 580.159.03. PyTorch reported CUDA 13.0, one available device, and BF16 support.
 
+The lock was reproduced again for the inference-harness acceptance check on an NVIDIA L4 with host driver 580.126.20. A real BF16 CUDA tensor calculation succeeded, followed by complete base and unmerged-adapter inference through the shared harness. The immutable result is recorded in [Inference harness implementation check](inference-harness-check.md).
+
 The materialised `.venv` occupied approximately 4.9 GB. Most of that footprint comes from PyTorch, Triton, and bundled CUDA libraries rather than the ChatG&T code.
 
 ## Reproduction commands
@@ -74,7 +76,7 @@ The environment check completed successfully on 2026-07-14. It reported:
 - CUDA 13.0 in the PyTorch build with no local CUDA device; and
 - successful PEFT `LoraConfig` construction for `CAUSAL_LM`.
 
-The same check on Runpod reported one available CUDA device. A representative BF16 LoRA workload subsequently passed on the 24 GB GPU, as recorded in [Rented-GPU feasibility check](gpu-feasibility-check.md).
+The same check on Runpod reported one available CUDA device. A representative BF16 LoRA workload subsequently passed on a 24 GB RTX 3090, as recorded in [Rented-GPU feasibility check](gpu-feasibility-check.md). The later two-runtime inference-harness acceptance check passed on a 24 GB L4.
 
 `uv lock --check --offline` also confirmed that `uv.lock` and `pyproject.toml` were consistent.
 
