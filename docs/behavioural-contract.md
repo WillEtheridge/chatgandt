@@ -52,6 +52,8 @@ Ingredients are conceptual rather than literal drink ingredients.
 
 ## Hard structural requirements
 
+The executable interpretation of these requirements is defined in [Step 8 schema validation specification](schema-validation-specification.md).
+
 - The complete output is one valid JSON object.
 - The object contains exactly four top-level fields: `title`, `ingredients`, `method`, and `garnish`.
 - Unexpected fields are a schema failure.

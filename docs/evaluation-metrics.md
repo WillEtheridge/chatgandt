@@ -34,6 +34,8 @@ Pre-run identity or loading failures abort before generation. Isolated generatio
 
 `schema_valid` records whether the parsed output satisfies the complete normal-response contract in [ChatG&T behavioural contract](behavioural-contract.md).
 
+The strict parser, Draft 2020-12 response schema, stable label mapping, and deterministic validation record are defined in [Step 8 schema validation specification](schema-validation-specification.md).
+
 The headline structural measure is **first-attempt schema-valid rate**: schema-valid raw outputs divided by all attempted generations. Outputs are not repaired, extracted, retried, or produced through constrained generation for this measure.
 
 ### Structural failure categories

@@ -43,7 +43,7 @@ We can state exactly what is being tested, which systems are being compared, wha
 | 5. Select and record the base model | Completed | Qwen2.5-1.5B-Instruct is selected, pinned, justified, and confirmed across local and rented-GPU feasibility checks |
 | 6. Establish the reproducible environment | In progress | Python, dependencies, model revision, rented-GPU compatibility, generation profile, and seed policy are pinned and verified; the final training configuration remains |
 | 7. Build the inference and capture harness | Completed | Specification 1.2 passed four adversarial reviews; implementation, 40 tests, real base/adapter CPU inference, and the two-runtime CUDA end-to-end diagnostic all pass |
-| 8. Implement schema validation | Not started | An executable JSON Schema, strict parser, structural failure taxonomy, and validator tests |
+| 8. Implement schema validation | Completed | Specification 1.3 is implemented; the exact schema, strict parser, stable diagnostics, deterministic serializer, 33 focused tests, and complete 73-test regression suite pass |
 | 9. Create the prompt-development set | Not started | Non-test prompts suitable for iterating on the five-shot baseline |
 | 10. Develop and version the five-shot prompt | Not started | A realistic prompt baseline with exactly five examples and a documented revision history |
 | 11. Run Systems A and B on development prompts | Not started | Initial structural, qualitative, and efficiency measurements |
@@ -149,4 +149,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Implement Step 8: define the executable ChatG&T JSON Schema, strict parser, structural failure taxonomy, and validator tests.
+Create the prompt-development set without using held-out evaluation prompts.

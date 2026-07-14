@@ -14,6 +14,7 @@ PACKAGES = (
     "accelerate",
     "datasets",
     "huggingface-hub",
+    "jsonschema",
     "peft",
     "psutil",
     "safetensors",

@@ -288,3 +288,23 @@ This is technical acceptance, not model-quality evidence. The lifecycle adapter 
 Observability failures should also remain visible. The run succeeded even though the attempted PyTorch CUDA-driver metadata accessor did not exist in the pinned version. The manifest retained that collection error, while `nvidia-smi` independently supplied the driver version. Optional metadata failure need not invalidate successful model execution, but it should be fixed before formal evidence collection rather than silently omitted.
 
 Finally, short-lived GPU verification can be very inexpensive when setup is prepared and the pod is terminated promptly. The end-to-end L4 session cost $0.10; together with the earlier $0.14 training-feasibility session, recorded Runpod spend was $0.24 against the $20 training budget.
+
+## 2026-07-14 — Where does engineering end and evaluation begin?
+
+An experiment does not require knowingly sending a broken system into final evaluation. Before systems are frozen, the appropriate engineering objective is to get them working: build objective feedback tools, test on development prompts, improve the five-shot prompt, diagnose formatting failures, improve training data, and select a viable adapter using validation evidence.
+
+The research boundary begins when the systems and evaluation procedure are frozen. Held-out prompts then measure whether the developed behaviour generalises. Changing a system in response to development failures is engineering; changing it after inspecting held-out failures is test leakage.
+
+A useful working rule is:
+
+> Before the freeze, get it working. After the freeze, find out whether it generalises.
+
+This also separates the experimental question from a later production question. A deployed system might use constrained decoding, retries, repair, or other reliability controls. Those can be valuable engineering choices, but introducing them into the primary comparison would obscure what prompting and fine-tuning themselves changed. Any production safeguard should therefore be evaluated and labelled as a separate intervention.
+
+## 2026-07-14 — Why can a small validator require adversarial design review?
+
+A structural validator is measurement instrumentation. If two reasonable implementations assign different labels or validity booleans to the same output, the resulting system comparison can change even though the models did not. Apparently peripheral parser details are therefore part of the experimental method.
+
+Adversarial review of ChatG&T's validator specification exposed several such details. Python's ordinary numeric conversions do not cover every JSON number lexeme; nested recipe arrays complicated surrounding-text discovery; multiple top-level values overlapped with that category; a same-identifier but modified schema could introduce unmapped errors; Markdown fences needed exact precedence and grammar; duplicate keys needed pair-preserving objects to retain nested paths; and escaped surrogate keys could break otherwise deterministic UTF-8 evidence serialization.
+
+The broader lesson is not that every application needs an elaborate parser. It is that a research metric needs an explicit operational definition at every boundary that can change classification. Exact schema identity, stable label precedence, project-owned diagnostics, and adversarial boundary cases turn “valid JSON” from an intuition into reproducible evidence.

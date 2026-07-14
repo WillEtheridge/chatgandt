@@ -30,9 +30,10 @@ Python 3.12 was selected even though the current PyTorch and Transformers releas
 | TRL | 1.7.1 | Supervised fine-tuning workflow |
 | Accelerate | 1.14.0 | Device placement and training execution |
 | Datasets | 5.0.0 | Training and evaluation dataset handling |
+| jsonschema | 4.26.0 | Draft 2020-12 response-schema validation |
 | psutil | 7.2.2 | Local process and memory measurements |
 
-The lockfile resolved 79 project packages and installed 76 packages into the local environment. Important resolved transitive versions include Hugging Face Hub 1.23.0, Safetensors 0.8.0, Tokenizers 0.22.2, and Triton 3.7.1.
+The lockfile resolved 83 project packages and installed 80 packages into the local environment. Important resolved transitive versions include Hugging Face Hub 1.23.0, jsonschema-specifications 2025.9.1, Safetensors 0.8.0, Tokenizers 0.22.2, and Triton 3.7.1.
 
 ## Compute build
 
@@ -75,6 +76,8 @@ The environment check completed successfully on 2026-07-14. It reported:
 - every direct dependency at its declared version;
 - CUDA 13.0 in the PyTorch build with no local CUDA device; and
 - successful PEFT `LoraConfig` construction for `CAUSAL_LM`.
+
+The environment also directly pins `jsonschema==4.26.0`; its exact-schema and Draft 2020-12 behaviour is exercised by the local [Schema validation implementation check](schema-validation-check.md).
 
 The same check on Runpod reported one available CUDA device. A representative BF16 LoRA workload subsequently passed on a 24 GB RTX 3090, as recorded in [Rented-GPU feasibility check](gpu-feasibility-check.md). The later two-runtime inference-harness acceptance check passed on a 24 GB L4.
 

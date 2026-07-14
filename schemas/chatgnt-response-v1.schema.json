@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:response:v1",
+  "title": "ChatG&T response v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["title", "ingredients", "method", "garnish"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "ingredients": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["amount", "unit", "name"],
+        "properties": {
+          "amount": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "unit": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "name": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "method": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 5,
+      "items": {
+        "type": "string",
+        "pattern": "\\S"
+      }
+    },
+    "garnish": {
+      "type": "string",
+      "pattern": "\\S"
+    }
+  }
+}

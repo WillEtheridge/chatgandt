@@ -735,3 +735,34 @@ Separate stable runtimes make latency reflect the two deployment strategies bein
 - Diagnostic provenance bypass is narrowly represented and forbidden for formal runs.
 - The shared engine remains device-agnostic; canonical experimental timing remains CUDA-only.
 - Web serving will reuse the engine boundary, not the research runner and its artefact machinery.
+
+## D-024 — Use strict, portable, non-repairing schema validation
+
+- **Date:** 2026-07-14
+- **Status:** Adopted; specification 1.3 implemented and accepted locally
+
+### Decision
+
+ChatG&T structural evaluation will use a Draft 2020-12 JSON Schema and the directly pinned `jsonschema==4.26.0` implementation. The response schema is closed at the top-level and ingredient-object levels, performs no type coercion, and implements the hard requirements in [ChatG&T behavioural contract](behavioural-contract.md) without introducing the deferred character-length limits.
+
+A separate strict parser will evaluate the complete untouched raw output. It permits JSON whitespace but rejects Markdown fences, surrounding prose, duplicate keys, malformed JSON, non-standard numeric constants, and multiple values. Diagnostic inspection may classify a fence or surrounding text but cannot turn extracted content into a valid response.
+
+Validation produces stable, deduplicated failure labels, path-level diagnostics, structural observations, and hashes binding the result to the exact raw output and schema. It contains no repaired response, timestamp, or machine-specific value, so equal inputs produce byte-equivalent canonical records.
+
+The frozen contract and acceptance suite are recorded in [Step 8 schema validation specification](schema-validation-specification.md). Three fresh reviews blocked earlier versions on material numeric, classification, schema-identity, diagnostic, and serialization problems; a fourth fresh review passed version 1.3 without a remaining material blocker.
+
+### Rationale
+
+Valid JSON and valid ChatG&T structure are separate properties. Preserving that distinction reveals whether a model failed basic serialization or produced machine-readable data with the wrong contract. Refusing extraction and repair keeps first-attempt schema-valid rate a measurement of model behaviour rather than application recovery.
+
+JSON Schema is portable to later Python and web consumers, while an explicit strict-parser layer covers properties that schema validation cannot observe after ordinary parsing, particularly duplicate keys and text outside the JSON value. Stable project-owned labels prevent library message changes from silently changing metrics.
+
+### Implications
+
+- Every fenced preflight JSON response remains a structural failure and is specifically diagnosable as `markdown_fence`.
+- Schema validity remains a hard gate; qualitative dimensions cannot compensate for structural failure.
+- Execution failures remain owned by the inference/evaluation layer rather than being misreported as JSON errors.
+- Future constrained decoding, retry, or repair would be a separately labelled intervention, not part of the primary comparison.
+- Step 8 requires no model or GPU and is complete only when the frozen acceptance suite passes.
+
+The implementation, 33 focused acceptance tests, and complete 73-test regression suite pass as recorded in [Schema validation implementation check](schema-validation-check.md).
