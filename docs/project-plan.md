@@ -45,8 +45,8 @@ We can state exactly what is being tested, which systems are being compared, wha
 | 7. Build the inference and capture harness | Completed | Specification 1.2 passed four adversarial reviews; implementation, 40 tests, real base/adapter CPU inference, and the two-runtime CUDA end-to-end diagnostic all pass |
 | 8. Implement schema validation | Completed | Specification 1.3 is implemented; the exact schema, strict parser, stable diagnostics, deterministic serializer, 33 focused tests, and complete 73-test regression suite pass |
 | 9. Create the prompt-development set | Completed | Twenty exact user prompts and closed metadata are reviewed, canonically stored, digest-bound as version 1, and verified before model generation |
-| 10. Develop and version the five-shot prompt | Not started | A realistic prompt baseline with exactly five examples and a documented revision history |
-| 11. Run Systems A and B on development prompts | Not started | Initial structural, qualitative, and efficiency measurements |
+| 10. Develop and version the five-shot prompt | Completed | Initial System B prompt v1 is deterministically assembled from reviewed instructions and five frozen examples, digest-bound, schema-checked, and measured at a 2,319-token paired input overhead |
+| 11. Run Systems A and B on development prompts | In progress | Prompt assets, base-only A/B mapping, master seed, and complete paired 40-attempt schedule are frozen and verified; the GPU run and analysis remain |
 | 12. Conduct the Stage 2 readiness review | Not started | Confirmation that the model, harness, validator, prompt baseline, and records are ready for formal evaluation design |
 
 ### Stage 2 boundaries
@@ -149,4 +149,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Develop and version the realistic five-shot system prompt, using the frozen [prompt-development set](../data/development/prompts-v1.jsonl) only as its engineering workbench and keeping worked examples separate from these prompts.
+Commit and push the complete pre-generation evidence bundle, then prepare a short-lived GPU session to execute the frozen 40-attempt System A/B development run.

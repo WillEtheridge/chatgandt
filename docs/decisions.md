@@ -793,3 +793,75 @@ The repeated four-role structure creates purposeful diagnostic variation without
 - System A is run once; System B prompt versions use the same development inputs, settings, and derived seeds.
 - Development percentages are diagnostic and will not be reported as final performance estimates.
 - Formal cross-domain labels remain deferred until training topics and withheld domains are defined.
+
+## D-026 — Use five frozen, cross-family worked examples
+
+- **Date:** 2026-07-14
+- **Status:** Adopted; example content frozen and verified
+
+### Decision
+
+The realistic System B prompt baseline will contain exactly five worked examples: one from each intent family. Their roles are clean advice, constrained explanation, naturalistic emotional support, robustness creative generation, and constrained short-form transformation.
+
+The exact user inputs and ideal responses are stored in [`data/prompt-engineering/worked-examples-v1.json`](../data/prompt-engineering/worked-examples-v1.json), frozen at SHA-256 `0cb6afd2bf88ed1f9a3edf8e5ffc479e22c69b91ea7220988c5b1dee51f429b6`. All five ideal responses pass the frozen ChatG&T response schema.
+
+System-prompt development is limited to four total versions: an initial version plus at most three evidence-backed revisions. Revisions must address recurring or generalisable development failures, use unchanged inputs and inference settings, and retain their prompts, results, token counts, and rationales.
+
+### Rationale
+
+One example per family demonstrates semantic breadth, while distributing clean, naturalistic, constrained, and robustness roles teaches more than five straightforward examples would. Repeating the constrained role demonstrates that the cocktail conceit must still deliver explanations and completed artefacts precisely.
+
+A finite, recorded revision budget permits competent prompt engineering without an open-ended search that silently overfits the 20 known development prompts.
+
+### Implications
+
+- Worked-example inputs, outputs, and close paraphrases are excluded from development, training, validation, and held-out data.
+- Exact development overlap and response-schema validity are checked automatically; semantic quality and close-paraphrase separation remain reviewed authoring responsibilities.
+- The complete System B instruction text and assembled prompt asset are not yet frozen.
+- The final version-selection rule must be operationalised before development results select the prompt baseline.
+
+## D-027 — Freeze the initial System B prompt before development generation
+
+- **Date:** 2026-07-14
+- **Status:** Adopted; prompt asset version 1 assembled and verified
+
+### Decision
+
+The approved instructions and five worked examples are deterministically assembled into [`config/prompts/five-shot-v1.json`](../config/prompts/five-shot-v1.json). The initial asset has identifier `five-shot-v1`, version `1`, and SHA-256 `7b8c25f04fba15373813862bba9705d4585ba919e855612909830757e4bd93d6`.
+
+The exact prompt explicitly prioritises a useful underlying answer, states the closed JSON contract, distinguishes compatible content constraints from conflicting output-format requests, requires completed artefacts in the final method step, and finishes with a raw-JSON reminder after the five examples.
+
+### Rationale
+
+Assembling and freezing the first prompt before model generation separates prompt authorship from output-driven revision. Deterministic rendering proves that the deployed system content matches the reviewed instruction and example sources rather than an undocumented copy.
+
+The prompt is intentionally a credible five-shot baseline rather than a token-minimised strawman. Across the 20 development prompts it adds exactly 2,319 input tokens relative to the empty-system condition. This recurring cost is material experimental evidence, not a reason to weaken the baseline before comparison.
+
+### Implications
+
+- Version 1 cannot be overwritten after its first run; any revision becomes a new append-only prompt asset.
+- The complete rendered five-shot inputs range from 2,344 to 2,394 tokens on the development set and fit comfortably inside the pinned context limit.
+- No quality claim is made until the controlled System A/B development run.
+- Prompt revisions remain governed by the four-version ceiling and recorded rationale requirement in D-026.
+
+## D-028 — Use master seed 20260714 for prompt development
+
+- **Date:** 2026-07-14
+- **Status:** Adopted; frozen before development generation
+
+### Decision
+
+The initial System A/B development run and later System B prompt-version comparisons will use master run seed `20260714`. It is bound to the frozen prompt and system inputs in [`config/runs/development-ab-v1.json`](../config/runs/development-ab-v1.json), SHA-256 `63db3e2cd65354b037c62eda2c5cabc34ae32f336b42aff8cf7f19cd08672271`.
+
+The harness derives each generation seed from the master seed, prompt ID, and repeat index while excluding system identity. It derives the execution-order seed independently in its own namespace. The resulting order seed for this run is `17625029341685692511`.
+
+### Rationale
+
+The number is memorable, valid, and chosen before any development output was observed. A fixed master seed makes the sampled experiment repeatable and gives A, B, and later B prompt versions paired pseudorandom streams without claiming that different probability distributions receive equivalent token choices.
+
+### Implications
+
+- The seed is not changed in response to favourable or unfavourable outputs.
+- Prompt versions reuse it for paired development comparison.
+- Any later multi-seed stability analysis declares a separate seed set and is reported as a secondary experiment.
+- Reproducibility still depends on the recorded model, software, and hardware environment; a fixed seed alone does not promise cross-platform bit identity.

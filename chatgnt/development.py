@@ -8,10 +8,13 @@ from typing import Any
 
 from .configuration import PROJECT_ROOT, load_prompts
 from .identity import sha256_bytes
-from .records import ContractError, canonical_line
+from .records import ContractError, canonical_json, canonical_line, read_strict_json, require_exact_keys
+from .validation import load_response_schema, validate_response
 
 DEVELOPMENT_PROMPTS_V1 = PROJECT_ROOT / "data" / "development" / "prompts-v1.jsonl"
 DEVELOPMENT_PROMPTS_V1_SHA256 = "0f9b594b3e8388ee803a31e69882bf8a6822eb147cfecaf4e16a9bf6fbd96bd1"
+WORKED_EXAMPLES_V1 = PROJECT_ROOT / "data" / "prompt-engineering" / "worked-examples-v1.json"
+WORKED_EXAMPLES_V1_SHA256 = "0cb6afd2bf88ed1f9a3edf8e5ffc479e22c69b91ea7220988c5b1dee51f429b6"
 
 FAMILY_SLUGS = {
     "advice_decision_support": "advice",
@@ -47,6 +50,20 @@ METADATA_KEYS = {
     "development_role",
     "input_form",
     "intent_family",
+}
+EXPECTED_EXAMPLE_ROLES = {
+    "advice_decision_support": "clean",
+    "explanation_technical_understanding": "constrained",
+    "low_stakes_emotional_support": "naturalistic",
+    "creative_generation": "robustness",
+    "short_form_transformation": "constrained",
+}
+WORKED_EXAMPLE_KEYS = {
+    "assistant_response",
+    "development_role",
+    "example_id",
+    "intent_family",
+    "user_prompt",
 }
 
 
@@ -124,4 +141,84 @@ def validate_development_prompts(path: Path = DEVELOPMENT_PROMPTS_V1) -> dict[st
         "development_roles": list(DEVELOPMENT_ROLES),
         "family_role_pairs_complete": True,
         "canonical_jsonl": True,
+    }
+
+
+def validate_worked_examples(path: Path = WORKED_EXAMPLES_V1) -> dict[str, Any]:
+    """Validate the frozen five-shot example content before prompt assembly."""
+
+    value, raw = read_strict_json(path)
+    require_exact_keys(value, {"schema_version", "worked_examples"}, str(path))
+    if type(value["schema_version"]) is not int or value["schema_version"] != 1:
+        raise ContractError(f"{path}.schema_version: expected integer 1")
+    examples = value["worked_examples"]
+    if not isinstance(examples, list) or len(examples) != 5:
+        raise ContractError(f"{path}.worked_examples: expected exactly five examples")
+
+    development_prompts, _ = load_prompts(DEVELOPMENT_PROMPTS_V1)
+    development_text = {prompt.prompt for prompt in development_prompts}
+    response_schema = load_response_schema()
+    observed_families: set[str] = set()
+    observed_ids: set[str] = set()
+    observed_user_prompts: set[str] = set()
+
+    for index, example in enumerate(examples):
+        location = f"{path}.worked_examples[{index}]"
+        require_exact_keys(example, WORKED_EXAMPLE_KEYS, location)
+        family = _require_enum(example["intent_family"], set(FAMILY_SLUGS), f"{location}.intent_family")
+        role = _require_enum(example["development_role"], DEVELOPMENT_ROLES, f"{location}.development_role")
+        if role != EXPECTED_EXAMPLE_ROLES[family]:
+            raise ContractError(f"{location}.development_role: expected {EXPECTED_EXAMPLE_ROLES[family]!r}")
+
+        expected_id = f"five-shot-v1-{FAMILY_SLUGS[family]}-{role}"
+        if example["example_id"] != expected_id:
+            raise ContractError(f"{location}.example_id: expected {expected_id!r}")
+        if expected_id in observed_ids:
+            raise ContractError(f"{location}.example_id: duplicate identifier")
+
+        user_prompt = example["user_prompt"]
+        if not isinstance(user_prompt, str) or not user_prompt or user_prompt != user_prompt.strip():
+            raise ContractError(f"{location}.user_prompt: expected a trimmed non-empty string")
+        if user_prompt in observed_user_prompts:
+            raise ContractError(f"{location}.user_prompt: duplicate worked-example prompt")
+        if user_prompt in development_text:
+            raise ContractError(f"{location}.user_prompt: duplicates a development prompt")
+
+        response = example["assistant_response"]
+        if not isinstance(response, dict):
+            raise ContractError(f"{location}.assistant_response: expected an object")
+        response_result = validate_response(canonical_json(response), response_schema)
+        if not response_result["schema_valid"]:
+            raise ContractError(
+                f"{location}.assistant_response: invalid ChatG&T response; "
+                f"labels={response_result['failure_labels']}"
+            )
+
+        if family in observed_families:
+            raise ContractError(f"{location}.intent_family: duplicate family")
+        observed_families.add(family)
+        observed_ids.add(expected_id)
+        observed_user_prompts.add(user_prompt)
+
+    if observed_families != set(FAMILY_SLUGS):
+        raise ContractError(f"{path}: each intent family must appear exactly once")
+
+    digest = sha256_bytes(raw)
+    if digest != WORKED_EXAMPLES_V1_SHA256:
+        raise ContractError(
+            f"{path}: content differs from frozen worked-examples v1 digest; "
+            f"expected={WORKED_EXAMPLES_V1_SHA256}, actual={digest}"
+        )
+
+    return {
+        "result": "pass",
+        "version": 1,
+        "path": path.relative_to(PROJECT_ROOT).as_posix() if path.is_relative_to(PROJECT_ROOT) else str(path),
+        "sha256": digest,
+        "worked_example_count": len(examples),
+        "intent_families_complete": True,
+        "role_allocation": EXPECTED_EXAMPLE_ROLES,
+        "all_responses_schema_valid": True,
+        "response_schema_sha256": response_schema.sha256,
+        "exact_development_prompt_overlap": 0,
     }

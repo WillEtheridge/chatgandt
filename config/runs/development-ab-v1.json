@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "run_plan_id": "development-ab-v1",
+  "prompt_set_path": "../../data/development/prompts-v1.jsonl",
+  "system_set_path": "../systems/development-ab-v1.json",
+  "run_seed": 20260714,
+  "primary_samples_per_system_prompt": 1
+}

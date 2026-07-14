@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "systems": [
+    {
+      "system_id": "A",
+      "prompt_asset_path": "../prompts/minimal-v1.json",
+      "adapter_enabled": false
+    },
+    {
+      "system_id": "B",
+      "prompt_asset_path": "../prompts/five-shot-v1.json",
+      "adapter_enabled": false
+    }
+  ]
+}

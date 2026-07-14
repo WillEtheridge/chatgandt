@@ -316,3 +316,27 @@ A prompt-development set is an engineering workbench, not a miniature held-out e
 Freezing the development inputs before model generation still matters. It prevents difficult prompts from being silently replaced after their failures are seen and makes successive system-prompt versions comparable on the same tasks and random streams. Purposeful roles—clean, naturalistic, constrained, and robustness—provide more diagnostic value than a larger collection of loosely varied questions.
 
 Once inspected, a development prompt and its close paraphrases are spent for held-out purposes. Keeping them out of training data, validation data, five-shot examples, and the final test set preserves clear evidence boundaries. Formal cross-domain status must also wait until the training topics are known; a topic cannot be called withheld before the source domain has been defined.
+
+## 2026-07-14 — What makes a useful few-shot example set?
+
+Few-shot examples are behavioural demonstrations, not decorative illustrations. A strong set should show the range of transformations the system must perform, including intent inference, concrete constraint fulfilment, format persistence, and delivery of finished artefacts. Five clean examples from different topics would provide topical variety but teach little about difficult behaviour.
+
+For ChatG&T, one example per intent family gives breadth while deliberately varying the example roles. The repeated constrained role reflects the central quality risk: producing an entertaining recipe that fails to complete the user's actual task.
+
+Worked examples also create an evidence boundary. Their inputs, ideal outputs, and close paraphrases have influenced the system directly, so they cannot later demonstrate generalisation and must remain outside development, training, validation, and held-out data. Freezing their exact content and validating their outputs before prompt assembly separates example design from later model-driven iteration.
+
+## 2026-07-14 — What exactly does a tokenizer result's length measure?
+
+Token accounting must inspect token IDs rather than assume that `len(tokenizer_output)` means token count. In the pinned Transformers version, Qwen's `apply_chat_template(..., tokenize=True)` returns a `BatchEncoding` with `input_ids` and `attention_mask`. Its Python length is therefore two—the number of mapping fields—not the number of tokens.
+
+The correct measurement is `len(result["input_ids"])`. After correcting that boundary, ChatG&T's five-shot prompt added 2,319 tokens to every paired development input, rather than the impossible zero initially suggested by measuring both container lengths as two.
+
+This is another example of why evidence code must be tested against actual library return types. A plausible-looking scalar can be internally consistent, reproducible, and completely wrong if the measured object is misunderstood. Sanity checks against content-only tokenisation and known chat-template overhead help expose such failures before results are recorded.
+
+## 2026-07-14 — What does an inference seed actually do?
+
+Sampling settings define the probability landscape; a seed makes the random draws from that landscape repeatable. At each generated token, the model assigns probabilities to possible continuations. A pseudorandom number selects among the permitted candidates, and the seed determines the reproducible sequence of those numbers. Changing temperature or the prompt changes the distribution, while changing only the seed changes the sampled path through it.
+
+The same seed does not force two systems to emit the same token. If their prompts produce different probability distributions, applying the same random number can select different outcomes. Pairing seeds is still useful because it prevents execution order or an unrelated random history from deciding which pseudorandom stream each system receives.
+
+ChatG&T uses one master run seed to derive independent per-prompt generation seeds and a separately namespaced execution-order seed. System identity is excluded from generation-seed derivation, so Systems A and B receive paired streams for the same prompt. The seed controls inference sampling and schedule order; it does not alter model weights, training data, or prompt content, and it cannot by itself guarantee bit-identical results across different software or hardware.
