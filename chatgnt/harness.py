@@ -32,7 +32,7 @@ from .identity import (
 )
 from .inference import InferenceEngine, cuda_health_probe, load_engine
 from .records import (
-    ATTEMPT_KEYS, GenerationRequest, ScheduledAttempt, canonical_json,
+    ATTEMPT_KEYS, IDENTIFIER_RE, GenerationRequest, ScheduledAttempt, canonical_json,
     canonical_line, make_attempt_record, read_strict_json, require_digest,
     require_exact_keys, require_identifier, require_int, strict_json_loads,
 )
@@ -348,7 +348,7 @@ def _validate_attempt(record: dict[str, Any], expected: dict[str, Any], manifest
     require_exact_keys(record, ATTEMPT_KEYS, "attempt")
     for key in ("attempt_index", "repeat_index", "generation_seed", "input_token_count", "generated_token_count", "visible_output_token_count"):
         require_int(record[key], key)
-    if record["schema_version"] != 1:
+    if require_int(record["schema_version"], "attempt schema_version") != 1:
         raise ContractError("attempt schema_version mismatch")
     for key in ("attempt_index", "prompt_id", "system_id", "repeat_index", "generation_seed"):
         if record[key] != expected[key]: raise ContractError(f"scheduled identity mismatch: {key}")
@@ -358,7 +358,14 @@ def _validate_attempt(record: dict[str, Any], expected: dict[str, Any], manifest
     if record["adapter_enabled"] != system["adapter_enabled"] or record["prompt_asset_id"] != asset["prompt_asset_id"] or record["prompt_asset_sha256"] != asset["source_sha256"]:
         raise ContractError("system/asset identity mismatch")
     expected_messages = [{"role": "system", "content": asset["content"]}, {"role": "user", "content": prompts[record["prompt_id"]].prompt}]
+    if not isinstance(record["messages"], list) or len(record["messages"]) != 2:
+        raise ContractError("messages must be an exact two-element list")
+    for message in record["messages"]:
+        require_exact_keys(message, {"role", "content"}, "attempt message")
+        if not isinstance(message["role"], str) or not isinstance(message["content"], str):
+            raise ContractError("attempt message role/content must be strings")
     if record["messages"] != expected_messages: raise ContractError("messages mismatch")
+    if record["rendered_prompt"] is not None and not isinstance(record["rendered_prompt"], str): raise ContractError("rendered_prompt must be string or null")
     if not isinstance(record["input_token_ids"], list) or len(record["input_token_ids"]) != record["input_token_count"]: raise ContractError("input count mismatch")
     if not isinstance(record["generated_token_ids"], list) or len(record["generated_token_ids"]) != record["generated_token_count"]: raise ContractError("generated count mismatch")
     if any(isinstance(item, bool) or not isinstance(item, int) for item in record["input_token_ids"] + record["generated_token_ids"]): raise ContractError("token IDs must be integers")
@@ -366,6 +373,7 @@ def _validate_attempt(record: dict[str, Any], expected: dict[str, Any], manifest
     status = record["attempt_status"]
     if status not in ("success", "input_context_exceeded", "generation_error"): raise ContractError("invalid attempt status")
     if status == "success":
+        if not isinstance(record["rendered_prompt"], str): raise ContractError("success requires a rendered prompt")
         if record["error"] is not None or not isinstance(record["raw_output"], str) or require_digest(record["raw_output_sha256"], "raw_output_sha256") != sha256_text(record["raw_output"]): raise ContractError("success output/digest invariant")
         if not isinstance(record["generation_duration_ns"], int) or isinstance(record["generation_duration_ns"], bool) or record["generation_duration_ns"] < 0: raise ContractError("success duration invariant")
         special = set(manifest["tokenizer"]["all_special_ids"])
@@ -384,11 +392,18 @@ def _validate_attempt(record: dict[str, Any], expected: dict[str, Any], manifest
         if not isinstance(record["error"], dict) or set(record["error"]) != {"type", "message"} or not all(isinstance(item, str) for item in record["error"].values()): raise ContractError("failure error invariant")
         if any((record["generated_token_ids"], record["generated_token_count"], record["visible_output_token_count"])) or record["raw_output"] is not None or record["raw_output_sha256"] is not None or record["terminal_token_id"] is not None or record["generation_duration_ns"] is not None or record["reached_max_new_tokens"] is not False or record["termination_reason"] != "error": raise ContractError("failure nullability invariant")
         if status == "input_context_exceeded" and (record["error"]["type"] != "InputContextExceededError" or record["rendered_prompt"] is None): raise ContractError("context failure invariant")
+        if status == "input_context_exceeded":
+            primary = manifest["configuration"]["generation"]["values"]["primary"]
+            maximum_context = manifest["model"]["max_context_tokens"]
+            expected_message = f"input_token_count ({record['input_token_count']}) + max_new_tokens ({primary['max_new_tokens']}) exceeds max_context_tokens ({maximum_context})"
+            if record["error"]["message"] != expected_message: raise ContractError("context failure message is not the stable contract value")
+        if status == "generation_error" and record["rendered_prompt"] is None and (record["input_token_ids"] or record["input_token_count"] != 0):
+            raise ContractError("generation error without rendered prompt cannot contain input tokens")
 
 
 def _validate_manifest(manifest: dict[str, Any], run_dir: Path) -> None:
     require_exact_keys(manifest, MANIFEST_KEYS, "manifest")
-    if manifest["schema_version"] != 1 or manifest["specification_version"] != SPECIFICATION_VERSION:
+    if require_int(manifest["schema_version"], "manifest schema_version") != 1 or manifest["specification_version"] != SPECIFICATION_VERSION:
         raise ContractError("manifest version mismatch")
     require_identifier(manifest["run_id"], "run_id")
     if not isinstance(manifest["created_at_utc"], str): raise ContractError("created_at_utc must be a string")
@@ -408,7 +423,18 @@ def _validate_manifest(manifest: dict[str, Any], run_dir: Path) -> None:
         "warmup": {"per_loaded_runtime", "profile", "timed", "base_runtime_performed", "adapted_runtime_performed"},
     }
     for key, keys in nested.items(): require_exact_keys(manifest[key], keys, key)
+    frozen = load_project_configuration()
+    model_file_manifest, _ = read_strict_json(CONFIG_ROOT / "model-files.json")
+    require_exact_keys(model_file_manifest, {"schema_version", "model_id", "revision", "files"}, "model-files identity")
+    if require_int(model_file_manifest["schema_version"], "model-files schema_version") != 1:
+        raise ContractError("model-files schema version mismatch")
     implementation = manifest["implementation"]
+    if not isinstance(implementation["package_version"], str) or not implementation["package_version"]:
+        raise ContractError("implementation package_version must be a non-empty string")
+    if implementation["git_commit"] is not None and (not isinstance(implementation["git_commit"], str) or len(implementation["git_commit"]) != 40):
+        raise ContractError("git_commit must be a 40-character string or null")
+    if implementation["git_dirty"] is not None and not isinstance(implementation["git_dirty"], bool):
+        raise ContractError("git_dirty must be boolean or null")
     require_digest(implementation["behaviour_digest"], "behaviour_digest"); require_digest(implementation["pyproject_sha256"], "pyproject_sha256"); require_digest(implementation["uv_lock_sha256"], "uv_lock_sha256")
     if tree_digest(implementation["behaviour_files"]) != implementation["behaviour_digest"]: raise ContractError("implementation tree digest mismatch")
     for file in implementation["behaviour_files"]:
@@ -418,11 +444,14 @@ def _validate_manifest(manifest: dict[str, Any], run_dir: Path) -> None:
     if [item["path"] for item in implementation["behaviour_files"]] != expected_implementation_paths:
         raise ContractError("implementation file list does not cover every chatgnt/*.py file")
     prompt_set = manifest["prompt_set"]
+    if not isinstance(prompt_set["source_path"], str): raise ContractError("prompt source_path must be a string")
     require_digest(prompt_set["source_sha256"], "prompt source digest"); require_digest(prompt_set["frozen_sha256"], "frozen prompt digest")
     require_int(prompt_set["prompt_count"], "prompt_count")
-    if not isinstance(prompt_set["prompt_ids"], list) or not all(isinstance(item, str) for item in prompt_set["prompt_ids"]):
+    if not isinstance(prompt_set["prompt_ids"], list) or not all(isinstance(item, str) and IDENTIFIER_RE.fullmatch(item) for item in prompt_set["prompt_ids"]):
         raise ContractError("prompt_ids must be a string list")
+    if len(set(prompt_set["prompt_ids"])) != len(prompt_set["prompt_ids"]): raise ContractError("prompt_ids must be unique")
     systems = manifest["system_set"]["systems"]
+    if not isinstance(manifest["system_set"]["source_path"], str): raise ContractError("system-set source_path must be a string")
     require_digest(manifest["system_set"]["source_sha256"], "system-set source digest")
     if not isinstance(systems, list) or not 1 <= len(systems) <= 4:
         raise ContractError("manifest systems must contain one to four entries")
@@ -431,26 +460,36 @@ def _validate_manifest(manifest: dict[str, Any], run_dir: Path) -> None:
         require_exact_keys(system, {"system_id", "adapter_enabled", "prompt_asset"}, "manifest system")
         if system["system_id"] not in "ABCD" or system["system_id"] in seen_systems:
             raise ContractError("manifest system identity is invalid or duplicated")
-        if system["adapter_enabled"] != (system["system_id"] in "CD"):
+        if not isinstance(system["adapter_enabled"], bool) or system["adapter_enabled"] != (system["system_id"] in "CD"):
             raise ContractError("manifest system adapter flag mismatch")
         seen_systems.add(system["system_id"])
         asset = system["prompt_asset"]
         require_exact_keys(asset, {"source_path", "source_sha256", "schema_version", "prompt_asset_id", "version", "worked_example_count", "content"}, "manifest prompt asset")
         require_digest(asset["source_sha256"], "prompt asset digest"); require_identifier(asset["prompt_asset_id"], "prompt_asset_id")
-        if asset["schema_version"] != 1 or not isinstance(asset["version"], str) or not asset["version"] or not isinstance(asset["content"], str):
+        if not isinstance(asset["source_path"], str): raise ContractError("prompt asset source_path must be a string")
+        if require_int(asset["schema_version"], "prompt asset schema_version") != 1 or not isinstance(asset["version"], str) or not asset["version"] or not isinstance(asset["content"], str):
             raise ContractError("manifest prompt asset value mismatch")
         count = require_int(asset["worked_example_count"], "worked_example_count")
         if system["system_id"] in "AC" and (asset["content"] != "" or count != 0): raise ContractError("manifest minimal asset invariant")
         if system["system_id"] in "BD" and (not asset["content"] or count != 5): raise ContractError("manifest five-shot asset invariant")
+    if [system["system_id"] for system in systems] != [item for item in "ABCD" if item in seen_systems]:
+        raise ContractError("manifest systems are not in canonical A-D order")
+    system_map = {system["system_id"]: system for system in systems}
+    for left, right in (("A", "C"), ("B", "D")):
+        if left in system_map and right in system_map and system_map[left]["prompt_asset"]["source_sha256"] != system_map[right]["prompt_asset"]["source_sha256"]:
+            raise ContractError(f"manifest systems {left}/{right} do not share exact prompt-asset bytes")
     schedule = manifest["schedule"]
     require_int(schedule["run_seed"], "run_seed", 0, 2**64 - 1); require_int(schedule["order_seed"], "order_seed", 0, 2**64 - 1)
     if schedule["order_seed"] != execution_order_seed(schedule["run_seed"]): raise ContractError("order seed mismatch")
-    if schedule["seed_algorithm"] != "sha256-first-8-big-endian-v1" or schedule["order_algorithm"] != "sha256-sort-v1" or schedule["primary_samples_per_system_prompt"] != 1:
+    if schedule["seed_algorithm"] != "sha256-first-8-big-endian-v1" or schedule["order_algorithm"] != "sha256-sort-v1" or require_int(schedule["primary_samples_per_system_prompt"], "primary sample count") != 1:
         raise ContractError("schedule algorithm mismatch")
-    if not isinstance(schedule["attempts"], list) or schedule["scheduled_attempt_count"] != len(schedule["attempts"]): raise ContractError("schedule count mismatch")
+    if not isinstance(schedule["attempts"], list) or require_int(schedule["scheduled_attempt_count"], "scheduled attempt count") != len(schedule["attempts"]): raise ContractError("schedule count mismatch")
     for index, attempt in enumerate(schedule["attempts"]):
         require_exact_keys(attempt, {"attempt_index", "prompt_id", "system_id", "repeat_index", "generation_seed"}, "scheduled attempt")
-        if attempt["attempt_index"] != index: raise ContractError("attempt indices must be contiguous")
+        if require_int(attempt["attempt_index"], "scheduled attempt_index") != index: raise ContractError("attempt indices must be contiguous")
+        require_identifier(attempt["prompt_id"], "scheduled prompt_id")
+        if attempt["system_id"] not in "ABCD": raise ContractError("scheduled system_id is invalid")
+        require_int(attempt["repeat_index"], "scheduled repeat_index"); require_int(attempt["generation_seed"], "scheduled generation_seed", 0, 2**64 - 1)
     for file in manifest["model"]["behaviour_files"]:
         require_exact_keys(file, {"path", "size_bytes", "sha256"}, "model behaviour file")
         require_int(file["size_bytes"], "model file size"); require_digest(file["sha256"], "model file digest")
@@ -458,22 +497,59 @@ def _validate_manifest(manifest: dict[str, Any], run_dir: Path) -> None:
     require_int(model["parameter_count"], "model parameter_count"); require_int(model["max_context_tokens"], "model max_context_tokens", 1)
     require_digest(model["weights_sha256"], "model weights digest")
     if not isinstance(model["effective_generation_config"], dict): raise ContractError("effective generation configuration must be an object")
+    base = frozen.model.values["base_model"]
+    expected_model = {
+        "model_id": base["id"], "revision": base["revision"],
+        "snapshot_path": f"artifacts/models/{base['id'].replace('/', '--')}/{base['revision']}",
+        "architecture": base["architecture"], "model_type": "qwen2",
+        "parameter_count": base["parameter_count"], "dtype": base["weight_dtype"],
+        "max_context_tokens": base["max_context_tokens"], "weights_sha256": base["weights_sha256"],
+    }
+    for key, expected_value in expected_model.items():
+        if canonical_json(model[key]) != canonical_json(expected_value): raise ContractError(f"pinned model identity mismatch: {key}")
+    if model_file_manifest["model_id"] != model["model_id"] or model_file_manifest["revision"] != model["revision"] or canonical_json(model["behaviour_files"]) != canonical_json(model_file_manifest["files"]):
+        raise ContractError("pinned model behaviour-file identity mismatch")
+    for key, expected_value in frozen.primary_profile.generation_kwargs().items():
+        if key in model["effective_generation_config"] and model["effective_generation_config"][key] is not None and model["effective_generation_config"][key] != expected_value:
+            raise ContractError(f"effective generation configuration conflicts with {key}")
     tokenizer = manifest["tokenizer"]
     require_int(tokenizer["length"], "tokenizer length", 1); require_int(tokenizer["eos_token_id"], "tokenizer EOS")
     require_int(tokenizer["pad_token_id"], "tokenizer padding ID"); require_digest(tokenizer["chat_template_sha256"], "chat-template digest")
     if not isinstance(tokenizer["generation_eos_token_ids"], list) or not tokenizer["generation_eos_token_ids"] or any(isinstance(item, bool) or not isinstance(item, int) for item in tokenizer["generation_eos_token_ids"]): raise ContractError("generation EOS IDs are invalid")
     if not isinstance(tokenizer["all_special_ids"], list) or any(isinstance(item, bool) or not isinstance(item, int) for item in tokenizer["all_special_ids"]): raise ContractError("special-token IDs are invalid")
+    expected_tokenizer = {
+        "class": frozen.model.values["tokenizer"]["class"], "length": 151665,
+        "chat_template_sha256": frozen.model.values["tokenizer"]["chat_template_sha256"],
+        "eos_token_id": 151645,
+        "generation_eos_token_ids": frozen.generation.values["stopping"]["eos_token_ids"],
+        "pad_token_id": frozen.generation.values["stopping"]["pad_token_id"],
+    }
+    for key, expected_value in expected_tokenizer.items():
+        if canonical_json(tokenizer[key]) != canonical_json(expected_value): raise ContractError(f"pinned tokenizer identity mismatch: {key}")
+    if tokenizer["eos_token_id"] not in tokenizer["all_special_ids"] or tokenizer["pad_token_id"] not in tokenizer["all_special_ids"]:
+        raise ContractError("tokenizer special-token inventory omits EOS or padding identity")
     for name, entry in manifest["configuration"].items():
         require_exact_keys(entry, {"source_path", "source_sha256", "values"}, f"configuration.{name}")
         require_digest(entry["source_sha256"], f"configuration.{name}.source_sha256")
         if not isinstance(entry["values"], dict): raise ContractError("configuration values must be objects")
+        if canonical_json(entry) != canonical_json(getattr(frozen, name).manifest_value()): raise ContractError(f"frozen configuration identity mismatch: {name}")
     adapter = manifest["adapter"]
+    has_adapted_system = any(system["adapter_enabled"] for system in systems)
+    if has_adapted_system != (adapter is not None): raise ContractError("adapter evidence must exist exactly when C or D is selected")
     if adapter is not None:
         require_exact_keys(adapter, {"path", "adapter_id", "adapter_version", "adapter_digest", "behaviour_files", "provenance", "provenance_sha256", "peft_config", "active_adapters", "trainable_parameter_count", "parameter_dtypes", "merged"}, "adapter")
         require_exact_keys(adapter["path"], {"kind", "value"}, "adapter.path")
-        if adapter["path"]["kind"] not in ("project-relative", "host-absolute"): raise ContractError("adapter path kind mismatch")
+        if adapter["path"]["kind"] not in ("project-relative", "host-absolute") or not isinstance(adapter["path"]["value"], str) or not adapter["path"]["value"]: raise ContractError("adapter path kind/value mismatch")
+        if not isinstance(adapter["adapter_id"], str) or not adapter["adapter_id"] or not isinstance(adapter["adapter_version"], str) or not adapter["adapter_version"]: raise ContractError("adapter ID/version must be non-empty strings")
         require_digest(adapter["adapter_digest"], "adapter digest")
+        if not isinstance(adapter["behaviour_files"], list) or not adapter["behaviour_files"]: raise ContractError("adapter behaviour_files must be a non-empty list")
+        for file in adapter["behaviour_files"]:
+            require_exact_keys(file, {"path", "size_bytes", "sha256"}, "adapter behaviour file")
+            if not isinstance(file["path"], str) or not file["path"]: raise ContractError("adapter behaviour-file path must be non-empty")
+            require_int(file["size_bytes"], "adapter behaviour-file size"); require_digest(file["sha256"], "adapter behaviour-file digest")
+        if adapter["behaviour_files"] != sorted(adapter["behaviour_files"], key=lambda item: item["path"]): raise ContractError("adapter behaviour_files must be sorted")
         if tree_digest(adapter["behaviour_files"]) != adapter["adapter_digest"]: raise ContractError("adapter tree digest mismatch")
+        require_int(adapter["trainable_parameter_count"], "adapter trainable_parameter_count")
         if adapter["active_adapters"] != ["chatgnt"] or adapter["trainable_parameter_count"] != 0 or adapter["merged"] is not False:
             raise ContractError("adapter runtime invariant mismatch")
         if adapter["provenance"] is None and manifest["diagnostic"] is None:
@@ -481,13 +557,47 @@ def _validate_manifest(manifest: dict[str, Any], run_dir: Path) -> None:
         if adapter["provenance"] is not None:
             require_exact_keys(adapter["provenance"], ADAPTER_PROVENANCE_KEYS, "adapter provenance")
             require_digest(adapter["provenance_sha256"], "adapter provenance digest")
+            provenance = adapter["provenance"]
+            if require_int(provenance["schema_version"], "adapter provenance schema_version") != 1: raise ContractError("adapter provenance schema mismatch")
+            for key, value in provenance.items():
+                if key != "schema_version" and (not isinstance(value, str) or not value): raise ContractError(f"adapter provenance {key} must be a non-empty string")
+            for key in ("adapter_digest", "base_weights_sha256", "training_dataset_sha256"): require_digest(provenance[key], f"adapter provenance {key}")
+            if provenance["adapter_digest"] != adapter["adapter_digest"] or provenance["base_model_id"] != base["id"] or provenance["base_model_revision"] != base["revision"] or provenance["base_weights_sha256"] != base["weights_sha256"] or provenance["peft_version"] != manifest["environment"]["peft"]:
+                raise ContractError("adapter provenance does not match pinned base/runtime identity")
+            if provenance["adapter_id"] != adapter["adapter_id"] or provenance["adapter_version"] != adapter["adapter_version"]:
+                raise ContractError("adapter top-level ID/version does not match provenance")
         elif adapter["provenance_sha256"] is not None:
             raise ContractError("null provenance requires a null provenance digest")
         if not isinstance(adapter["peft_config"], dict) or not isinstance(adapter["parameter_dtypes"], list) or not all(isinstance(item, str) for item in adapter["parameter_dtypes"]):
             raise ContractError("adapter PEFT config or dtype evidence is invalid")
+        if adapter["parameter_dtypes"] != sorted(adapter["parameter_dtypes"]): raise ContractError("adapter parameter_dtypes must be sorted")
     if manifest["diagnostic"] is not None:
         require_exact_keys(manifest["diagnostic"], {"kind", "experimental_result", "adapter_provenance_bypass", "adapter_provenance_bypass_reason"}, "diagnostic")
-        if manifest["diagnostic"] != {"kind": "cuda-smoke", "experimental_result": False, "adapter_provenance_bypass": True, "adapter_provenance_bypass_reason": "lifecycle adapter predates formal provenance"}: raise ContractError("invalid diagnostic declaration")
+        if canonical_json(manifest["diagnostic"]) != canonical_json({"kind": "cuda-smoke", "experimental_result": False, "adapter_provenance_bypass": True, "adapter_provenance_bypass_reason": "lifecycle adapter predates formal provenance"}): raise ContractError("invalid diagnostic declaration")
+        if adapter is None or adapter["provenance"] is not None or adapter["adapter_id"] != "lora-lifecycle-diagnostic" or adapter["adapter_version"] != "unversioned-diagnostic":
+            raise ContractError("CUDA-smoke provenance bypass requires the fixed diagnostic adapter identity")
+    environment = manifest["environment"]
+    for key in ("python", "platform", "torch", "transformers", "peft", "tokenizers", "safetensors", "accelerate", "torch_cuda_build", "device", "device_name", "attention_implementation"):
+        if not isinstance(environment[key], str) or not environment[key]: raise ContractError(f"environment.{key} must be a non-empty string")
+    if environment["cuda_driver"] is not None and not isinstance(environment["cuda_driver"], str): raise ContractError("environment.cuda_driver must be string or null")
+    require_int(environment["cudnn"], "environment.cudnn"); require_int(environment["device_total_memory_bytes"], "environment.device_total_memory_bytes", 1)
+    if environment["bf16_supported"] is not True or environment["attention_implementation"] != "sdpa": raise ContractError("environment BF16/attention identity mismatch")
+    collection_errors = environment["collection_errors"]
+    if not isinstance(collection_errors, list): raise ContractError("environment.collection_errors must be a list")
+    for item in collection_errors:
+        require_exact_keys(item, {"field", "type", "message"}, "environment collection error")
+        if not all(isinstance(item[key], str) for key in ("field", "type", "message")): raise ContractError("environment collection-error values must be strings")
+    expected_error_order = sorted(collection_errors, key=lambda item: (item["field"], item["type"], item["message"]))
+    if collection_errors != expected_error_order: raise ContractError("environment.collection_errors must be sorted")
+    expected_timing = {key: frozen.generation.values["timing"][key] for key in ("metric", "clock", "cuda_synchronize", "include_prompt_prefill", "include_output_generation", "include_tokenization", "include_model_loading", "batch_size", "reusable_conversation_cache")}
+    if canonical_json(manifest["timing"]) != canonical_json(expected_timing): raise ContractError("frozen timing identity mismatch")
+    expected_warmup = replace(frozen.primary_profile, profile_id="warmup-sampled-v1", max_new_tokens=1).__dict__.copy()
+    expected_warmup["eos_token_ids"] = list(expected_warmup["eos_token_ids"])
+    warmup = manifest["warmup"]
+    expected_base_warmup = any(not system["adapter_enabled"] for system in systems)
+    expected_adapted_warmup = has_adapted_system
+    if require_int(warmup["per_loaded_runtime"], "warmups per runtime") != 1 or canonical_json(warmup["profile"]) != canonical_json(expected_warmup) or warmup["timed"] is not False or warmup["base_runtime_performed"] is not expected_base_warmup or warmup["adapted_runtime_performed"] is not expected_adapted_warmup:
+        raise ContractError("frozen warm-up identity mismatch")
     formal_root = (PROJECT_ROOT / "experiments" / "runs").resolve()
     if run_dir.resolve().is_relative_to(formal_root) and (manifest["diagnostic"] is not None or (manifest["adapter"] is not None and manifest["adapter"]["provenance"] is None)):
         raise ContractError("diagnostic provenance bypass is forbidden in formal runs")

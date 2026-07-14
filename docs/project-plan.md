@@ -42,7 +42,7 @@ We can state exactly what is being tested, which systems are being compared, wha
 | 4. Run model feasibility checks | Completed | Loading, generation, the LoRA lifecycle, and a representative BF16 training workload passed on a rented 24 GB RTX 3090 with substantial VRAM headroom |
 | 5. Select and record the base model | Completed | Qwen2.5-1.5B-Instruct is selected, pinned, justified, and confirmed across local and rented-GPU feasibility checks |
 | 6. Establish the reproducible environment | In progress | Python, dependencies, model revision, rented-GPU compatibility, generation profile, and seed policy are pinned and verified; the final training configuration remains |
-| 7. Build the inference and capture harness | Ready to implement | Specification 1.2 passed four adversarial review rounds; implementation and verification remain, including a real-CUDA acceptance check |
+| 7. Build the inference and capture harness | CUDA acceptance pending | Specification 1.2 passed four adversarial reviews; implementation, 40 tests, and the real base/adapter CPU diagnostic pass, while the real-CUDA end-to-end diagnostic remains |
 | 8. Implement schema validation | Not started | An executable JSON Schema, strict parser, structural failure taxonomy, and validator tests |
 | 9. Create the prompt-development set | Not started | Non-test prompts suitable for iterating on the five-shot baseline |
 | 10. Develop and version the five-shot prompt | Not started | A realistic prompt baseline with exactly five examples and a documented revision history |
@@ -149,4 +149,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Complete adversarial review of the Stage 2, Step 7 specification, then implement and verify the shared inference engine, offline runner, and evidence-capture harness.
+Run the non-experimental Step 7 CUDA diagnostic on a compatible Runpod GPU, copy the three diagnostic artefacts back locally, and inspect them before marking the harness complete.

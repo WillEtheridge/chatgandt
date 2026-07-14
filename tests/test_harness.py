@@ -1,4 +1,5 @@
 import copy
+from dataclasses import replace
 from pathlib import Path
 import tempfile
 import unittest
@@ -6,10 +7,10 @@ from unittest.mock import patch
 from types import SimpleNamespace
 import torch
 
-from chatgnt.configuration import PROJECT_ROOT, Prompt, PromptAsset, SystemDefinition, load_project_configuration
-from chatgnt.harness import RuntimeAbort, _make_manifest, _publish, execute_run, inspect_run
+from chatgnt.configuration import CONFIG_ROOT, PROJECT_ROOT, Prompt, PromptAsset, SystemDefinition, load_project_configuration
+from chatgnt.harness import RuntimeAbort, _diagnostic_declaration, _make_manifest, _publish, execute_run, inspect_run
 from chatgnt.identity import execution_order_seed, file_identity, schedule_attempts, sha256_bytes, sha256_text, tree_digest
-from chatgnt.records import ErrorInfo, GenerationResult, canonical_line
+from chatgnt.records import ErrorInfo, GenerationResult, canonical_line, read_strict_json
 
 
 def prompt_bytes():
@@ -17,9 +18,14 @@ def prompt_bytes():
 
 
 def manifest(frozen: bytes):
+    project = load_project_configuration()
+    base = project.model.values["base_model"]
+    model_files, _ = read_strict_json(CONFIG_ROOT/"model-files.json")
     attempt = schedule_attempts(1, ["p1"], ["A"])[0].to_dict()
     implementation_files = [file_identity(path, PROJECT_ROOT) for path in sorted((PROJECT_ROOT/"chatgnt").glob("*.py")) if path.is_file()]
     digest = tree_digest(implementation_files)
+    warmup_profile = replace(project.primary_profile,profile_id="warmup-sampled-v1",max_new_tokens=1).__dict__.copy()
+    warmup_profile["eos_token_ids"] = list(warmup_profile["eos_token_ids"])
     return {
         "schema_version": 1, "specification_version": "1.2", "run_id": "run-1",
         "created_at_utc": "2026-07-14T12:00:00.000000+00:00", "diagnostic": None,
@@ -34,16 +40,17 @@ def manifest(frozen: bytes):
         "schedule": {"run_seed": 1, "order_seed": execution_order_seed(1), "seed_algorithm": "sha256-first-8-big-endian-v1",
             "order_algorithm": "sha256-sort-v1", "primary_samples_per_system_prompt": 1,
             "scheduled_attempt_count": 1, "attempts": [attempt]},
-        "model": {"model_id": "m", "revision": "r", "snapshot_path": "snapshot", "architecture": "a",
-            "model_type": "qwen2", "parameter_count": 1, "dtype": "bfloat16", "max_context_tokens": 32768,
-            "weights_sha256": "5"*64, "behaviour_files": [], "effective_generation_config": {}},
-        "tokenizer": {"class": "Qwen2Tokenizer", "length": 151665, "chat_template_sha256": "6"*64,
-            "eos_token_id": 99, "generation_eos_token_ids": [99,98], "pad_token_id": 98,
-            "all_special_ids": [98,99]},
+        "model": {"model_id": base["id"], "revision": base["revision"],
+            "snapshot_path": f"artifacts/models/{base['id'].replace('/', '--')}/{base['revision']}",
+            "architecture": base["architecture"], "model_type": "qwen2", "parameter_count": base["parameter_count"],
+            "dtype": base["weight_dtype"], "max_context_tokens": base["max_context_tokens"],
+            "weights_sha256": base["weights_sha256"], "behaviour_files": model_files["files"], "effective_generation_config": {}},
+        "tokenizer": {"class": project.model.values["tokenizer"]["class"], "length": 151665,
+            "chat_template_sha256": project.model.values["tokenizer"]["chat_template_sha256"],
+            "eos_token_id": 151645, "generation_eos_token_ids": [151645,151643], "pad_token_id": 151643,
+            "all_special_ids": [151643,151645]},
         "adapter": None,
-        "configuration": {key: {"source_path": f"config/{key}.toml", "source_sha256": "7"*64,
-            "values": ({"primary": {"max_new_tokens": 2}} if key == "generation" else {})}
-            for key in ("model","generation","inference")},
+        "configuration": {key: getattr(project,key).manifest_value() for key in ("model","generation","inference")},
         "environment": {"python":"3.12","platform":"x","torch":"x","transformers":"x","peft":"x",
             "tokenizers":"x","safetensors":"x","accelerate":"x","torch_cuda_build":"13.0",
             "cuda_driver":None,"cudnn":1,"device":"cuda:0","device_name":"fake",
@@ -52,7 +59,7 @@ def manifest(frozen: bytes):
         "timing": {"metric":"synchronized-model-generate","clock":"time.perf_counter_ns","cuda_synchronize":True,
             "include_prompt_prefill":True,"include_output_generation":True,"include_tokenization":False,
             "include_model_loading":False,"batch_size":1,"reusable_conversation_cache":False},
-        "warmup": {"per_loaded_runtime":1,"profile":{},"timed":False,"base_runtime_performed":True,
+        "warmup": {"per_loaded_runtime":1,"profile":warmup_profile,"timed":False,"base_runtime_performed":True,
             "adapted_runtime_performed":False},
     }
 
@@ -64,9 +71,9 @@ def success_record():
         "prompt_asset_id":"minimal","prompt_asset_sha256":"4"*64,
         "messages":[{"role":"system","content":""},{"role":"user","content":"hello"}],
         "rendered_prompt":"rendered","input_token_ids":[1,2],"input_token_count":2,
-        "generated_token_ids":[7,99],"generated_token_count":2,"visible_output_token_count":1,
+        "generated_token_ids":[7,151645],"generated_token_count":2,"visible_output_token_count":1,
         "raw_output":"value","raw_output_sha256":sha256_text("value"),"termination_reason":"eos_token",
-        "terminal_token_id":99,"reached_max_new_tokens":True,"generation_duration_ns":5,"error":None}
+        "terminal_token_id":151645,"reached_max_new_tokens":False,"generation_duration_ns":5,"error":None}
 
 
 def create_run(root: Path, records):
@@ -114,7 +121,8 @@ class PublicationTests(unittest.TestCase):
 
 class RunnerTests(unittest.TestCase):
     class Qwen2Tokenizer:
-        eos_token_id=151645; all_special_ids=[151643,151645]; chat_template="template"
+        _tokenizer_config, _ = read_strict_json(PROJECT_ROOT/"artifacts/models/Qwen--Qwen2.5-1.5B-Instruct/989aa7980e4cf806f80c7fef2b1adb7bc71aa306/tokenizer_config.json")
+        eos_token_id=151645; all_special_ids=[151643,151645]; chat_template=_tokenizer_config["chat_template"]
         def __len__(self): return 151665
 
     class Engine:
@@ -152,8 +160,9 @@ class RunnerTests(unittest.TestCase):
     def test_complete_and_fatal_partial_runs_use_three_artefacts(self):
         with tempfile.TemporaryDirectory() as td:
             root=Path(td); self.inputs(root); runs=root/"runs"; engine=self.Engine()
+            model_files,_=read_strict_json(CONFIG_ROOT/"model-files.json")
             with patch("chatgnt.harness._verify_device",return_value=torch.device("cuda:0")), \
-                 patch("chatgnt.harness.verify_model_files",return_value=[]), \
+                 patch("chatgnt.harness.verify_model_files",return_value=model_files["files"]), \
                  patch("chatgnt.harness.load_engine",return_value=engine), \
                  patch("chatgnt.harness._environment",return_value=self.environment()):
                 code, run_dir, report=execute_run(root/"prompts.jsonl",root/"systems.json",1,"cuda:0",
@@ -165,7 +174,7 @@ class RunnerTests(unittest.TestCase):
 
             self.inputs(root,count=2); fatal=self.Engine(fail=True)
             with patch("chatgnt.harness._verify_device",return_value=torch.device("cuda:0")), \
-                 patch("chatgnt.harness.verify_model_files",return_value=[]), \
+                 patch("chatgnt.harness.verify_model_files",return_value=model_files["files"]), \
                  patch("chatgnt.harness.load_engine",return_value=fatal), \
                  patch("chatgnt.harness._environment",return_value=self.environment()):
                 with self.assertRaises(RuntimeAbort):
@@ -176,6 +185,12 @@ class RunnerTests(unittest.TestCase):
 
 
 class InspectorTests(unittest.TestCase):
+    def write_manifest(self, run: Path, value):
+        (run/"manifest.json").write_bytes(canonical_line(value))
+
+    def write_record(self, run: Path, value):
+        (run/"responses.jsonl").write_bytes(canonical_line(value))
+
     def test_complete_run(self):
         with tempfile.TemporaryDirectory() as td:
             run=Path(td)/"run"; create_run(run,[canonical_line(success_record())])
@@ -201,6 +216,78 @@ class InspectorTests(unittest.TestCase):
             value=manifest(prompt_bytes()); value["implementation"]["behaviour_digest"]="0"*64
             (run/"manifest.json").write_bytes(canonical_line(value))
             self.assertTrue(inspect_run(run)["integrity_errors"])
+
+    def test_collection_error_schema_types_and_order_are_enforced(self):
+        mutations = [
+            [{"field":"cuda_driver","type":"Error","extra":"x"}],
+            [{"field":"cuda_driver","type":"Error","message":1}],
+            [{"field":"z","type":"Error","message":"z"},{"field":"a","type":"Error","message":"a"}],
+        ]
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            for index, errors in enumerate(mutations):
+                with self.subTest(index=index):
+                    run=base/f"run-{index}"; create_run(run,[canonical_line(success_record())])
+                    value=manifest(prompt_bytes()); value["environment"]["collection_errors"]=errors
+                    self.write_manifest(run,value)
+                    report=inspect_run(run)
+                    self.assertFalse(report["complete"]); self.assertTrue(report["integrity_errors"])
+
+    def test_pinned_model_tokenizer_and_configuration_identity_are_enforced(self):
+        mutations = [
+            lambda value: value["model"].__setitem__("model_id","wrong/model"),
+            lambda value: value["tokenizer"].__setitem__("eos_token_id",1),
+            lambda value: value["configuration"]["generation"]["values"]["primary"].__setitem__("temperature",0.1),
+            lambda value: value["configuration"]["model"].__setitem__("source_sha256","0"*64),
+        ]
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            for index, mutate in enumerate(mutations):
+                with self.subTest(index=index):
+                    run=base/f"run-{index}"; create_run(run,[canonical_line(success_record())])
+                    value=manifest(prompt_bytes()); mutate(value); self.write_manifest(run,value)
+                    self.assertFalse(inspect_run(run)["complete"])
+
+    def test_diagnostic_bypass_requires_fixed_adapter_identity(self):
+        with tempfile.TemporaryDirectory() as td:
+            run=Path(td)/"diagnostic"; create_run(run,[])
+            value=manifest(prompt_bytes()); minimal=copy.deepcopy(value["system_set"]["systems"][0])
+            minimal["system_id"]="C"; minimal["adapter_enabled"]=True
+            value["system_set"]["systems"].append(minimal)
+            schedule=schedule_attempts(1,["p1"],["A","C"])
+            value["schedule"]["scheduled_attempt_count"]=len(schedule); value["schedule"]["attempts"]=[item.to_dict() for item in schedule]
+            files=[{"path":"adapter_config.json","size_bytes":1,"sha256":"a"*64}]
+            value["adapter"]={"path":{"kind":"project-relative","value":"artifacts/diagnostics/lora-lifecycle-adapter"},
+                "adapter_id":"wrong-diagnostic-id","adapter_version":"unversioned-diagnostic",
+                "adapter_digest":tree_digest(files),"behaviour_files":files,"provenance":None,
+                "provenance_sha256":None,"peft_config":{},"active_adapters":["chatgnt"],
+                "trainable_parameter_count":0,"parameter_dtypes":["torch.float32"],"merged":False}
+            value["diagnostic"]=_diagnostic_declaration(); value["warmup"]["adapted_runtime_performed"]=True
+            self.write_manifest(run,value)
+            report=inspect_run(run)
+            self.assertFalse(report["complete"]); self.assertTrue(report["integrity_errors"])
+
+    def test_attempt_status_dependent_shapes_and_types_are_enforced(self):
+        mutations = []
+        def extra_message(record): record["messages"][0]["extra"]="x"
+        mutations.append(extra_message)
+        mutations.append(lambda record: record.__setitem__("rendered_prompt",7))
+        mutations.append(lambda record: record.__setitem__("error",{"type":"Error","message":"bad"}))
+        mutations.append(lambda record: record.__setitem__("schema_version",True))
+        def invalid_failed_input(record):
+            record.update({"attempt_status":"generation_error","generated_token_ids":[],"generated_token_count":0,
+                "visible_output_token_count":0,"raw_output":None,"raw_output_sha256":None,
+                "termination_reason":"error","terminal_token_id":None,"reached_max_new_tokens":False,
+                "generation_duration_ns":None,"error":{"type":"ValueError","message":"bad"},"rendered_prompt":None})
+        mutations.append(invalid_failed_input)
+        with tempfile.TemporaryDirectory() as td:
+            base=Path(td)
+            for index, mutate in enumerate(mutations):
+                with self.subTest(index=index):
+                    run=base/f"run-{index}"; create_run(run,[canonical_line(success_record())])
+                    record=success_record(); mutate(record); self.write_record(run,record)
+                    report=inspect_run(run)
+                    self.assertFalse(report["complete"]); self.assertTrue(report["integrity_errors"])
 
     def test_missing_directory_exact_report_shape(self):
         with tempfile.TemporaryDirectory() as td:

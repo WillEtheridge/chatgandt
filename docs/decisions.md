@@ -482,7 +482,7 @@ The full result, including the rejected R570-driver L4 and measured memory, is r
 ## D-018 — Use immutable run artefacts and content-addressed system definitions
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; harness implementation pending
+- **Status:** Adopted; implemented, real-CUDA acceptance pending
 
 ### Decision
 
@@ -526,7 +526,7 @@ Separating the stable factorial meaning of A–D from the versioned artefacts us
 ## D-019 — Use explicit sampled generation with paired per-prompt seeds
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; harness implementation pending
+- **Status:** Adopted; implemented, real-CUDA acceptance pending
 
 ### Decision
 
@@ -574,7 +574,7 @@ A 512-token ceiling gives the model room to close a complete JSON object while b
 ## D-020 — Preserve generated tokens and define user-visible raw output precisely
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; harness implementation pending
+- **Status:** Adopted; implemented, real-CUDA acceptance pending
 
 ### Decision
 
@@ -632,7 +632,7 @@ Explicit termination and no-truncation policies prevent the harness from making 
 ## D-021 — Measure one synchronized generation latency
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; harness implementation pending
+- **Status:** Adopted; implemented, real-CUDA acceptance pending
 
 ### Decision
 
@@ -672,7 +672,7 @@ CUDA synchronization is required because GPU work is asynchronous; without it, a
 ## D-022 — Use simple, explicit generation failure semantics
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; harness implementation pending
+- **Status:** Adopted; implemented, real-CUDA acceptance pending
 
 ### Decision
 
@@ -709,7 +709,7 @@ Sharing the inference engine keeps evaluation and deployment behaviour aligned w
 ## D-023 — Freeze the reviewed inference-harness specification
 
 - **Date:** 2026-07-14
-- **Status:** Adopted; implementation pending
+- **Status:** Adopted; implemented, real-CUDA acceptance pending
 
 ### Decision
 
