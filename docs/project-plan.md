@@ -149,4 +149,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Commit and push the complete pre-generation evidence bundle, then prepare a short-lived GPU session to execute the frozen 40-attempt System A/B development run.
+Follow the frozen [development A/B Runpod runbook](development-ab-runbook.md) to execute and retrieve the 40-attempt run, record its cost, and terminate all paid resources before inspecting model quality.

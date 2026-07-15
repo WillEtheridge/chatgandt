@@ -340,3 +340,11 @@ Sampling settings define the probability landscape; a seed makes the random draw
 The same seed does not force two systems to emit the same token. If their prompts produce different probability distributions, applying the same random number can select different outcomes. Pairing seeds is still useful because it prevents execution order or an unrelated random history from deciding which pseudorandom stream each system receives.
 
 ChatG&T uses one master run seed to derive independent per-prompt generation seeds and a separately namespaced execution-order seed. System identity is excluded from generation-seed derivation, so Systems A and B receive paired streams for the same prompt. The seed controls inference sampling and schedule order; it does not alter model weights, training data, or prompt content, and it cannot by itself guarantee bit-identical results across different software or hardware.
+
+## 2026-07-15 — What is a runbook?
+
+A runbook is an operational checklist for performing one concrete technical task safely and repeatably. A project plan explains where the work is going, and a specification defines how a system must behave; a runbook gives the operator the exact commands, order, expected observations, stop conditions, recovery boundaries, and evidence-preservation steps for a real execution.
+
+This is especially useful for temporary paid infrastructure. Preparing the commands before a Runpod session reduces time spent improvising on a billed machine, while explicit failure rules discourage ad hoc dependency changes, silent retries, or evidence loss under pressure. Copying results home and verifying them before deleting the Pod is part of the operation, not administrative cleanup afterward.
+
+A runbook is not necessarily automation. Its first job is to make the human procedure inspectable and reproducible. Once the procedure has been exercised and stabilised, repetitive pieces may be automated without losing the documented operational boundary.
