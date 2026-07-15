@@ -67,7 +67,7 @@ The intended prompt population, intent families, reporting slices, and exclusion
 
 The target population is limited to English-language, single-turn, low-stakes prompts answerable concisely using stable general knowledge without external tools. Results will be reported separately for target-use, cross-domain, and robustness prompts.
 
-The eventual test-set size, sampling quotas, withheld topics, and operational definition of “unseen” remain deferred to the evaluation-design stage.
+The test set will contain 60 prompts using the frozen cross-cutting blueprint in the evaluation-population record. Withheld topics and the operational definition of “unseen” remain to be completed during evaluation-protocol design. Exact held-out prompts will be authored after training and validation data freeze but before any fine-tuning begins.
 
 ## Evaluation metrics
 

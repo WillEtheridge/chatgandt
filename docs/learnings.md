@@ -423,6 +423,28 @@ A readiness review asks whether a stage has produced enough trustworthy evidence
 
 Unresolved items should be classified by consequence. A **blocker** prevents the next stage from producing valid work. A **hard gate for a later action** permits current progress but must be resolved before a named future operation. A **limitation** does not necessarily require correction, but constrains what can be claimed.
 
-For ChatG&T, the non-portable adapter unit test does not block held-out evaluation design, so Stage 3 can begin. It does block the next formal model run, making it a concrete gate before Stage 4 GPU execution. Mixed prompt-transfer results are limitations and design evidence rather than unfinished prompt work.
+For ChatG&T, the non-portable adapter unit test does not block held-out evaluation design, so Stage 3 can begin. It does block the next formal model run, making it a concrete gate before Stage 6 GPU execution. Mixed prompt-transfer results are limitations and design evidence rather than unfinished prompt work.
 
 This classification prevents both extremes: declaring readiness while hiding consequential defects, or keeping a stage open indefinitely because unrelated later decisions remain. A useful exit decision states what is ready, what remains, when each remaining item becomes mandatory, and which claims are still unavailable.
+
+## 2026-07-15 — What does evaluation sample size change?
+
+A measured rate from a held-out set is an estimate, not the system's exact underlying performance. If a system wins 60% of 40 prompts, another reasonable sample of 40 prompts could produce a noticeably different result. More prompts reduce the influence of any one unusual case, but uncertainty shrinks slowly: approximately four times as many independent observations are needed to halve a margin of error.
+
+Near a 50% result, rough 95% margins of error are about 15 percentage points for 40 observations, 13 for 60, and 11 for 80. These are planning approximations rather than final confidence intervals. The final analysis should calculate intervals from the observed outcomes and respect ties and the paired comparison design.
+
+Sample size also limits subgroup claims. Sixty prompts can provide 12 examples in each of five equally sized intent families, which is useful for locating failure patterns but too small for precise family-level performance estimates. ChatG&T will therefore use its 60-prompt evaluation for an honest portfolio-scale comparison: overall results can describe large differences and trade-offs, while slices remain diagnostic and small apparent advantages will not be overstated.
+
+## 2026-07-15 — How can one small evaluation cover several kinds of variation?
+
+An evaluation prompt can carry several cross-cutting labels at once. Intent family, reporting slice, input form, task complexity, and constraint status describe different properties of the same example; they are not separate datasets whose quotas should be added together. This makes purposeful coverage possible without inflating a portfolio-scale sample.
+
+Coverage labels should also be observable enough to apply before outputs exist. “Hard” is subjective and may be influenced by which system later struggles. “Composed,” by contrast, can be defined from visible features such as multiple outcomes, supplied material, explicit constraints, competing considerations, or connected steps. Freezing those definitions before prompt authoring makes the sample easier to audit and reduces post-hoc relabelling.
+
+## 2026-07-15 — Should exact held-out prompts be written before the training data?
+
+Not necessarily. Freezing exact test prompts first can expose the exam questions to the people creating supervised examples, allowing training data to be shaped around them. Writing the test last can create the opposite risk: its author may tailor the evaluation to flatter or punish the completed dataset.
+
+The useful separation is to freeze the **evaluation rules** before dataset creation, freeze the **training and validation data** before exact test authoring, and freeze the **held-out prompts** before any model training. The fixed blueprint constrains later test selection, while the absent exact prompts prevent dataset authors from training toward known cases. Predeclared collision rules and a retained replacement log make legitimate test-candidate rejection distinguishable from silent cherry-picking.
+
+Cross-domain policy must be established before supervised data are written. Otherwise a test author could inspect the finished dataset and opportunistically call any convenient omission “withheld.” This sequence cannot eliminate every judgment in a small hand-authored experiment, but it makes the direction and timing of those judgments visible.

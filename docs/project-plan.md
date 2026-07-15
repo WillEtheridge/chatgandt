@@ -76,32 +76,32 @@ The selected base model runs reproducibly in the available environment; raw gene
 
 **Exit decision:** Passed on 2026-07-15. See [Stage 2 readiness review](stage-2-readiness-review.md).
 
-## Stage 3 — Design and freeze the evaluation
+## Stage 3 — Design and freeze the evaluation protocol
 
 | Step | Status | Expected outcome |
 | --- | --- | --- |
 | 1. Confirm the inherited experimental boundary | Completed | Stage 2 closes with the model, v3 prompt, generation profile, seed policy, harness, validator, and development evidence frozen; no held-out output has been generated |
-| 2. Define the held-out sample architecture | Not started | A justified total size and quotas across intent families, reporting slices, input forms, difficulty, constraints, and robustness roles |
+| 2. Define the held-out sample architecture | Completed | The 60-prompt cross-cutting blueprint fixes intent families, reporting slices, input forms, observable task complexity, ordinary constraints, and three robustness roles without authoring prompt text |
 | 3. Operationalise “unseen” and contamination controls | Not started | Exact and semantic overlap rules for worked examples, development prompts, training data, validation data, and held-out prompts, with a documented review procedure |
 | 4. Finalise the qualitative scoring rubric | Not started | Anchored 1–3 criteria for underlying-answer quality, metaphorical coherence, and recipe-style execution, including `unable_to_assess` and the joint-pass rule |
 | 5. Define evaluator calibration and judge roles | Not started | Agreed human and LLM-judge responsibilities, calibration examples, judgment counts, disagreement handling, and agreement reporting |
 | 6. Define the blinded pairwise procedure | Not started | Exact B-versus-C eligibility, response-order randomisation, tie handling, identity reveal, conditional preference, and end-to-end outcome rules |
 | 7. Finalise automatic, efficiency, and uncertainty measurements | Not started | Frozen schema checks, token and response-length accounting, synchronized latency procedure, aggregation rules, confidence intervals, and reporting slices |
 | 8. Define memorisation and response-similarity checks | Not started | Exact and semantic procedures for detecting suspicious overlap with worked examples and training responses without overstating what can be proven |
-| 9. Author the held-out prompts to the frozen blueprint | Not started | A complete prompt set written without model generation, balanced against the agreed quotas, and separated from all development and training assets |
-| 10. Adversarially review the evaluation package | Not started | Independent challenges to prompt coverage, ambiguity, leakage, rubric clarity, pairwise fairness, measurement validity, and executable feasibility before freeze |
-| 11. Freeze and version all evaluation assets | Not started | Canonically stored prompts, digests, specifications, rubrics, procedures, and automated identity checks that cannot be silently edited after training begins |
-| 12. Repair the clean-clone adapter test fixture | Not started | The adapter-loading unit test creates its own disposable fixture and the complete suite passes without relying on ignored local artefacts |
-| 13. Conduct the Stage 3 readiness review | Not started | Confirmation that evaluation design and held-out prompts are frozen, executable, uncontaminated, and ready before pilot fine-tuning begins |
+| 9. Define held-out authoring and review | Not started | A procedure for authoring to the frozen blueprint after training and validation data freeze, including predeclared replacement reasons, cross-domain topic controls, and reviewer separation where practical |
+| 10. Adversarially review the evaluation protocol | Not started | Independent challenges to coverage, ambiguity, leakage controls, rubric clarity, pairwise fairness, measurement validity, and executable feasibility before freeze |
+| 11. Freeze and version the evaluation protocol | Not started | Canonically stored specifications, rubrics, procedures, configurations, and digests that cannot be silently revised around later data or results |
+| 12. Conduct the Stage 3 readiness review | Not started | Confirmation that the protocol is complete, executable, and ready to govern dataset creation and later held-out authoring without yet containing exact test prompts |
 
 ### Stage 3 boundaries
 
 Stage 3 will not:
 
+- author the exact held-out prompts;
+- create training or validation examples;
 - generate model responses for held-out prompts;
-- use held-out prompts to revise the five-shot baseline, response contract, or evaluation criteria;
-- create fine-tuning examples from held-out scenarios;
-- begin pilot training before the evaluation package is frozen;
+- revise the frozen five-shot baseline or response contract;
+- begin pilot or full fine-tuning;
 - present development results as estimates of held-out performance; or
 - treat one evaluator or one model judge as representative of public preference.
 
@@ -113,40 +113,59 @@ Stage 3 will not:
 - Blind pairwise evaluation specification
 - Automatic, efficiency, and uncertainty analysis plan
 - Memorisation and similarity-check procedure
-- Reviewed and frozen held-out prompt set
-- Versioned evaluation configuration and identity checks
-- Clean-clone test-fixture correction
+- Held-out authoring, collision-review, replacement-log, and freeze procedure
+- Versioned evaluation protocol, configuration, and identity checks
 - Stage 3 readiness review
 
 ### Stage 3 exit condition
 
-The complete evaluation procedure is documented and executable; the held-out prompts and every result-affecting scoring rule are frozen before training begins; contamination checks pass; and the project can run the later held-out comparison without making new interpretive decisions after seeing model outputs.
+The complete evaluation protocol is documented, adversarially reviewed, and frozen before training or validation examples are authored. It specifies how the later held-out prompts will be created and checked after those datasets freeze, and removes the need to make new result-affecting decisions after seeing model outputs.
 
-## Stage 4 — Run a pilot fine-tune
+## Stage 4 — Build and freeze dataset v1
 
-- Create approximately 30–50 original training examples.
-- Review coverage, quality, variety, and consistency.
-- Run the first LoRA fine-tuning experiment.
-- Inspect training and validation loss alongside generated responses.
-- Diagnose failures and record what was learned.
+- Define the dataset blueprint and coverage targets.
+- Create approximately 150–300 original examples without access to exact held-out prompts.
+- Assign scenario-separated training and validation splits.
+- Review schema validity, response quality, variety, duplication, and coverage.
+- Enforce the frozen withheld-topic policy and check against worked examples and development scenarios.
+- Identify a representative 30–50-example pilot subset from the frozen training split.
+- Freeze and version the training data, validation data, split identities, and pilot subset before held-out prompt authoring.
+
+Stage 4 will not fine-tune the model or author exact held-out prompts.
 
 ### Stage 4 exit condition
 
-The complete training workflow has been exercised, and the pilot results provide evidence for how the full dataset and training setup should change.
+Training data, validation data, and the pilot subset are reviewed, contamination-checked, versioned, and frozen without the dataset authors knowing the exact held-out prompts.
 
-## Stage 5 — Build and train dataset v1
+## Stage 5 — Author and freeze the held-out set
 
-- Expand the dataset to approximately 150–300 examples.
-- Maintain distinct training and validation data.
-- Document dataset composition and creation decisions.
-- Run a small number of justified training experiments.
-- Select a candidate adapter using validation evidence.
+- Author exactly 60 prompts to the frozen sample blueprint without generating system responses.
+- Classify and verify every cross-cutting quota.
+- Compare each candidate against worked examples, development prompts, training data, validation data, and other held-out candidates using the frozen exact and semantic overlap procedure.
+- Reject and replace collisions only for predeclared reasons, preserving an auditable replacement log.
+- Adversarially review ambiguity, coverage, contamination, and scoring feasibility.
+- Freeze and version the prompts, metadata, review evidence, identities, and digests.
+
+Stage 5 will not modify the frozen systems, evaluation rules, training data, or validation data; fine-tune the model; or generate held-out responses.
 
 ### Stage 5 exit condition
 
-A documented candidate adapter is ready for the frozen held-out evaluation.
+The exact held-out set is balanced, reviewed, demonstrably separate from project development and supervised data under the frozen rules, and sealed before any fine-tuning begins.
 
-## Stage 6 — Conduct the held-out evaluation
+## Stage 6 — Train and select a candidate adapter
+
+- Repair the clean-clone adapter test fixture and pass the complete preflight suite before the next formal model run.
+- Exercise the LoRA workflow on the frozen 30–50-example pilot subset.
+- Use training and validation evidence plus the spent development set to diagnose optimisation behaviour; do not inspect held-out responses.
+- Fix the training setup and run a small number of justified experiments on the frozen dataset.
+- Select a candidate adapter using predeclared validation and development evidence.
+- Record configurations, checkpoints, losses, costs, failures, and decisions.
+
+### Stage 6 exit condition
+
+A documented candidate adapter has been selected without using held-out prompts or outputs to alter the model, dataset, prompt, or training procedure.
+
+## Stage 7 — Conduct the held-out evaluation
 
 - Run every agreed system using controlled inference settings.
 - Calculate structural and operational metrics.
@@ -154,11 +173,11 @@ A documented candidate adapter is ready for the frozen held-out evaluation.
 - Check for memorisation and suspicious similarity.
 - Analyse failures, trade-offs, and uncertainty.
 
-### Stage 6 exit condition
+### Stage 7 exit condition
 
 The research question can be answered using recorded evidence, including negative or inconclusive results.
 
-## Stage 7 — Build the public experience
+## Stage 8 — Build the public experience
 
 - Build the Spirit Guide interaction.
 - Build the randomised, blind Tasting Room comparison.
@@ -167,21 +186,21 @@ The research question can be answered using recorded evidence, including negativ
 - Capture votes without revealing model identity before selection.
 - Deploy the model adapter and application.
 
-### Stage 7 exit condition
+### Stage 8 exit condition
 
 Visitors can use ChatG&T, take part in a fair blind comparison, and understand the experiment and its results.
 
-## Stage 8 — Publish the case study
+## Stage 9 — Publish the case study
 
 - Explain the motivation, method, and major decisions.
 - Present successes, failures, and inconclusive findings honestly.
 - Document limitations and possible follow-up experiments.
 - Prepare the project for portfolio, interview, and LinkedIn use.
 
-### Stage 8 exit condition
+### Stage 9 exit condition
 
 The project tells a clear, evidence-backed story about what was built, what was learned, and what fine-tuning changed.
 
 ## Next step
 
-Begin Stage 3 Step 2 by defining the held-out sample architecture before writing any prompt text: total size, intent-family quotas, reporting slices, input-form coverage, difficulty, constraints, and robustness allocation. Fix the non-portable adapter unit-test fixture before the next formal model run and no later than the Stage 3 readiness review.
+Begin Stage 3 Step 3 by operationalising what counts as unseen and how contamination will be detected across worked examples, development prompts, training data, validation data, and the future held-out set. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.

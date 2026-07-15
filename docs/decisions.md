@@ -1035,6 +1035,87 @@ The non-portable adapter-loading unit fixture is a real defect but does not prev
 ### Implications
 
 - No further System B prompt revision is authorised from the spent development set.
-- Stage 3 must freeze the final evaluation before pilot training begins.
+- Stage 3 must freeze the evaluation protocol before dataset creation begins.
 - Development results remain diagnostic and cannot become headline claims.
-- The adapter test fixture must be corrected and clean-clone verified before Stage 4 GPU execution.
+- The adapter test fixture must be corrected and clean-clone verified before Stage 6 GPU execution.
+
+## D-036 — Use 60 prompts for the held-out evaluation
+
+- **Date:** 2026-07-15
+- **Status:** Adopted
+
+### Decision
+
+The frozen held-out evaluation will contain 60 prompts, divided equally across the five intent families at 12 prompts per family. Every family will contain six target-use prompts, three cross-domain prompts, and three robustness prompts, producing overall slice totals of 30, 15, and 15 respectively.
+
+Quotas for input forms, task complexity, ordinary constraints, and robustness roles are decided separately in D-037 before any prompt text is authored.
+
+### Rationale
+
+Forty prompts would be a credible minimum for detecting large effects and recurring failures, but would leave substantial sampling uncertainty and only eight prompts per intent family under an equal allocation. Sixty is a better balance between evidential value and portfolio-scale workload: it permits 12 prompts per family, yields 60 primary B-versus-C comparisons, and remains manageable when four systems produce 240 total responses.
+
+The choice is not presented as a formal power calculation. Near a 50% result, 60 independent observations imply a rough 95% margin of error of about 13 percentage points. The experiment can therefore support descriptive conclusions about large differences, failure patterns, and quality-efficiency trade-offs, but not precise claims about small preference improvements.
+
+Equal representation prevents the overall result from being driven by an intent family that happens to favour one system. The 50/25/25 reporting-slice allocation gives ordinary intended use the greatest weight while retaining meaningful cross-domain and robustness tests in every family.
+
+### Implications
+
+- Overall outcome rates will be accompanied by uncertainty intervals.
+- Fine-tuned wins, prompted-baseline wins, and ties will be reported separately.
+- A decisive-comparisons-only preference rate may be supplementary, but will not replace the three-way result.
+- Intent-family and reporting-slice findings will be treated as diagnostic rather than statistically conclusive.
+- D-037 completes the remaining cross-cutting quotas required to close Step 2.
+
+## D-037 — Freeze the remaining held-out sample architecture
+
+- **Date:** 2026-07-15
+- **Status:** Adopted
+
+### Decision
+
+The 60-prompt held-out sample will contain 15 questions, 30 direct requests or commands, and 15 statements or fragments. Input form will be classified by communicative function rather than punctuation and may vary naturally by intent family.
+
+Forty prompts will contain one standard task and 20 will be composed from additional context, multiple outcomes, meaningful constraints, supplied material, competing considerations, or connected steps. Ten composed prompts will carry explicit ordinary user constraints, with two in each intent family.
+
+The 15 robustness prompts will comprise five format-pressure, five behaviour-pressure, and five serialization-pressure prompts. Each intent family will contain one prompt in each robustness role, and every robustness prompt must retain a legitimate underlying task.
+
+### Rationale
+
+Input-form coverage prevents the evaluation from quietly becoming a set of uniformly phrased questions. Observable task composition is more reproducible than assigning subjective difficulty labels. Explicit ordinary constraints test whether an answer actually follows the user's request, while the separate robustness roles isolate common pressures on JSON validity and behavioural persistence.
+
+The architecture deliberately permits labels to overlap. These are cross-cutting descriptions of the same 60 prompts, not independent collections to be added together.
+
+### Implications
+
+- Prompt authors must satisfy the complete cross-cutting quota table before the held-out set can freeze.
+- Question-shaped requests are classified as requests when task performance is their primary function.
+- The intent families need not have identical input-form or complexity distributions.
+- Robustness findings support focused contract-persistence claims, not comprehensive security claims.
+- Stage 3 Step 2 is complete; exact held-out prompt text will not be authored until the evaluation protocol and supervised data are separately frozen.
+
+## D-038 — Freeze training data before authoring the held-out prompts
+
+- **Date:** 2026-07-15
+- **Status:** Adopted
+
+### Decision
+
+ChatG&T will freeze the evaluation rules and sample blueprint first, then create and freeze the training and validation data without exact held-out prompts in view. The 60 held-out prompts will be authored afterwards to the frozen blueprint, collision-checked against all project data, reviewed, and frozen before any pilot or full fine-tuning begins.
+
+If a candidate held-out prompt collides with the already-frozen supervised data, it will be rejected and replaced only under the predeclared overlap rules, with the reason retained in an auditable log. The training data will not be rewritten around a known test prompt.
+
+The cross-domain topic policy must be frozen during evaluation design and enforced during dataset creation so that withheld topics cannot be selected opportunistically after inspecting the training set.
+
+### Rationale
+
+Freezing exact test prompts before authoring supervised data would let dataset authors know the exam questions and could shape training examples around them. Authoring the test after the dataset avoids that direction of leakage. Freezing the evaluation blueprint first prevents the later test author from changing its composition or rules to flatter the finished dataset.
+
+The final gate remains unchanged in substance: no model training and no held-out generation may occur until the exact test set is reviewed and sealed. This separates evaluation-design knowledge from exact test content while keeping the generalisation claim auditable.
+
+### Implications
+
+- Stage 3 freezes the evaluation protocol, not the exact prompts.
+- Stage 4 creates and freezes training and validation data without model training.
+- Stage 5 authors and freezes the exact held-out set.
+- Stage 6 is the first stage permitted to fine-tune the model.
+- Any later change to frozen supervised data or evaluation assets requires a versioned protocol amendment and a repeated contamination audit.

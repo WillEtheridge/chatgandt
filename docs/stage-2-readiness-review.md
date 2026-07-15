@@ -66,7 +66,7 @@ The adapter-loading unit test must create its own disposable adapter fixture. It
 ### Required during Stage 3
 
 - define held-out sample size, quotas, and reporting slices;
-- write, review, de-duplicate, and freeze held-out prompts;
+- define how held-out prompts will later be written, reviewed, de-duplicated, and frozen after supervised data freeze;
 - finalise anchored human and LLM-judge calibration;
 - define blind pairwise eligibility, order randomisation, and tie handling;
 - finalise memorisation and semantic-overlap checks;
@@ -75,7 +75,7 @@ The adapter-loading unit test must create its own disposable adapter fixture. It
 
 ### Deferred to the pilot fine-tune
 
-Exact LoRA training hyperparameters and checkpoint-selection rules belong to Stage 4's pilot design. The dependency environment and feasible training mechanism are already established; pretending to know the final training configuration before seeing pilot behaviour would not improve Stage 2 readiness.
+Exact LoRA training hyperparameters and checkpoint-selection rules belong to Stage 6's pilot design. The dependency environment and feasible training mechanism are already established; pretending to know the final training configuration before seeing pilot behaviour would not improve Stage 2 readiness.
 
 ## Limitations carried forward
 
