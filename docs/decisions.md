@@ -892,3 +892,77 @@ Stopping rather than leaving the Pod running separates cheap persistence from ex
 - Prompt and code changes are prepared, reviewed, and committed locally rather than improvised on the Pod.
 - Same-Pod runs remain distinct experiments with unique IDs, manifests, immutable outputs, and cost records.
 - A stopped Pod and its volume remain subject to active cost review.
+
+## D-030 — Accept the first development A/B run with disclosed metadata limitations
+
+- **Date:** 2026-07-15
+- **Status:** Adopted
+
+### Decision
+
+Run `development-ab-v1-20260715` is accepted as complete development evidence for the System A versus initial System B comparison. Its three immutable files passed local integrity inspection, their hashes matched the Pod copies, all 40 scheduled attempts produced one successful record, and the final Runpod charge was `$0.15`.
+
+The acceptance explicitly retains three limitations: the harness's own lock file caused its Git dirty flag, the pinned Torch API could not collect the CUDA driver version, and several provider-administration details were not retained. The exact evidence and assessment are recorded in [Development System A/B v1 run acceptance](development-ab-v1-run-acceptance.md).
+
+### Rationale
+
+The missing provider details do not change what either system received. The missing driver value reduces exact environment reconstruction but not the paired within-session comparison. The Git flag is not treated as trustworthy cleanliness evidence; instead, the immutable manifest separately binds the commit, behavior tree, project and dependency files, model, configuration, prompts, systems, schedule, and seeds.
+
+Rejecting a complete development run because of non-behavioral administrative gaps would discard valid evidence without improving the experiment. Hiding those gaps would overstate provenance. Conditional acceptance preserves both the useful evidence and an honest account of its limits.
+
+### Implications
+
+- No schema or quality claim follows from operational acceptance.
+- The run may be analysed only after the prompt-version stopping rule is frozen.
+- The Git cleanliness measurement must be corrected before the next formal GPU run.
+- Future sessions should automate provider and `nvidia-smi` capture where practical.
+- These development outputs cannot be used as held-out evidence.
+
+## D-031 — Use local Ollama for prompt iteration and the pinned harness for confirmation
+
+- **Date:** 2026-07-15
+- **Status:** Adopted before response-quality inspection
+
+### Decision
+
+System B prompt development will use the installed local Q4_K_M Qwen2.5-1.5B Ollama artefact as a fast diagnostic workbench. Every candidate version, including v1, runs on the same frozen 20-prompt development population with fixed local settings and stable per-prompt seeds. The selected prompt text is then rerun unchanged through the pinned Hugging Face BF16 harness for formal confirmation.
+
+Any prompt whose generated development outputs are inspected becomes an immutable numbered version. The existing ceiling of four total versions still applies. A revision requires the same prompt-addressable failure in at least two responses, and versions are selected by the predeclared full-pass, schema, qualitative-acceptability, and prompt-cost ordering in [Prompt-development procedure](prompt-development-procedure.md).
+
+### Rationale
+
+Prompt iteration does not require rented GPU hardware. Local generation makes the engineering feedback loop faster and cheaper, while a final pinned run retains exact model identity, formal evidence capture, and matched performance measurement.
+
+Treating local outputs as formal evidence would overstate comparability because Ollama uses quantised weights and different runtime machinery. Treating a new physical machine as necessary for every wording experiment would instead confuse infrastructure freshness with experimental identity.
+
+### Implications
+
+- Local outputs are labelled diagnostics and never substituted for held-out or formal results.
+- All compared prompt versions receive a local run; formal v1 and local candidate metrics are not mixed into one version ranking.
+- Inspected prompt variants and unsuccessful revisions remain visible.
+- System A is not repeatedly regenerated during the local loop.
+- The eventual System B versus System C experiment remains a matched pinned-harness comparison.
+
+## D-032 — Select five-shot prompt v3 and stop prompt development
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; pinned confirmation pending
+
+### Decision
+
+`five-shot-v3`, SHA-256 `cdd68af07f6668c8526c357a7f9df6600d95cbfa03da83bcb5280ee053a89d31`, is selected as the System B prompt candidate.
+
+Across the unchanged 20-prompt local workbench, versions v1 through v4 produced selection vectors of `4 / 9 / 5 / 7 / 6`, `6 / 11 / 6 / 10 / 10`, `7 / 11 / 7 / 10 / 11`, and `6 / 10 / 6 / 9 / 10`. The vector follows the predeclared order: full passes, schema-valid responses, and acceptable underlying-answer, metaphor, and recipe-style counts.
+
+Prompt iteration stops. Version 4 regressed and the four-version ceiling is exhausted. Version 3 will be rerun unchanged as System B through the pinned BF16 harness before it is treated as the formal baseline.
+
+### Rationale
+
+Version 3 wins on the first and primary selection criterion: seven full response passes. Version 4 reduced mean local prompt tokens from 2,582.15 to 2,400.15, but efficiency is a tie-breaker only when quality is otherwise tied. Choosing v4 would change the frozen rule after seeing the outputs.
+
+### Implications
+
+- Development metrics remain diagnostic and cannot support held-out generalisation claims.
+- No fifth prompt version may be derived from these development outputs.
+- A material local-to-formal discrepancy is reported rather than tuned away after the revision budget has closed.
+- Formal confirmation may measure v3 transfer, but final B-versus-C quality and latency claims still require a matched held-out run.

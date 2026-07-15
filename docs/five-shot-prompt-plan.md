@@ -1,7 +1,7 @@
 # Five-Shot Prompt Plan
 
 - **Plan version:** 1.0
-- **Status:** Initial prompt version 1 assembled, frozen, and verified
+- **Status:** Four-version development loop complete; version 3 selected pending pinned confirmation
 - **Date:** 2026-07-14
 
 ## Purpose
@@ -72,8 +72,10 @@ Prompt asset version 1 has SHA-256 `7b8c25f04fba15373813862bba9705d4585ba919e855
 - Iteration stops early if another revision gives no meaningful improvement or merely moves failures between prompts.
 - Every prompt asset, result, input-token count, and revision rationale is preserved.
 
-The exact version-selection rule will be operationalised before development outputs are used to choose the final System B prompt.
+The exact version-selection rule is now operationalised in [Prompt-development procedure](prompt-development-procedure.md). Local Ollama runs provide the fast iteration loop; the selected unchanged prompt returns to the pinned BF16 harness for formal confirmation.
 
-## Next step
+## Outcome
 
-Create the System A/B run configuration around the empty and five-shot prompt assets, then conduct the first controlled development run without changing either the frozen inputs or prompt version 1.
+Four permitted versions were generated and evaluated under the frozen local procedure. Version 3 produced the strongest selection vector and is now the selected System B candidate. Version 4 regressed, so the stopping rule closed prompt iteration. The complete evidence and selection rationale are recorded in [Prompt-development results](prompt-development-results.md).
+
+The remaining step is an unchanged pinned BF16 confirmation using the prepared [System B v3 confirmation runbook](development-b-v3-confirmation-runbook.md).

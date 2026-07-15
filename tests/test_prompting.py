@@ -6,15 +6,32 @@ import unittest
 from chatgnt.prompting import (
     DEVELOPMENT_AB_SYSTEM_SET_V1,
     DEVELOPMENT_AB_SYSTEM_SET_V1_SHA256,
+    DEVELOPMENT_B_SYSTEM_SET_V3,
+    DEVELOPMENT_B_SYSTEM_SET_V3_SHA256,
+    FINAL_CHECK_V2,
+    FINAL_CHECK_V3,
     FINAL_REMINDER,
     FIVE_SHOT_PROMPT_V1,
     FIVE_SHOT_PROMPT_V1_SHA256,
+    FIVE_SHOT_PROMPT_V2,
+    FIVE_SHOT_PROMPT_V2_SHA256,
+    FIVE_SHOT_PROMPT_V3,
+    FIVE_SHOT_PROMPT_V3_SHA256,
+    FIVE_SHOT_PROMPT_V4,
+    FIVE_SHOT_PROMPT_V4_SHA256,
     MINIMAL_PROMPT_V1,
     MINIMAL_PROMPT_V1_SHA256,
     load_instruction_text,
     render_five_shot_content,
+    render_five_shot_content_v2,
+    render_five_shot_content_v3,
+    render_five_shot_content_v4,
     validate_five_shot_prompt,
+    validate_five_shot_prompt_v2,
+    validate_five_shot_prompt_v3,
+    validate_five_shot_prompt_v4,
     validate_development_ab_system_set,
+    validate_development_b_v3_system_set,
     validate_minimal_prompt,
 )
 from chatgnt.records import ContractError
@@ -50,6 +67,34 @@ class FiveShotPromptTests(unittest.TestCase):
             instruction_path.write_bytes(b"instruction\n\n")
             with self.assertRaisesRegex(ContractError, "exactly one terminal newline"):
                 load_instruction_text(instruction_path)
+
+    def test_v2_is_deterministic_and_changes_only_the_closing_control(self):
+        result = validate_five_shot_prompt_v2()
+        v1 = render_five_shot_content()
+        v2 = render_five_shot_content_v2()
+        self.assertEqual(result["sha256"], FIVE_SHOT_PROMPT_V2_SHA256)
+        self.assertEqual(json.loads(FIVE_SHOT_PROMPT_V2.read_text())["content"], v2)
+        self.assertTrue(v1.endswith(FINAL_REMINDER))
+        self.assertEqual(v2, v1[: -len(FINAL_REMINDER)] + FINAL_CHECK_V2)
+
+    def test_v3_is_deterministic_and_changes_only_the_closing_control(self):
+        result = validate_five_shot_prompt_v3()
+        v1 = render_five_shot_content()
+        v3 = render_five_shot_content_v3()
+        self.assertEqual(result["sha256"], FIVE_SHOT_PROMPT_V3_SHA256)
+        self.assertEqual(json.loads(FIVE_SHOT_PROMPT_V3.read_text())["content"], v3)
+        self.assertEqual(v3, v1[: -len(FINAL_REMINDER)] + FINAL_CHECK_V3)
+
+    def test_v4_keeps_worked_examples_and_v3_shape_cue(self):
+        result = validate_five_shot_prompt_v4()
+        v3 = render_five_shot_content_v3()
+        v4 = render_five_shot_content_v4()
+        self.assertEqual(result["sha256"], FIVE_SHOT_PROMPT_V4_SHA256)
+        self.assertEqual(json.loads(FIVE_SHOT_PROMPT_V4.read_text())["content"], v4)
+        self.assertEqual(
+            v3.split("BEGIN WORKED EXAMPLES", 1)[1],
+            v4.split("BEGIN WORKED EXAMPLES", 1)[1],
+        )
 
 
 class MinimalPromptTests(unittest.TestCase):
@@ -98,6 +143,25 @@ class DevelopmentSystemSetTests(unittest.TestCase):
             path.write_text(json.dumps(source, separators=(",", ":")) + "\n")
             with self.assertRaisesRegex(ContractError, "differs from frozen development A/B system-set digest"):
                 validate_development_ab_system_set(path)
+
+    def test_selected_v3_set_contains_only_untuned_system_b(self):
+        result = validate_development_b_v3_system_set()
+        self.assertEqual(result["sha256"], DEVELOPMENT_B_SYSTEM_SET_V3_SHA256)
+        self.assertEqual(result["system_ids"], ["B"])
+        self.assertEqual(result["prompt_assets"]["B"]["prompt_asset_id"], "five-shot-v3")
+        self.assertTrue(result["formal_confirmation_candidate"])
+
+    def test_changed_selected_v3_mapping_is_rejected(self):
+        source = json.loads(DEVELOPMENT_B_SYSTEM_SET_V3.read_text())
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            prompts = root / "prompts"
+            prompts.symlink_to(FIVE_SHOT_PROMPT_V3.parent, target_is_directory=True)
+            path = root / "systems" / "systems.json"
+            path.parent.mkdir()
+            path.write_text(json.dumps(source, separators=(",", ":")) + "\n")
+            with self.assertRaisesRegex(ContractError, "differs from frozen development B/v3 system-set digest"):
+                validate_development_b_v3_system_set(path)
 
 
 if __name__ == "__main__":

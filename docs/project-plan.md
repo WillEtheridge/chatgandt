@@ -45,8 +45,8 @@ We can state exactly what is being tested, which systems are being compared, wha
 | 7. Build the inference and capture harness | Completed | Specification 1.2 passed four adversarial reviews; implementation, 40 tests, real base/adapter CPU inference, and the two-runtime CUDA end-to-end diagnostic all pass |
 | 8. Implement schema validation | Completed | Specification 1.3 is implemented; the exact schema, strict parser, stable diagnostics, deterministic serializer, 33 focused tests, and complete 73-test regression suite pass |
 | 9. Create the prompt-development set | Completed | Twenty exact user prompts and closed metadata are reviewed, canonically stored, digest-bound as version 1, and verified before model generation |
-| 10. Develop and version the five-shot prompt | Completed | Initial System B prompt v1 is deterministically assembled from reviewed instructions and five frozen examples, digest-bound, schema-checked, and measured at a 2,319-token paired input overhead |
-| 11. Run Systems A and B on development prompts | In progress | The frozen 40-attempt GPU run is complete, copied locally, and integrity-verified for `$0.15`; formal run acceptance and development analysis remain |
+| 10. Develop and version the five-shot prompt | Completed | Four frozen prompt versions were compared under a predeclared stopping and selection rule; v3 is selected after v4 regressed |
+| 11. Run Systems A and B on development prompts | In progress | The initial 40-attempt GPU run is accepted and all local prompt versions are structurally and qualitatively scored; unchanged v3 pinned confirmation remains |
 | 12. Conduct the Stage 2 readiness review | Not started | Confirmation that the model, harness, validator, prompt baseline, and records are ready for formal evaluation design |
 
 ### Stage 2 boundaries
@@ -149,4 +149,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Record formal acceptance of the retrieved development A/B run, operationalise the prompt-version stopping rule before inspecting answers, and then evaluate System A against System B. Future rented-GPU iterations follow the [reusable Runpod development workflow](reusable-runpod-workflow.md).
+Review and commit the complete prompt-development record, then execute the prepared System B v3 confirmation through the pinned BF16 harness when a paid GPU session is authorised. The harness now captures Git identity before creating its operational lock and collects the CUDA driver through `nvidia-smi`; both corrections must pass the full regression suite before that run.

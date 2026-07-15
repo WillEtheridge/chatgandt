@@ -136,7 +136,7 @@ The formal `cross-domain` reporting slice is not assigned here because it depend
 5. Record aggregate failure patterns and the rationale for every system-prompt revision.
 6. Never replace an inconvenient development prompt silently after inspecting its output. A necessary correction creates a documented set revision.
 
-The prompt-development stopping rule and the exact five-shot example-selection process will be decided before system-prompt iteration begins.
+The prompt-development stopping, version-selection, local-runtime, and formal-confirmation rules are frozen in [Prompt-development procedure](prompt-development-procedure.md). The exact five-shot example-selection process is recorded in [Five-shot prompt plan](five-shot-prompt-plan.md).
 
 ## Completion condition
 

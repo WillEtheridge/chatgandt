@@ -75,6 +75,27 @@ def _implementation_identity() -> dict[str, Any]:
         "uv_lock_sha256": sha256_file(PROJECT_ROOT / "uv.lock"), "git_commit": commit, "git_dirty": dirty}
 
 
+def _implementation_paths_at_commit(commit: str) -> list[str] | None:
+    """Return the direct Python package files at a recorded commit when available."""
+
+    try:
+        completed = subprocess.run(
+            ["git", "ls-tree", "-r", "--name-only", commit, "--", "chatgnt"],
+            cwd=PROJECT_ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    paths = [
+        value
+        for value in completed.stdout.splitlines()
+        if Path(value).parent == Path("chatgnt") and Path(value).suffix == ".py"
+    ]
+    return sorted(paths)
+
+
 def _version(distribution: str) -> str:
     return importlib.metadata.version(distribution)
 
@@ -83,8 +104,21 @@ def _environment(device: torch.device, attention: str) -> dict[str, Any]:
     errors: list[dict[str, str]] = []
     driver = None
     try:
-        getter = getattr(torch.cuda, "driver_version")
-        driver = str(getter())
+        completed = subprocess.run(
+            [
+                "nvidia-smi",
+                f"--id={device.index}",
+                "--query-gpu=driver_version",
+                "--format=csv,noheader,nounits",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        values = [value.strip() for value in completed.stdout.splitlines() if value.strip()]
+        if len(values) != 1:
+            raise RuntimeError(f"expected one CUDA driver value, received {values!r}")
+        driver = values[0]
     except BaseException as exc:
         errors.append({"field": "cuda_driver", "type": exc.__class__.__name__, "message": str(exc)})
     return {
@@ -173,6 +207,7 @@ def _make_manifest(
     project: ProjectConfiguration, model_files: list[dict[str, Any]], snapshot: Path,
     engines: dict[str, InferenceEngine], adapter_path: Path | None,
     diagnostic: dict[str, Any] | None,
+    implementation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     base_engine = engines.get("base") or engines["adapted"]
     adapter_value = None
@@ -194,7 +229,7 @@ def _make_manifest(
     return {
         "schema_version": 1, "specification_version": SPECIFICATION_VERSION, "run_id": run_id,
         "created_at_utc": datetime.now(timezone.utc).isoformat(timespec="microseconds"), "diagnostic": diagnostic,
-        "implementation": _implementation_identity(),
+        "implementation": implementation if implementation is not None else _implementation_identity(),
         "prompt_set": {"source_path": _path_value(prompts_path), "source_sha256": sha256_bytes(prompts_raw),
             "frozen_sha256": sha256_bytes(frozen), "prompt_count": len(prompts),
             "prompt_ids": [item.prompt_id for item in prompts]},
@@ -270,6 +305,10 @@ def execute_run(
     run_id = run_id or f"{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{secrets.token_hex(4)}"
     require_identifier(run_id, "run_id")
     runs_root = runs_root.resolve()
+    # Capture source-control state before the operational run lock is created.
+    # The first formal development run showed that measuring this inside the
+    # lock made the harness's own untracked lock file mark a clean tree dirty.
+    implementation = _implementation_identity()
     if diagnostic is None and runs_root != (PROJECT_ROOT / "experiments" / "runs").resolve():
         # A caller may intentionally choose a formal alternate root; still formal.
         pass
@@ -302,7 +341,7 @@ def execute_run(
         frozen = _canonical_prompts(prompts)
         manifest = _make_manifest(run_id, prompts_path.resolve(), prompts_raw, prompts, frozen,
             system_set_path.resolve(), system_raw, systems, schedule, project, model_files, snapshot,
-            engines, adapter_path, diagnostic)
+            engines, adapter_path, diagnostic, implementation)
         manifest["schedule"]["run_seed"] = run_seed
         manifest["schedule"]["order_seed"] = execution_order_seed(run_seed)
         run_dir = runs_root / run_id
@@ -431,18 +470,30 @@ def _validate_manifest(manifest: dict[str, Any], run_dir: Path) -> None:
     implementation = manifest["implementation"]
     if not isinstance(implementation["package_version"], str) or not implementation["package_version"]:
         raise ContractError("implementation package_version must be a non-empty string")
-    if implementation["git_commit"] is not None and (not isinstance(implementation["git_commit"], str) or len(implementation["git_commit"]) != 40):
+    if implementation["git_commit"] is not None and (
+        not isinstance(implementation["git_commit"], str)
+        or len(implementation["git_commit"]) != 40
+        or any(character not in "0123456789abcdef" for character in implementation["git_commit"])
+    ):
         raise ContractError("git_commit must be a 40-character string or null")
     if implementation["git_dirty"] is not None and not isinstance(implementation["git_dirty"], bool):
         raise ContractError("git_dirty must be boolean or null")
     require_digest(implementation["behaviour_digest"], "behaviour_digest"); require_digest(implementation["pyproject_sha256"], "pyproject_sha256"); require_digest(implementation["uv_lock_sha256"], "uv_lock_sha256")
+    if not isinstance(implementation["behaviour_files"], list) or not implementation["behaviour_files"]:
+        raise ContractError("implementation behaviour_files must be a non-empty list")
     if tree_digest(implementation["behaviour_files"]) != implementation["behaviour_digest"]: raise ContractError("implementation tree digest mismatch")
     for file in implementation["behaviour_files"]:
         require_exact_keys(file, {"path", "size_bytes", "sha256"}, "implementation file")
+        if not isinstance(file["path"], str) or Path(file["path"]).parent != Path("chatgnt") or Path(file["path"]).suffix != ".py":
+            raise ContractError("implementation file path must be a direct chatgnt/*.py path")
         require_int(file["size_bytes"], "implementation file size"); require_digest(file["sha256"], "implementation file digest")
-    expected_implementation_paths = [path.relative_to(PROJECT_ROOT).as_posix() for path in sorted((PROJECT_ROOT / "chatgnt").glob("*.py")) if path.is_file()]
-    if [item["path"] for item in implementation["behaviour_files"]] != expected_implementation_paths:
-        raise ContractError("implementation file list does not cover every chatgnt/*.py file")
+    recorded_implementation_paths = [item["path"] for item in implementation["behaviour_files"]]
+    if recorded_implementation_paths != sorted(set(recorded_implementation_paths)):
+        raise ContractError("implementation file list must be unique and sorted")
+    commit = implementation["git_commit"]
+    commit_paths = _implementation_paths_at_commit(commit) if commit is not None else None
+    if commit_paths is not None and implementation["git_dirty"] is False and recorded_implementation_paths != commit_paths:
+        raise ContractError("implementation file list does not cover every chatgnt/*.py file at the recorded commit")
     prompt_set = manifest["prompt_set"]
     if not isinstance(prompt_set["source_path"], str): raise ContractError("prompt source_path must be a string")
     require_digest(prompt_set["source_sha256"], "prompt source digest"); require_digest(prompt_set["frozen_sha256"], "frozen prompt digest")

@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import torch
 
 from chatgnt.configuration import CONFIG_ROOT, PROJECT_ROOT, Prompt, PromptAsset, SystemDefinition, load_project_configuration
-from chatgnt.harness import RuntimeAbort, _diagnostic_declaration, _make_manifest, _publish, execute_run, inspect_run
+from chatgnt.harness import RuntimeAbort, _diagnostic_declaration, _environment, _make_manifest, _publish, execute_run, inspect_run
 from chatgnt.identity import execution_order_seed, file_identity, schedule_attempts, sha256_bytes, sha256_text, tree_digest
 from chatgnt.records import ErrorInfo, GenerationResult, canonical_line, read_strict_json
 
@@ -118,6 +118,50 @@ class PublicationTests(unittest.TestCase):
             value["schedule"]["run_seed"]=1; value["schedule"]["order_seed"]=execution_order_seed(1)
             self.assertTrue(canonical_line(value).endswith(b"\n"))
 
+    def test_manifest_accepts_identity_captured_before_operational_files_exist(self):
+        class Qwen2Tokenizer:
+            eos_token_id=151645; all_special_ids=[151643,151645]; chat_template="template"
+            def __len__(self): return 151665
+        environment={"python":"3.12","platform":"x","torch":"x","transformers":"x","peft":"x",
+            "tokenizers":"x","safetensors":"x","accelerate":"x","torch_cuda_build":"13.0",
+            "cuda_driver":"580.126.20","cudnn":1,"device":"cuda:0","device_name":"fake",
+            "device_total_memory_bytes":1,"bf16_supported":True,"attention_implementation":"sdpa",
+            "collection_errors":[]}
+        captured={"package_version":"0.1.0","behaviour_files":[],"behaviour_digest":"0"*64,
+            "pyproject_sha256":"1"*64,"uv_lock_sha256":"2"*64,"git_commit":"3"*40,"git_dirty":False}
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td); source=root/"minimal.json"; source.write_text("{}")
+            asset=PromptAsset(source,"4"*64,1,"minimal","1",0,"")
+            engine=SimpleNamespace(tokenizer=Qwen2Tokenizer(),device=SimpleNamespace(),runtime_evidence={
+                "parameter_count":1543714304,"attention_implementation":"sdpa",
+                "effective_generation_config":{},"adapter":None})
+            with patch("chatgnt.harness._environment",return_value=environment), \
+                 patch("chatgnt.harness._implementation_identity",side_effect=AssertionError("recaptured")):
+                value=_make_manifest("run-1",root/"prompts.jsonl",b"source",[Prompt("p1","hello",{})],
+                    prompt_bytes(),root/"systems.json",b"systems",[SystemDefinition("A",False,asset)],
+                    schedule_attempts(1,["p1"],["A"]),load_project_configuration(),[],root/"snapshot",
+                    {"base":engine},None,None,captured)
+            self.assertEqual(value["implementation"],captured)
+
+
+class EnvironmentTests(unittest.TestCase):
+    def test_cuda_driver_is_collected_from_nvidia_smi(self):
+        completed=SimpleNamespace(stdout="580.126.20\n")
+        device=SimpleNamespace(index=0)
+        properties=SimpleNamespace(total_memory=24_000_000_000)
+        with patch("chatgnt.harness.subprocess.run",return_value=completed) as run, \
+             patch("chatgnt.harness.platform.python_version",return_value="3.12"), \
+             patch("chatgnt.harness.platform.platform",return_value="Linux"), \
+             patch("chatgnt.harness._version",return_value="1"), \
+             patch("chatgnt.harness.torch.cuda.get_device_name",return_value="NVIDIA L4"), \
+             patch("chatgnt.harness.torch.cuda.get_device_properties",return_value=properties), \
+             patch("chatgnt.harness.torch.cuda.is_bf16_supported",return_value=True), \
+             patch("chatgnt.harness.torch.backends.cudnn.version",return_value=92000):
+            value=_environment(device,"sdpa")
+        self.assertEqual(value["cuda_driver"],"580.126.20")
+        self.assertEqual(value["collection_errors"],[])
+        self.assertEqual(run.call_args.args[0][1],"--id=0")
+
 
 class RunnerTests(unittest.TestCase):
     class Qwen2Tokenizer:
@@ -196,6 +240,13 @@ class InspectorTests(unittest.TestCase):
             run=Path(td)/"run"; create_run(run,[canonical_line(success_record())])
             report=inspect_run(run)
             self.assertTrue(report["complete"]); self.assertEqual(report["valid_response_count"],1)
+
+    def test_committed_historical_run_survives_later_package_files(self):
+        run = PROJECT_ROOT / "experiments" / "runs" / "development-ab-v1-20260715"
+        report = inspect_run(run)
+        self.assertTrue(report["complete"], report["integrity_errors"])
+        self.assertEqual(report["scheduled_count"], 40)
+        self.assertEqual(report["valid_response_count"], 40)
 
     def test_partial_duplicate_malformed_and_corruption(self):
         with tempfile.TemporaryDirectory() as td:

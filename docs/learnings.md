@@ -356,3 +356,45 @@ No. Reproducibility requires independently verifiable experimental identity, not
 This separates persistent state from trusted evidence. Model files and dependency caches may survive beneath `/workspace` to save setup time, but they remain subject to checksum and environment checks. Raw run evidence is copied and verified locally after every execution rather than relying on the continued existence of the Pod.
 
 Stopping a Pod between nearby iterations can also separate storage cost from GPU cost. The convenience creates a new operational risk—forgotten billable storage—so reuse needs an explicit stop-versus-terminate rule and a reminder to review stopped resources. Fresh infrastructure is still appropriate when the old environment is unsuitable or can no longer be verified confidently.
+
+## 2026-07-15 — Can measurement instrumentation contaminate its own evidence?
+
+Yes. ChatG&T's first formal development manifest reported a dirty Git tree even though the run procedure checked out a frozen revision. Inspection showed that the harness created its untracked lock file before asking Git whether the tree was dirty. The instrumentation changed the state it intended to measure.
+
+This did not change the model behavior because the manifest independently hashed the implementation tree, project files, model, configuration, prompts, and systems. It did make the general `git_dirty` field incapable of proving pre-run cleanliness. The correct response is to retain the surprising value, explain its cause, narrow the claim supported by the run, and fix the measurement order before relying on that field again.
+
+The broader lesson is that provenance collection has an observer effect whenever it creates files, imports mutable state, or starts services before taking its snapshot. Evidence capture should either occur before those mutations or explicitly exclude and test its own operational artefacts.
+
+## 2026-07-15 — Must prompt development use the formal inference environment?
+
+No. Prompt development and formal evaluation have different jobs. A fast local approximation can expose structural, instructional, and stylistic failures cheaply; the formal environment establishes exact model identity, matched measurements, and publishable evidence.
+
+The distinction only works when transfer is tested rather than assumed. ChatG&T keeps every inspected prompt version visible, compares candidates on one local runtime, labels those outputs as diagnostics, and sends the selected unchanged prompt back through the pinned BF16 harness. This creates a quick inner engineering loop inside a controlled outer research loop.
+
+Hardware freshness is not rigor by itself. The defensible boundary is whether a claim is supported by the environment that produced it: local runs can justify prompt edits, while formal comparative claims must wait for the pinned harness.
+
+## 2026-07-15 — What did the prompt-development loop teach us?
+
+Prompt quality and prompt length did not move monotonically. Adding a concrete, recent JSON skeleton in version 3 produced the strongest full-pass result, even though it was the longest candidate. Compressing the main instructions in version 4 saved an average of 182 input tokens relative to v3 but reduced every quality count. Efficiency is a useful tie-breaker, not a substitute for meeting the behaviour contract.
+
+More explicit wording also showed diminishing returns. Versions 2 and 3 improved full responses, but schema validity plateaued at 11 out of 20 and recurring failures remained. This suggests a practical ceiling for prompt engineering with this small model and unconstrained sampled decoding on the development population. That is exactly the kind of gap fine-tuning can now be asked to address; it is not a reason to keep rewriting the prompt around known cases.
+
+Finally, equal aggregate metrics do not establish runtime equivalence. Local quantised v1 and formal BF16 v1 both produced nine schema-valid responses, yet only four local responses and six formal responses passed every qualitative dimension. A fast local workbench can guide engineering, but transfer has to be measured on the intended formal stack.
+
+## 2026-07-15 — Is an experimental stopping rule an engineering definition of “good enough”?
+
+No. An engineer developing a product may continue iterating until the system meets its operational requirements or the expected benefit no longer justifies the work. A researcher stops at a predeclared boundary so that the observed comparison remains interpretable. These are different objectives rather than competing standards of competence.
+
+ChatG&T's four-version prompt budget was a methodological guardrail, not evidence that four is a universally optimal number of prompt iterations. It limited repeated adaptation to the same 20 known development prompts and reduced the freedom to keep changing the baseline after seeing unfavourable results.
+
+Stopping at version 3 therefore does not mean that the prompt is production-ready or incapable of further improvement. It means that version 3 is the strongest prompt produced inside the declared experimental procedure. Further prompt refinement, constrained decoding, retries, or output repair can still be explored later as a separately labelled product-engineering phase.
+
+A protocol can be amended after results are seen, but the change becomes post-hoc and must be disclosed. If further prompt development were necessary, a cleaner extension would declare a new revision budget before generation and use fresh development prompts rather than repeatedly tailoring the prompt to these same 20 cases.
+
+## 2026-07-15 — How should an inspector treat historical evidence after the codebase changes?
+
+An immutable run should not become invalid merely because later development adds a new source file. During the prompt-development audit, the original GPU run initially failed inspection because the current package contained new evaluation modules that did not exist when the run manifest was created. The inspector was comparing a historical file inventory with the present working tree.
+
+The correct reference is the state recorded by the run. The manifest's behaviour-file identities and tree digest establish internal integrity, while a clean recorded Git commit can establish which package files existed at that revision. The current checkout is not evidence of what should have existed in an earlier commit.
+
+This distinction is important for long-lived experiments: verification code may become stricter, but it should verify historical claims against historical identities rather than silently redefining them using today's repository contents. A regression test now requires the accepted 40-attempt run to remain inspectable after later package files are added.

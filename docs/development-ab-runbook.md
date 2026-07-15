@@ -2,9 +2,11 @@
 
 - **Runbook version:** 1.0
 - **Prepared:** 2026-07-15
-- **Status:** Ready to execute
+- **Status:** Executed; evidence accepted on 2026-07-15
 - **Experimental run ID:** `development-ab-v1-20260715`
 - **Code revision:** `4c15262a621ae42090ba0da2ea3390b44a87de3a`
+
+The execution outcome, immutable file identities, `$0.15` final charge, and disclosed metadata limitations are recorded in [Development System A/B v1 run acceptance](development-ab-v1-run-acceptance.md). The procedural instructions below are preserved as the runbook used for that execution.
 
 ## Purpose
 

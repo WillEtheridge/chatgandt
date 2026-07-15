@@ -1,0 +1,1 @@
+{"evaluators":["OpenAI Codex (GPT-5), 2026-07-15 session; exact backend snapshot unavailable"],"kind":"revealed-llm-judge-summary","packet_count":11,"schema_version":1,"sources":{"local-v2":{"full_qualitative_pass":6,"metaphorical_coherence_at_least_2":10,"recipe_style_execution_at_least_2":10,"schema_valid_scored":11,"underlying_answer_quality_at_least_2":6}}}
