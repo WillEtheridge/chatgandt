@@ -1,7 +1,7 @@
 # Dataset v1 Design
 
 - **Stage:** 4 — Build and freeze dataset v1
-- **Status:** Dataset contract and split procedure implemented; authoring guide pending
+- **Status:** Dataset contract, split procedure, and authoring guide implemented; candidate authoring pending
 - **Date:** 2026-07-15
 
 This document records the source-of-truth design for ChatG&T's supervised dataset before exact records or split assignments are created. Exact held-out prompts do not yet exist and are outside Stage 4.
@@ -27,7 +27,7 @@ The canonical dataset stores semantic source data rather than model-ready chat m
 }
 ```
 
-The exact metadata schema is a later Stage 4 decision. At minimum, it will retain stable identities, coverage labels, provenance, review state, and eventual split information.
+The exact metadata schema is defined by `supervised-example-v1`. It retains stable identities, coverage labels, provenance, and eventual split information, while review history remains in separate workflow events.
 
 The assistant response is stored as a JSON object and must pass the frozen ChatG&T response schema. This avoids double-encoded JSON during authoring and keeps authored meaning separate from model-specific rendering.
 
@@ -63,8 +63,8 @@ The complete source record has this shape:
     "complexity_sources": [],
     "constraint_bearing": false,
     "robustness_role": null,
-    "topic": "career",
-    "task_subtype": "preparation_advice",
+    "topic": "career_and_work",
+    "task_subtype": "preparation",
     "user_goal": "prepare effectively for a job interview",
     "requested_task_or_artefact": "an actionable preparation plan",
     "scenario_summary": "A person wants general help preparing for an upcoming job interview.",
@@ -129,7 +129,7 @@ Qwen outputs will not be used as target responses or as evidence for selecting, 
 
 The canonical record retains only a compact provenance summary: authoring batch, initial draft source, initial model identity when applicable, whether a model revision was used, and whether a human made a material edit. Initial draft source is either `human` or `frontier_model`; a human-authored draft has a null initial model identity.
 
-Detailed process history is stored separately as append-only workflow records keyed by example ID. The workflow distinguishes `draft_created`, `model_revision`, `human_edit`, `quality_review`, `accepted`, and `rejected` events and records the actor, time, outcome, reason codes, and notes appropriate to the event. Step 7 will close the review outcomes and reason-code vocabulary alongside the authoring rubric.
+Detailed process history is stored separately as append-only workflow records keyed by example ID. The workflow distinguishes `draft_created`, `model_revision`, `human_edit`, `quality_review`, `accepted`, and `rejected` events and records the actor, time, outcome, reason codes, and notes appropriate to the event. The frozen Step 7 authoring guide maps the three quality dimensions to `pass`, `revision_requested`, or `rejection_recommended` and gives concrete use guidance for every reason code.
 
 Review state and rejection history do not become part of the text used for training. This keeps the semantic source record readable and model-independent while retaining an auditable account of how it entered or left the accepted set.
 
@@ -300,8 +300,6 @@ Every permitted ingredient count must appear, and no one count should occupy mor
 
 The validation target remains eight examples per intent family. Across the complete validation split, all three input forms, both complexity levels, target-use, breadth, robustness, compatible constraints, and all three robustness roles must appear. Scenario isolation takes precedence over exact cross-cutting arithmetic, and any material deviation is reported.
 
-## Still to decide
+## Next action
 
-The next Stage 4 decisions are:
-
-- the detailed authoring rubric and batch workflow.
+The dataset contract, allocation procedure, authoring rubric, and batch workflow are now fixed. Stage 4 continues by creating the 10-candidate calibration batch under the authoring guide, without inspecting exact held-out prompts or querying Qwen.

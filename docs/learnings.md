@@ -596,3 +596,21 @@ Separate namespaces for validation allocation and pilot selection prevent a coin
 An exact 160/40 split can still be unusable if validation contains no robustness pressure, no composed tasks, or only one input form. Count balance and behavioural coverage answer different questions.
 
 A coverage-aware allocator treats the required validation labels as feasibility constraints, then optimises count deviations among feasible scenario-group assignments. This prevents a tidy count from taking priority over the reason validation exists: monitoring whether learning transfers across the behaviours the model is meant to acquire.
+
+## 2026-07-15 — Why should a training target face a stricter bar than a generated response?
+
+Evaluation asks how well a model performed on one attempt. A response with a noticeable limitation may still be an acceptable outcome and therefore earn the middle evaluation score. Dataset review asks a different question: should this example be repeated as the behaviour the model is taught to imitate?
+
+Using the same numeric scale for both jobs would make it easy to retain merely acceptable supervision and would imply more editorial precision than the decision really has. `Pass`, `revise`, and `reject` connect quality judgment directly to action. ChatG&T reuses its three conceptual dimensions for consistency, but every dimension must pass before a candidate can teach the model.
+
+## 2026-07-15 — Why separate hard gates, individual quality, and dataset-level audits?
+
+These checks operate at different levels. JSON validity, allowed fields, provenance, and exclusions can be enforced objectively. Usefulness, metaphorical coherence, and recipe execution require holistic judgment of one example. Repetition, topic concentration, and stylistic collapse often become visible only across a collection.
+
+Combining them into one score creates bad trade-offs: charming style could compensate for incorrect advice, or a strong individual response could be rejected for using an ordinary construction before any actual repetition exists. A clean pipeline first establishes structural eligibility, then judges each teaching target without compensation, then audits the batch and corpus for patterns.
+
+## 2026-07-15 — Why author supervised data in closed batches?
+
+Small closed batches turn early authoring into calibration. Reviewing every record in the first batch exposes disagreements about labels and quality before those disagreements are multiplied across hundreds of examples. Later batches can respond to real coverage gaps and repetition without changing the acceptance bar.
+
+Closing validation, review, revisions, and terminal dispositions before opening the next batch also preserves provenance and limits editorial spirals. A revision limit is not a claim that the third revision could never succeed; it is a practical signal that replacing a weak premise is usually clearer than repeatedly polishing it under quota pressure.

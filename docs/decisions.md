@@ -1464,3 +1464,30 @@ An explicit optimisation order makes every tie and trade-off reproducible. The h
 - Inputs must be unallocated; the pure operation returns allocated copies and never mutates source objects.
 - Exact allocation needs no exception record; non-exact allocation cannot freeze until separately approved and bound.
 - Step 7 can author examples against a known, testable split and pilot procedure rather than deciding allocation after seeing model behaviour.
+
+## D-051 — Use non-compensatory pass, revise, or reject judgments for teaching-target quality
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; Stage 4 Step 7 complete
+
+### Decision
+
+Dataset candidates are reviewed on the same three conceptual dimensions used by the evaluation—underlying-answer quality, metaphorical coherence, and recipe-style execution—but with a stricter teaching-target question. Each dimension receives `pass`, `revise`, or `reject`, not a numeric model-output score.
+
+All three dimensions must pass. At least one `revise` with no rejection maps to workflow outcome `revision_requested`; any `reject` maps to `rejection_recommended`. Scores cannot compensate across dimensions, and structural validity remains a separate automated eligibility gate rather than a fourth qualitative dimension.
+
+The frozen authoring guide provides boundary rules, calibration fragments, complete reason-code guidance, and a stable review-note shape. It begins with a 10-candidate calibration batch, then permits batches of at most 20. Drafting and review use separate contexts, material revisions require a fresh review, two material revision cycles are the default maximum, and only the project author may record terminal acceptance.
+
+### Rationale
+
+Evaluation asks whether a generated response is acceptable or strong; dataset review asks whether an example is suitable to teach. Reusing the three-point evaluation scale would invite merely acceptable targets into supervision and create false precision about editorial judgments. A categorical repair decision directly determines the next workflow action.
+
+Separating hard gates, per-example quality, and corpus-level diversity avoids both compensation and duplication. Valid JSON cannot rescue poor advice, an excellent metaphor cannot rescue an incomplete artefact, and one ordinary construction need not fail simply because repetition is visible only across a batch.
+
+### Implications
+
+- Candidate authoring starts with a 10-record calibration batch covering all five intent families.
+- Calibration fragments in the guide are not eligible dataset records and enter later duplication checks.
+- Coverage gaps determine what to draft next but never lower the acceptance bar.
+- A passing model review does not itself accept an example; terminal inclusion remains attributable to the project author.
+- Step 8 may now begin without reopening the quality dimensions or workflow outcomes.
