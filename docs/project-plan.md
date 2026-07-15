@@ -46,7 +46,7 @@ We can state exactly what is being tested, which systems are being compared, wha
 | 8. Implement schema validation | Completed | Specification 1.3 is implemented; the exact schema, strict parser, stable diagnostics, deterministic serializer, 33 focused tests, and complete 73-test regression suite pass |
 | 9. Create the prompt-development set | Completed | Twenty exact user prompts and closed metadata are reviewed, canonically stored, digest-bound as version 1, and verified before model generation |
 | 10. Develop and version the five-shot prompt | Completed | Initial System B prompt v1 is deterministically assembled from reviewed instructions and five frozen examples, digest-bound, schema-checked, and measured at a 2,319-token paired input overhead |
-| 11. Run Systems A and B on development prompts | In progress | Prompt assets, base-only A/B mapping, master seed, and complete paired 40-attempt schedule are frozen and verified; the GPU run and analysis remain |
+| 11. Run Systems A and B on development prompts | In progress | The frozen 40-attempt GPU run is complete, copied locally, and integrity-verified for `$0.15`; formal run acceptance and development analysis remain |
 | 12. Conduct the Stage 2 readiness review | Not started | Confirmation that the model, harness, validator, prompt baseline, and records are ready for formal evaluation design |
 
 ### Stage 2 boundaries
@@ -149,4 +149,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Follow the frozen [development A/B Runpod runbook](development-ab-runbook.md) to execute and retrieve the 40-attempt run, record its cost, and terminate all paid resources before inspecting model quality.
+Record formal acceptance of the retrieved development A/B run, operationalise the prompt-version stopping rule before inspecting answers, and then evaluate System A against System B. Future rented-GPU iterations follow the [reusable Runpod development workflow](reusable-runpod-workflow.md).

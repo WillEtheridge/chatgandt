@@ -865,3 +865,30 @@ The number is memorable, valid, and chosen before any development output was obs
 - Prompt versions reuse it for paired development comparison.
 - Any later multi-seed stability analysis declares a separate seed set and is reported as a secondary experiment.
 - Reproducibility still depends on the recorded model, software, and hardware environment; a fixed seed alone does not promise cross-platform bit identity.
+
+## D-029 — Reuse a stopped Pod across nearby development runs
+
+- **Date:** 2026-07-15
+- **Status:** Adopted for future runs
+
+### Decision
+
+A suitable Runpod Pod may be reused across nearby prompt-development or training iterations. All reusable state must remain beneath the Pod's `/workspace` volume disk. After each run, the complete evidence is copied home and verified before the Pod is either stopped or terminated.
+
+The Pod is stopped when another authorised run is reasonably expected soon enough to justify retaining its billable storage. It is terminated when no next run is prepared, the development cycle has ended, the environment is no longer confidently verifiable, or storage retention is no longer economical. A daily reminder guards against forgotten stopped-storage charges.
+
+Restarting the same Pod does not waive preflight. Each session rechecks the GPU and BF16 path, checks out an exact authorised commit, reproduces the frozen dependency state, verifies the pinned model and run inputs, uses a new run ID, and preserves a separate manifest and billing record. The complete procedure is recorded in [Reusable Runpod development workflow](reusable-runpod-workflow.md).
+
+### Rationale
+
+Experimental reproducibility depends on the recorded identity of the behaviour and environment, not on receiving a physically new machine for every run. Reusing verified model files, dependency caches, and repository data reduces repeated setup effort and billed GPU time without changing the comparison, provided every run independently verifies its inputs and preserves its raw evidence.
+
+Stopping rather than leaving the Pod running separates cheap persistence from expensive active compute. Termination remains the correct boundary when reuse is no longer imminent.
+
+### Implications
+
+- The initial `development-ab-v1-20260715` Pod was already terminated after local evidence verification and cost `$0.15`; reuse begins with the next Pod.
+- The persistent workspace is a cache and working environment, not the sole copy of any result.
+- Prompt and code changes are prepared, reviewed, and committed locally rather than improvised on the Pod.
+- Same-Pod runs remain distinct experiments with unique IDs, manifests, immutable outputs, and cost records.
+- A stopped Pod and its volume remain subject to active cost review.

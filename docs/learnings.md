@@ -348,3 +348,11 @@ A runbook is an operational checklist for performing one concrete technical task
 This is especially useful for temporary paid infrastructure. Preparing the commands before a Runpod session reduces time spent improvising on a billed machine, while explicit failure rules discourage ad hoc dependency changes, silent retries, or evidence loss under pressure. Copying results home and verifying them before deleting the Pod is part of the operation, not administrative cleanup afterward.
 
 A runbook is not necessarily automation. Its first job is to make the human procedure inspectable and reproducible. Once the procedure has been exercised and stabilised, repetitive pieces may be automated without losing the documented operational boundary.
+
+## 2026-07-15 — Does reproducibility require a fresh machine for every run?
+
+No. Reproducibility requires independently verifiable experimental identity, not the ritual of rebuilding identical infrastructure. The same rented Pod can support multiple runs when each one rechecks the pinned code, dependencies, model, prompts, configuration, seeds, hardware path, and unique output destination.
+
+This separates persistent state from trusted evidence. Model files and dependency caches may survive beneath `/workspace` to save setup time, but they remain subject to checksum and environment checks. Raw run evidence is copied and verified locally after every execution rather than relying on the continued existence of the Pod.
+
+Stopping a Pod between nearby iterations can also separate storage cost from GPU cost. The convenience creates a new operational risk—forgotten billable storage—so reuse needs an explicit stop-versus-terminate rule and a reminder to review stopped resources. Fresh infrastructure is still appropriate when the old environment is unsuitable or can no longer be verified confidently.
