@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:pairwise-judgment:v1",
+  "title": "ChatG&T blinded B/C pairwise judgment v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_schema_version", "judgment_id", "protocol_sha256", "heldout_records_sha256", "run_records_sha256", "generation_manifest_sha256", "judge_manifest_sha256", "instruction_sha256", "packet_id", "packet_sha256", "renderer_id", "prompt_id", "response_a_id", "response_b_id", "order_schedule_sha256", "judge_role", "judge_identity", "judge_session_id", "exposed_model_id", "judgment_round", "prior_judgment_id", "resolution_status", "choice", "rationale", "recorded_at_utc"],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "judgment_id": {"type": "string", "pattern": "^pair-v1-[A-Za-z0-9._-]+$"},
+    "protocol_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "heldout_records_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "run_records_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "generation_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "judge_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "instruction_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "packet_id": {"type": "string", "pattern": "^pair-packet-v1-[0-9a-f]{24}$"},
+    "packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "renderer_id": {"const": "chatgnt-pairwise-json-v1"},
+    "prompt_id": {"type": "string", "pattern": "^heldout-v1-[0-9]{3}$"},
+    "response_a_id": {"type": "string", "pattern": "\\S"},
+    "response_b_id": {"type": "string", "pattern": "\\S"},
+    "order_schedule_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "judge_role": {"enum": ["llm", "human"]},
+    "judge_identity": {"type": "string", "pattern": "\\S"},
+    "judge_session_id": {"type": "string", "pattern": "\\S"},
+    "exposed_model_id": {"type": ["string", "null"]},
+    "judgment_round": {"enum": ["primary", "second", "human_calibration"]},
+    "prior_judgment_id": {"type": ["string", "null"], "pattern": "^pair-v1-[A-Za-z0-9._-]+$"},
+    "resolution_status": {"enum": ["resolved", "pending_second", "unresolved"]},
+    "choice": {"enum": ["response_a", "response_b", "tie", "unable_to_assess"]},
+    "rationale": {"type": "string", "pattern": "\\S"},
+    "recorded_at_utc": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {"if": {"properties": {"judgment_round": {"enum": ["primary", "second"]}}, "required": ["judgment_round"]}, "then": {"properties": {"judge_role": {"const": "llm"}, "exposed_model_id": {"type": "string", "pattern": "\\S"}}}},
+    {"if": {"properties": {"judgment_round": {"const": "primary"}}}, "then": {"properties": {"prior_judgment_id": {"type": "null"}}}},
+    {"if": {"properties": {"judgment_round": {"const": "second"}}}, "then": {"properties": {"prior_judgment_id": {"type": "string"}}}},
+    {"if": {"properties": {"judgment_round": {"const": "human_calibration"}}, "required": ["judgment_round"]}, "then": {"properties": {"judge_role": {"const": "human"}, "exposed_model_id": {"type": "null"}, "prior_judgment_id": {"type": "null"}}}},
+    {"if": {"properties": {"choice": {"const": "unable_to_assess"}}}, "then": {"properties": {"resolution_status": {"enum": ["pending_second", "unresolved"]}}}, "else": {"properties": {"resolution_status": {"const": "resolved"}}}}
+  ]
+}

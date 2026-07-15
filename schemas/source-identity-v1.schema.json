@@ -1,0 +1,17 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"urn:chatgnt:schema:source-identity:v1",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["record_schema_version","source_identity_id","collection","version_id","record_count","content_sha256","frozen","frozen_at_utc"],
+  "properties": {
+    "record_schema_version":{"const":1},
+    "source_identity_id":{"type":"string","pattern":"^source-v1-[A-Za-z0-9._-]+$"},
+    "collection":{"enum":["worked_examples","prompt_development","evaluation_calibration","training","validation","accepted_heldout_candidates","rejected_heldout_candidates"]},
+    "version_id":{"type":"string","pattern":"\\S"},
+    "record_count":{"type":"integer","minimum":0},
+    "content_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "frozen":{"const":true},
+    "frozen_at_utc":{"type":"string","format":"date-time"}
+  }
+}

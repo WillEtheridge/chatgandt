@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:stage3-verification-evidence:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "evidence_id", "status", "capture_runner_sha256", "protocol_normative_sha256", "protocol_aggregate_sha256", "protocol_manifest_sha256", "candidate_identity_observed_at_utc", "environment", "ordinary_verifier", "semantic_verifier", "full_test_suite", "created_at_utc"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "evidence_id": {"type": "string", "pattern": "^stage3-verification-v1-[A-Za-z0-9._-]+$"},
+    "status": {"const": "pass"},
+    "capture_runner_sha256": {"$ref": "#/$defs/digest"},
+    "protocol_normative_sha256": {"$ref": "#/$defs/digest"},
+    "protocol_aggregate_sha256": {"$ref": "#/$defs/digest"},
+    "protocol_manifest_sha256": {"$ref": "#/$defs/digest"},
+    "candidate_identity_observed_at_utc": {"type": "string", "format": "date-time"},
+    "environment": {
+      "type": "object", "additionalProperties": false,
+      "required": ["python", "platform", "uv", "packages"],
+      "properties": {
+        "python": {"type": "string", "pattern": "\\S"},
+        "platform": {"type": "string", "pattern": "\\S"},
+        "uv": {"type": "string", "pattern": "^uv 0\\.11\\.28(?: .+)?$"},
+        "packages": {
+          "type": "object", "additionalProperties": false,
+          "required": ["jsonschema", "rapidfuzz", "torch", "transformers"],
+          "properties": {
+            "jsonschema": {"type": "string", "pattern": "\\S"},
+            "rapidfuzz": {"type": "string", "pattern": "\\S"},
+            "torch": {"type": "string", "pattern": "\\S"},
+            "transformers": {"type": "string", "pattern": "\\S"}
+          }
+        }
+      }
+    },
+    "ordinary_verifier": {"$ref": "#/$defs/gate"},
+    "semantic_verifier": {"$ref": "#/$defs/gate"},
+    "full_test_suite": {"$ref": "#/$defs/gate"},
+    "created_at_utc": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["command", "exit_status", "result", "stdout", "stdout_sha256", "stderr", "stderr_sha256", "combined_output_policy", "combined_output", "combined_output_sha256", "implementation_sha256", "started_at_utc", "completed_at_utc", "duration_seconds"],
+      "properties": {
+        "command": {"type": "string", "pattern": "\\S"},
+        "exit_status": {"const": 0},
+        "result": {"const": "pass"},
+        "stdout": {"type": "string"},
+        "stdout_sha256": {"$ref": "#/$defs/digest"},
+        "stderr": {"type": "string"},
+        "stderr_sha256": {"$ref": "#/$defs/digest"},
+        "combined_output_policy": {"const": "stdout_bytes_then_stderr_bytes"},
+        "combined_output": {"type": "string", "minLength": 1},
+        "combined_output_sha256": {"$ref": "#/$defs/digest"},
+        "implementation_sha256": {"$ref": "#/$defs/digest"},
+        "started_at_utc": {"type": "string", "format": "date-time"},
+        "completed_at_utc": {"type": "string", "format": "date-time"},
+        "duration_seconds": {"type": "number", "exclusiveMinimum": 0}
+      }
+    }
+  }
+}

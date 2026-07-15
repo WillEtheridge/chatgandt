@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:response-similarity-evidence:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "status", "model_id", "model_revision", "verifier_identity", "verifier_command", "verifier_implementation_sha256", "verifier_stdout", "verifier_stdout_sha256", "started_at_utc", "verified_at_utc", "responses_sha256", "references_sha256", "records"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "artifact_id": {"type": "string", "pattern": "^response-similarity-evidence-v1-[A-Za-z0-9._-]+$"},
+    "status": {"const": "verified"},
+    "model_id": {"const": "sentence-transformers/all-MiniLM-L6-v2"},
+    "model_revision": {"const": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"},
+    "verifier_identity": {"type": "string", "pattern": "\\S"},
+    "verifier_command": {"const": "uv run --frozen python scripts/generate_semantic_evidence.py response-similarity"},
+    "verifier_implementation_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "verifier_stdout": {"type":"string","minLength":1},
+    "verifier_stdout_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "started_at_utc": {"type":"string","format":"date-time"},
+    "verified_at_utc": {"type": "string", "format": "date-time"},
+    "responses_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "references_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "records": {"type": "array", "items": {"$ref": "#/$defs/record"}}
+  },
+  "$defs": {
+    "record": {
+      "type": "object", "additionalProperties": false,
+      "required": ["response_id", "reference_collection", "response_pre_truncation_wordpieces", "response_semantic_input_truncated", "reference_diagnostics", "neighbours"],
+      "properties": {
+        "response_id": {"type": "string", "pattern": "\\S"},
+        "reference_collection": {"enum": ["worked_example_responses", "training_responses", "heldout_system_responses"]},
+        "response_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+        "response_semantic_input_truncated": {"type": "boolean"},
+        "reference_diagnostics": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
+        "neighbours": {"type": "array", "maxItems": 5, "items": {"$ref": "#/$defs/neighbour"}}
+      }
+    },
+    "diagnostic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reference_id", "reference_pre_truncation_wordpieces", "reference_semantic_input_truncated"],
+      "properties": {
+        "reference_id": {"type": "string", "pattern": "\\S"},
+        "reference_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+        "reference_semantic_input_truncated": {"type": "boolean"}
+      }
+    },
+    "neighbour": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reference_id", "reference_pre_truncation_wordpieces", "reference_semantic_input_truncated", "semantic_rank", "semantic_score"],
+      "properties": {
+        "reference_id": {"type": "string", "pattern": "\\S"},
+        "reference_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+        "reference_semantic_input_truncated": {"type": "boolean"},
+        "semantic_rank": {"type": "integer", "minimum": 1, "maximum": 5},
+        "semantic_score": {"type": "number", "minimum": -1, "maximum": 1}
+      }
+    }
+  }
+}

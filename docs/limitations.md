@@ -74,15 +74,20 @@ The held-out test set ceases to be held out if its prompts or outputs influence 
 
 Controls:
 
-- freeze and version the held-out set;
+- freeze evaluation rules before supervised data, then freeze the held-out set before training;
 - do not inspect held-out outputs during development;
 - use development and validation data for iteration;
-- check for exact and semantic overlap; and
+- check exact, lexical, semantic, and metadata neighbours under a recorded substantive rule;
+- second-review every rejection and uncertainty plus a deterministic audit of accepts; and
 - record any accidental exposure.
 
 ### Near-duplicate scenarios
 
-Different wording can express the same underlying scenario. Exact-string matching is therefore insufficient. Prompt and response overlap must be reviewed semantically as well as mechanically.
+Different wording can express the same underlying scenario. Exact-string matching is therefore insufficient. Prompt overlap is reviewed semantically as well as mechanically. RapidFuzz can inflate subset matches and the pinned MiniLM model truncates at 256 wordpieces, so scores retrieve candidates rather than decide them.
+
+Only three subject domains are deliberately withheld. Their 15 crossed prompts test several capabilities within those domains but do not amount to 15 independent topic-transfer tests.
+
+The MiniLM semantic retriever sees at most 256 wordpieces. Pre-truncation counts, flags, lexical/metadata neighbours, and manual complete-text review control this limitation but cannot make the omitted suffix part of the embedding. The calibration collection is small and synthetic; recall on it verifies plumbing rather than estimating real collision-detection accuracy.
 
 ### Unknown base-model pretraining
 
@@ -144,7 +149,17 @@ One sampled generation may be unusually strong or weak. The primary comparison u
 
 ### Limited evaluators
 
-One evaluator does not represent population preference. The number of evaluators, judgments per prompt, and agreement statistics must be reported. Exact judge counts remain deferred.
+One evaluator does not represent population preference. Every eligible output receives one LLM-judge score, while one project-author human calibration covers 24 response packets and 15 pairs. Exact and weighted agreement will be reported, but this remains a limited calibration rather than representative human preference evidence.
+
+The 24 and 15 counts are pragmatic coverage choices rather than statistically powered sample sizes. Persistently unresolved qualitative or pairwise judgments remain visible with achieved denominators; they may reduce effective sample size.
+
+### Judgment and response-review chronology
+
+Judgment and response-similarity review records retain UTC timestamps and are bound to the frozen generation and packet identities, but this Stage 3 protocol does not yet enforce one cross-artifact temporal order for every primary judgment, second judgment, human calibration judgment, response-similarity review, and final analysis event. Reviewer/session separation and predecessor links remain executable; the remaining chronology control is disclosed future hardening rather than a claim that repository timestamps independently prove when every review occurred. Before production evaluation is presented as externally attested, a later version should enforce those event-order relationships or obtain them from an independently controlled judging service or CI ledger.
+
+### Response-similarity interpretation
+
+Similarity to a project response is not proof of a causal memorisation mechanism. Reference exposure differs by system: B/D see worked responses, while C/D see training responses. Cross-collection matches for unexposed systems are diagnostic controls. Within-system repetition is reported separately as generic collapse rather than folded into memorisation claims.
 
 ## External validity
 
@@ -184,14 +199,9 @@ Tasting Room participants and prompts are self-selected. Participants may vote m
 
 Public votes are supplementary observational evidence and do not replace the frozen held-out evaluation.
 
-## Deferred operational decisions
+## Remaining deferred decisions
 
 Later stages must determine and record:
 
-- held-out sample size and quotas;
-- operational definition of semantic overlap;
-- number of human and LLM judges;
-- evaluator-calibration procedure;
-- uncertainty calculations;
 - any separately scoped multi-seed stability study; and
 - deployment-specific application and cold-start measurements.

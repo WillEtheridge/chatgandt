@@ -105,7 +105,7 @@ Difficulty will not be assigned as a subjective easy/medium/hard label. Instead,
 | Standard | 40 | One clear underlying task, little necessary context, and no explicit constraint beyond the task itself |
 | Composed | 20 | Includes at least one concrete source of additional complexity, such as multiple outcomes, a meaningful constraint, supplied material, competing considerations, or several connected steps |
 
-Ten of the composed prompts will contain an explicit, legitimate user constraint, with two in each intent family. Examples include a requested count, length, audience, tone, inclusion, or exclusion. These are ordinary task requirements rather than attempts to break the ChatG&T behaviour. The other ten composed prompts may derive their complexity from context, supplied material, multiple outcomes, competing considerations, or connected steps without an explicit constraint.
+All 15 robustness prompts are composed because the pressure mechanism is an observable source of complexity. Each intent family therefore has its three robustness prompts plus exactly one non-robust composed prompt. Ten composed prompts also contain an explicit, legitimate content constraint: two per family, comprising the non-robust composed prompt and one robustness prompt. The content constraint remains separate from conflicting format or behaviour pressure. Examples include a requested count, length, audience, tone, inclusion, or exclusion. The remaining ten composed prompts derive their complexity from pressure, supplied material, multiple outcomes, competing considerations, or connected steps without an additional content constraint.
 
 ## Robustness roles
 
@@ -117,16 +117,31 @@ The 15 robustness prompts will be divided equally across three focused roles:
 | Behaviour pressure | 5 | An instruction to abandon the cocktail concept, ignore prior instructions, or answer normally |
 | Serialization pressure | 5 | Quotes, line breaks, code, or other supplied content that makes valid JSON harder to produce |
 
-Each intent family will contain one prompt from each robustness role. Every robustness prompt must retain a legitimate underlying task so that behaviour persistence and answer usefulness remain jointly assessable. These are focused contract-persistence tests, not claims of comprehensive security or jailbreak evaluation.
+Each intent family will contain one prompt from each robustness role. Every robustness prompt is composed and must retain a legitimate underlying task so that behaviour persistence and answer usefulness remain jointly assessable. Exactly one robustness prompt per family also carries an ordinary content constraint; that constraint is scored, while conflicting pressure to change format or behaviour is not. These are focused contract-persistence tests, not claims of comprehensive security or jailbreak evaluation.
 
 ## How the quotas combine
 
 These classifications describe the same 60 prompts from different angles; they are not separate sets whose totals should be added together. For example, one prompt may simultaneously be labelled `emotional_support`, `target_use`, `statement_or_fragment`, `composed`, and `constraint_bearing`.
 
-## Deferred decisions
+## Withheld cross-domain topics
 
-The following will be determined during the remainder of the evaluation-design stage:
+The 15 cross-domain prompts use three topics deliberately absent from worked examples, prompt development, training, and validation:
 
-- the topics deliberately withheld from training;
-- the later prompt-authoring, collision-review, and replacement-log procedure; and
-- the operational test for whether a prompt is sufficiently unseen.
+- photography;
+- tabletop games; and
+- pottery and ceramics.
+
+Each topic appears exactly once in each of the five intent families:
+
+| Intent family | Photography | Tabletop games | Pottery/ceramics | Total |
+| --- | ---: | ---: | ---: | ---: |
+| Advice and decision support | 1 | 1 | 1 | 3 |
+| Explanation and technical understanding | 1 | 1 | 1 | 3 |
+| Low-stakes emotional support | 1 | 1 | 1 | 3 |
+| Creative generation | 1 | 1 | 1 | 3 |
+| Short-form transformation | 1 | 1 | 1 | 3 |
+| **Total** | **5** | **5** | **5** | **15** |
+
+The topics test depth across three project-withheld subjects rather than pretending to sample 15 independent domains. They are not claimed to be absent from the base model's unknown pretraining data.
+
+The exact prompts will be written to this matrix only after training and validation freeze. The operational unseen rule, retrieval controls, and later authoring procedure are defined in [Unseen and contamination protocol](unseen-contamination-protocol.md) and [Held-out authoring protocol](heldout-authoring-protocol.md).

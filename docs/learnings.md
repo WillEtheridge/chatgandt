@@ -448,3 +448,71 @@ Not necessarily. Freezing exact test prompts first can expose the exam questions
 The useful separation is to freeze the **evaluation rules** before dataset creation, freeze the **training and validation data** before exact test authoring, and freeze the **held-out prompts** before any model training. The fixed blueprint constrains later test selection, while the absent exact prompts prevent dataset authors from training toward known cases. Predeclared collision rules and a retained replacement log make legitimate test-candidate rejection distinguishable from silent cherry-picking.
 
 Cross-domain policy must be established before supervised data are written. Otherwise a test author could inspect the finished dataset and opportunistically call any convenient omission “withheld.” This sequence cannot eliminate every judgment in a small hand-authored experiment, but it makes the direction and timing of those judgments visible.
+
+## 2026-07-15 — Why should similarity retrieval not decide contamination?
+
+Lexical and embedding similarity answer “which existing records should a reviewer inspect?” They do not answer “is this a duplicated experimental scenario?” Shared wording can support different goals, while disguised paraphrases can share little wording. Embedding scores also inherit truncation and model-specific biases.
+
+A stronger process combines exact, lexical, semantic, and metadata retrieval, then applies an explicit substantive rule: same goal, same situation or requested artefact, and an answer reusable through surface substitutions. Retrieval reduces memory burden; recorded judgment preserves the meaning of generalisation.
+
+## 2026-07-15 — Why audit accepted test candidates as well as rejections?
+
+Second-reviewing only rejected candidates can detect overzealous removal, but it cannot show whether the primary reviewer is quietly allowing collisions. A deterministic audit of accepted candidates tests both directions while keeping the workload proportionate. The second reviewer should not see the first decision, because even a short label can anchor the supposedly independent review.
+
+## 2026-07-15 — Why are prompt contamination and response memorisation different?
+
+Prompt contamination is a pre-generation design question: does the evaluation ask a task already used in project development or supervision? Response similarity is a post-generation diagnostic: does the model output suspiciously reproduce an authored answer? A test prompt can be novel while its output echoes training data, and a duplicated prompt can produce a novel response.
+
+Both checks can reuse retrieval machinery, but their sources, timing, review questions, and claims differ. Similarity is evidence worth inspecting, not proof that a particular training example caused the output—especially when the base model's pretraining is unknown.
+
+## 2026-07-15 — What does human calibration of an LLM judge establish?
+
+A small human-scored sample does not turn model judgments into human evaluation or prove that the judge represents public taste. It shows how one recorded human application of the frozen rubric agrees or disagrees with the automated judge under these conditions.
+
+Keeping exact score agreement, pass/fail agreement, and weighted agreement visible is more informative than silently adjudicating differences. A predeclared sample and no post-hoc agreement threshold also prevent inconvenient disagreement from becoming a reason to rewrite the evaluation after seeing results.
+
+## 2026-07-15 — What does an embedding's maximum length mean for overlap checks?
+
+`all-MiniLM-L6-v2` accepts at most 256 wordpieces in this protocol. Wordpieces are tokenizer units, not words or characters. A short-looking code fragment can split heavily, while ordinary words may be one piece. Anything after the limit is absent from the vector, so a semantic similarity score cannot provide evidence about that omitted content.
+
+A reproducible overlap tool should therefore record the untruncated token count and an explicit truncation flag. Truncated prompts still receive lexical, metadata, and complete-text semantic review. A real long supplied-text calibration case is more informative than merely documenting the limit because it proves the diagnostic path works.
+
+## 2026-07-15 — How should unresolved judgments affect denominators?
+
+`unable_to_assess` is useful only if it does not become a quiet way to discard difficult failures. After one fresh blinded judgment, a still-unresolved qualitative dimension remains visible, cannot full-pass, and is excluded only from a separately labelled resolved-score denominator. A persistently unresolved pair likewise stays visible outside the resolved conditional preference denominator and as an unresolved end-to-end outcome.
+
+Every rate should show both numerator and denominator. This makes the difference between "not applicable," "failed," and "not resolved" inspectable rather than allowing whichever denominator looks best after results.
+
+## 2026-07-15 — Why bootstrap prompt IDs rather than individual system rows?
+
+B and C answer the same prompts, so their outcomes are paired. Resampling their rows independently would break that relationship and overstate or misstate uncertainty. A paired bootstrap samples prompt IDs and carries both systems' values for each selected prompt together.
+
+The interval then describes how the observed C-minus-B difference varies when prompts from this authored sample are resampled. It does not correct biased prompt selection, estimate generation-seed variability, or turn 60 prompts into a population survey.
+
+## 2026-07-15 — Why attribute response similarity to system exposure?
+
+System B sees the worked responses at inference, C sees training responses through fine-tuning, and D sees both; A sees neither. The same exact or semantic match therefore has a different interpretation for each system. Retaining the reference collection and exposure status prevents a base-model coincidence from being described as fine-tuning memorisation.
+
+Repeated outputs across unrelated prompts are another problem again: generic collapse or low diversity. It can reuse the same retrieval machinery, but should be reported separately from copying a project-authored reference.
+
+## 2026-07-15 — When is a digest evidence of a process rather than a self-consistent claim?
+
+A digest proves that some named bytes have not changed relative to that digest; by itself it does not prove where those bytes came from or that a command was executed. Provenance becomes materially stronger when the consumer starts from the producing system's real artifact, reruns its ordinary integrity checks, and derives downstream records from those exact bytes instead of accepting caller-composed summaries.
+
+The same distinction applies to verification logs. Stored JSON can be checked for internal integrity and reproduced later, but a person who controls the machine can fabricate code, output, clocks, and hashes together. ChatG&T therefore allows only the process that just completed all live gates to hold the in-memory capability for a freeze transition. This prevents accidental or API-level reuse of stale evidence, while the documentation remains honest that independent attestation would require an external trust anchor such as protected CI and signed provenance.
+
+Time is also part of provenance. Individually valid timestamps can still describe an impossible history. Cross-artifact validation should enforce one explicit UTC chronology—from source freezes through authoring, reviews, semantic checks, bundle freeze, candidate observation, live gates, and review completion—and reject future-dated records. Equality may be legitimate when several operations share the clock's recording resolution.
+
+## 2026-07-15 — Why is a version label not a treatment identity?
+
+A prompt can call itself `five-shot-v3`, contain five plausible examples, and carry perfectly consistent replacement digests without being the prompt selected by the experiment. Labels and internal consistency establish shape; they do not establish experimental identity.
+
+The formal evaluation must reach the same canonical identity mechanism used when the prompt was selected: deterministic assembly, exact frozen bytes, the expected digest, and the selected source path. The aggregate must also bind the harness and configuration sources that interpret those bytes. Otherwise a later code or configuration change can alter the treatment while leaving the high-level A/B/C/D description apparently intact.
+
+## 2026-07-15 — When should an adversarial review loop stop?
+
+An adversarial review needs an explicit stopping rule. Without one, each successful repair creates a larger system with new surfaces to challenge, and the work can drift from protecting the experiment into designing audit infrastructure.
+
+For ChatG&T, a finding blocks freeze only when it could change the compared treatments, evaluation population, scoring rules, denominators, leakage boundary, or interpretation of the primary result. Reproducibility weaknesses that constrain a claim should be documented; resistance to a malicious maintainer who controls the repository requires an external trust system and is not a reasonable local portfolio requirement.
+
+The practical lesson is to define the required assurance level before beginning review, classify findings by their effect on the research question, and stop once material blockers are resolved and remaining limitations are explicit.

@@ -1119,3 +1119,118 @@ The final gate remains unchanged in substance: no model training and no held-out
 - Stage 5 authors and freezes the exact held-out set.
 - Stage 6 is the first stage permitted to fine-tune the model.
 - Any later change to frozen supervised data or evaluation assets requires a versioned protocol amendment and a repeated contamination audit.
+
+## D-039 — Operationalise project-unseen prompts with retrieval and recorded judgment
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; version 1 frozen
+
+### Decision
+
+“Unseen” will mean absent as an exact, close-paraphrase, or substantively duplicated scenario within observable ChatG&T project material. Shared domain or task form is allowed when the required substantive answer differs. A duplicated scenario requires the same user goal, substantially the same situation, concept, source, or artefact, and an answer reusable with only surface changes.
+
+Exact normalized matching is followed by top-five RapidFuzz 3.14.5 `token_ratio`, pinned MiniLM semantic, and structured-metadata retrieval. Scores retrieve neighbours but never decide contamination. Every rejection and uncertainty, plus a deterministic 10% audit of accepts, receives a decision-blinded second review. Unresolved cases are conservatively replaced with the history retained.
+
+Photography, tabletop games, and pottery/ceramics are withheld from worked examples, prompt development, training, and validation. Each supplies one cross-domain prompt in every intent family.
+
+### Rationale
+
+Exact text checks miss paraphrases, while numerical similarity cannot distinguish a shared capability from a duplicated answer. Combining several retrieval signals with an executable semantic rule narrows the manual search without outsourcing the scientific judgment to an opaque threshold.
+
+Three crossed domains provide broader capability coverage than three isolated prompts while keeping the exclusion enforceable during dataset creation. The claim remains project-specific because base-model pretraining is unknown.
+
+### Implications
+
+- The held-out set requires full collision records and a replacement log.
+- MiniLM's 256-wordpiece truncation and RapidFuzz subset inflation remain disclosed limitations.
+- Exact held-out prompts are still authored only after supervised data freeze.
+- The protocol must pass independent adversarial review before its identity is frozen.
+
+## D-040 — Freeze judging, pairwise, uncertainty, and similarity procedures before outputs
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; version 1 frozen
+
+### Decision
+
+Every schema-valid output receives one blinded LLM-judge application of the anchored three-dimension rubric. The project author independently calibrates 24 response packets and 15 B-versus-C pairs selected by frozen hash rules. Human and LLM evidence remains separately labelled and agreement is reported without a post-hoc pass threshold.
+
+B-versus-C order is deterministically balanced 30/30 across the 60 prompts. Conditional preference uses only pairs where both outputs are schema-valid; the end-to-end outcome additionally awards a sole schema-valid response and records two invalid responses as `both_failed`.
+
+Overall binary rates use 95% Wilson intervals. Paired C-minus-B differences use 10,000 prompt-ID bootstrap resamples with seed `20260715`, always carrying each prompt's paired system outcomes together. Subgroups are diagnostic. Generated-response similarity is checked separately from prompt contamination against worked-example and training responses using exact, lexical, semantic, and recorded human-readable review.
+
+### Rationale
+
+Freezing denominators, eligibility, ties, order, judge roles, calibration samples, uncertainty, and similarity interpretation before output inspection removes many opportunities to select the most flattering analysis later. A limited human calibration is feasible for a portfolio project without misrepresenting one author's judgments as population preference.
+
+### Implications
+
+- Qualitative LLM-judge results are not called human evaluation.
+- Schema failures remain end-to-end failures without invented qualitative scores.
+- Poor human–LLM agreement limits the claims; it does not trigger rubric tuning on held-out outputs.
+- Similarity flags identify suspicious cases but cannot prove fine-tuning memorisation or reveal base-model pretraining.
+
+## D-041 — Pin proportionate retrieval tooling and expose its truncation boundary
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; version 1 frozen
+
+### Decision
+
+Lexical retrieval uses RapidFuzz `3.14.5` `fuzz.token_ratio`. Semantic retrieval uses `sentence-transformers/all-MiniLM-L6-v2` at revision `1110a243fdf4706b3f48f1d95db1a4f5529b4d41`, loaded through the pinned Transformers runtime with its documented attention-masked final-hidden-state mean pooling, L2 normalization, 384 dimensions, and cosine ranking.
+
+Semantic inputs truncate at 256 wordpieces. Every retrieval record carries the pre-truncation wordpiece count and truncation flag; truncated candidates or references require complete-text manual review. A deliberately long supplied-text calibration case must prove that diagnostic executes.
+
+### Rationale
+
+The project needs to retrieve neighbours from fewer than 500 short English records, not operate a search service. Exhaustive local comparison with a small encoder is cheaper and more reproducible than a hosted API or vector database. RapidFuzz complements the encoder on surface edits, but neither score is a contamination verdict.
+
+### Implications
+
+- RapidFuzz remains retrieval-only even at very high similarity.
+- Content after 256 MiniLM wordpieces is invisible to the semantic vector and cannot be described as checked by that signal.
+- The exact model revision, pooling implementation, package version, top-k values, and calibration evidence are part of protocol identity.
+- Changing any selected tool or truncation rule requires a new protocol version before results.
+
+## D-042 — Author held-out prompts only through the frozen matrix and replacement process
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; version 1 frozen
+
+### Decision
+
+Stage 5 will begin with a blank 60-row quota matrix after supervised data freeze. Candidates receive metadata before collision review and may be replaced only for the seven versioned reasons in the authoring protocol. Rejected candidate identity, rationale, retrieval/review evidence, and replacement linkage remain in the record. No held-out response may exist during authoring.
+
+The held-out set freezes only after exact IDs and every global and crossed quota pass, all collision decisions resolve, the withheld-domain absence check repeats against frozen sources, and the prompt, review, replacement, pair-order, and protocol identities enter one digest manifest.
+
+### Rationale
+
+Writing exact prompts after supervised data protects dataset authors from known exam questions, but creates a risk that the test author selects convenient omissions. A predeclared matrix, closed replacement vocabulary, retained rejected candidates, independent review, and no-output rule make later selection visible and auditable.
+
+### Implications
+
+- A collision replaces the held-out candidate; it does not rewrite frozen supervision.
+- Metadata and quota labels cannot be revised around observed system performance.
+- Any post-freeze prompt change creates a new held-out version and repeats the collision audit.
+
+## D-043 — Freeze evaluation protocol v1 at a proportionate research boundary
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; version 1 frozen
+
+### Decision
+
+Freeze `chatgnt-evaluation-v1` after the final live verifier, semantic calibration, and 128-test suite passed with no unresolved experiment-validity blocker. Preserve one consolidated review summary and the final machine-readable evidence instead of six verbose intermediate review reports.
+
+The protocol protects the compared treatments, population, scoring, denominators, analysis, leakage boundaries, and ordering of later work. It does not claim to defend repository evidence against a person who controls the local machine. Independent attestation would require a separate external trust system and is outside this portfolio experiment.
+
+### Rationale
+
+Adversarial review improved the experiment materially, including exposing a gap where a different five-example prompt could retain the selected version label. Once that treatment identity was fixed, further findings concerned local audit hardening rather than whether the research comparison would answer its question. Continuing indefinitely would consume effort without improving the experiment's practical validity.
+
+### Implications
+
+- Stage 3 is complete and Stage 4 may begin.
+- Any normative evaluation change requires a new protocol version.
+- The six review cycles are represented by one honest summary, not as six independent human audits.
+- Exact held-out prompts remain prohibited until the supervised dataset is frozen.

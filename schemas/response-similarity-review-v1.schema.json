@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:response-similarity-review:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_schema_version", "review_id", "system_id", "response_id", "response_original_sha256",
+    "response_text_view_sha256", "response_pre_truncation_wordpieces", "response_semantic_input_truncated",
+    "reference_collection", "reference_id", "reference_original_sha256", "reference_text_view_sha256",
+    "reference_pre_truncation_wordpieces", "reference_semantic_input_truncated", "exposure_status",
+    "retrieval_signals", "exact_text_view_match", "lexical_rank", "lexical_score", "semantic_rank",
+    "semantic_score", "complete_text_reviewed", "decision", "rationale", "reviewer_type", "reviewer_identity"
+  ],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "review_id": {"type": "string", "pattern": "^response-review-v1-[A-Za-z0-9._-]+$"},
+    "system_id": {"enum": ["A", "B", "C", "D"]},
+    "response_id": {"type": "string", "pattern": "\\S"},
+    "response_original_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "response_text_view_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "response_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+    "response_semantic_input_truncated": {"type": "boolean"},
+    "reference_collection": {"enum": ["worked_example_responses", "training_responses", "heldout_system_responses"]},
+    "reference_id": {"type": "string", "pattern": "\\S"},
+    "reference_original_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reference_text_view_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reference_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+    "reference_semantic_input_truncated": {"type": "boolean"},
+    "exposure_status": {"enum": ["exposed", "diagnostic_not_exposed", "within_system_diversity"]},
+    "retrieval_signals": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["exact", "lexical", "semantic"]}},
+    "exact_text_view_match": {"type": "boolean"},
+    "lexical_rank": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+    "lexical_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+    "semantic_rank": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+    "semantic_score": {"type": ["number", "null"], "minimum": -1, "maximum": 1},
+    "complete_text_reviewed": {"type": "boolean"},
+    "decision": {"enum": ["no_concern", "review_flag", "exact_project_response", "generic_collapse_flag"]},
+    "rationale": {"type": "string", "pattern": "\\S"},
+    "reviewer_type": {"enum": ["human", "llm_agent"]},
+    "reviewer_identity": {"type": "string", "pattern": "\\S"}
+  },
+  "allOf": [
+    {"if": {"anyOf": [{"properties": {"response_semantic_input_truncated": {"const": true}}}, {"properties": {"reference_semantic_input_truncated": {"const": true}}}]}, "then": {"properties": {"complete_text_reviewed": {"const": true}}}},
+    {"if": {"properties": {"retrieval_signals": {"contains": {"const": "lexical"}}}}, "then": {"properties": {"lexical_rank": {"type": "integer"}, "lexical_score": {"type": "number"}}}, "else": {"properties": {"lexical_rank": {"type": "null"}, "lexical_score": {"type": "null"}}}},
+    {"if": {"properties": {"retrieval_signals": {"contains": {"const": "semantic"}}}}, "then": {"properties": {"semantic_rank": {"type": "integer"}, "semantic_score": {"type": "number"}}}, "else": {"properties": {"semantic_rank": {"type": "null"}, "semantic_score": {"type": "null"}}}},
+    {"if": {"properties": {"exact_text_view_match": {"const": true}}}, "then": {"properties": {"retrieval_signals": {"contains": {"const": "exact"}}}}},
+    {"if": {"properties": {"decision": {"const": "generic_collapse_flag"}}}, "then": {"properties": {"reference_collection": {"const": "heldout_system_responses"}, "exposure_status": {"const": "within_system_diversity"}}}}
+  ]
+}

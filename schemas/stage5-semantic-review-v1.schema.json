@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:stage5-semantic-review:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifact_id", "status", "attestation_statement", "protocol_aggregate_sha256", "source_identities_sha256", "authoring_schedule_sha256", "embedding_model_id", "embedding_model_revision", "verifier_identity", "verifier_command", "verifier_implementation_sha256", "verifier_stdout", "verifier_stdout_sha256", "started_at_utc", "verified_at_utc", "retrieval_evidence", "candidate_attestations"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "artifact_id": {"type": "string", "pattern": "^stage5-semantic-review-v1-[A-Za-z0-9._-]+$"},
+    "status": {"const": "verified"},
+    "attestation_statement": {"const": "The named verifier recomputed semantic embeddings and token diagnostics from the bound complete candidate and source records, and reviewed every final candidate attestation without model outputs."},
+    "protocol_aggregate_sha256": {"$ref": "#/$defs/digest"},
+    "source_identities_sha256": {"$ref": "#/$defs/digest"},
+    "authoring_schedule_sha256": {"$ref": "#/$defs/digest"},
+    "embedding_model_id": {"const": "sentence-transformers/all-MiniLM-L6-v2"},
+    "embedding_model_revision": {"const": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"},
+    "verifier_identity": {"type": "string", "pattern": "\\S"},
+    "verifier_command": {"const": "uv run --frozen python scripts/generate_semantic_evidence.py stage5"},
+    "verifier_implementation_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "verifier_stdout": {"type":"string","minLength":1},
+    "verifier_stdout_sha256": {"type":"string","pattern":"^[0-9a-f]{64}$"},
+    "started_at_utc": {"type":"string","format":"date-time"},
+    "verified_at_utc": {"type": "string", "format": "date-time"},
+    "retrieval_evidence": {"type": "array", "items": {"$ref": "#/$defs/retrieval"}},
+    "candidate_attestations": {"type": "array", "items": {"$ref": "#/$defs/attestation"}}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "retrieval": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidate_id", "matrix_prompt_id", "candidate_original_sha256", "candidate_normalized_sha256", "candidate_pre_truncation_wordpieces", "candidate_semantic_input_truncated", "source_identity_id", "source_content_sha256", "reference_diagnostics", "neighbours"],
+      "properties": {
+        "candidate_id": {"type": "string", "pattern": "\\S"},
+        "matrix_prompt_id": {"type": "string", "pattern": "^heldout-v1-[0-9]{3}$"},
+        "candidate_original_sha256": {"$ref": "#/$defs/digest"},
+        "candidate_normalized_sha256": {"$ref": "#/$defs/digest"},
+        "candidate_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+        "candidate_semantic_input_truncated": {"type": "boolean"},
+        "source_identity_id": {"type": "string", "pattern": "^source-v1-[A-Za-z0-9._-]+$"},
+        "source_content_sha256": {"$ref": "#/$defs/digest"},
+        "reference_diagnostics": {"type": "array", "items": {"$ref": "#/$defs/diagnostic"}},
+        "neighbours": {"type": "array", "maxItems": 5, "items": {"$ref": "#/$defs/neighbour"}}
+      }
+    },
+    "diagnostic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reference_id", "reference_pre_truncation_wordpieces", "reference_semantic_input_truncated"],
+      "properties": {
+        "reference_id": {"type": "string", "pattern": "\\S"},
+        "reference_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+        "reference_semantic_input_truncated": {"type": "boolean"}
+      }
+    },
+    "neighbour": {
+      "type": "object", "additionalProperties": false,
+      "required": ["reference_id", "reference_pre_truncation_wordpieces", "reference_semantic_input_truncated", "semantic_rank", "semantic_score"],
+      "properties": {
+        "reference_id": {"type": "string", "pattern": "\\S"},
+        "reference_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+        "reference_semantic_input_truncated": {"type": "boolean"},
+        "semantic_rank": {"type": "integer", "minimum": 1, "maximum": 5},
+        "semantic_score": {"type": "number", "minimum": -1, "maximum": 1}
+      }
+    },
+    "attestation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["candidate_id", "matrix_prompt_id", "candidate_original_sha256", "candidate_normalized_sha256", "scope_fit", "complexity_correct", "underlying_task_clear", "answerable", "natural", "scorable", "complete_text_reviewed", "rationale"],
+      "properties": {
+        "candidate_id": {"type": "string", "pattern": "^heldout-v1-[0-9]{3}$"},
+        "matrix_prompt_id": {"type": "string", "pattern": "^heldout-v1-[0-9]{3}$"},
+        "candidate_original_sha256": {"$ref": "#/$defs/digest"},
+        "candidate_normalized_sha256": {"$ref": "#/$defs/digest"},
+        "scope_fit": {"type": "boolean"},
+        "complexity_correct": {"type": "boolean"},
+        "underlying_task_clear": {"type": "boolean"},
+        "answerable": {"type": "boolean"},
+        "natural": {"type": "boolean"},
+        "scorable": {"type": "boolean"},
+        "complete_text_reviewed": {"type": "boolean"},
+        "rationale": {"type": "string", "pattern": "\\S"}
+      }
+    }
+  }
+}

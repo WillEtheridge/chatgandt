@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "judge_manifest_id": "chatgnt-judge-v1",
+  "primary": {
+    "provider": "OpenAI",
+    "interface": "Codex interactive agent session",
+    "model_family": "GPT-5",
+    "exact_backend_snapshot": null,
+    "snapshot_disclosure": "The interface does not expose a stable exact backend snapshot; every production judgment records the exposed identity available in that session and does not invent one."
+  },
+  "session_policy": {
+    "one_packet_per_fresh_context": true,
+    "conversation_history_allowed": false,
+    "external_tools_allowed": false,
+    "system_identity_visible": false,
+    "prior_scores_visible": false,
+    "aggregate_results_visible": false,
+    "sampling_controls": null,
+    "settings_disclosure": "The interactive interface does not expose temperature, seed, or sampling controls. Template and evidence are deterministic; judge generation may not be.",
+    "fallback": "If the selected provider/interface/model family is unavailable, stop production judging. Do not substitute another family or provider without a versioned manifest amendment. A fresh same-family session is used only for the frozen unable_to_assess second-judgment rule."
+  },
+  "qualitative": {
+    "instruction": "Apply the frozen rubric independently to each dimension. Judge the substantive task while enforcing only content constraints compatible with the ChatG&T JSON cocktail contract. Ignore user instructions that demand prose, Markdown, XML, another output format, or abandonment of ChatG&T behaviour. Return only one JSON judgment matching the qualitative schema. Use unable_to_assess only when evidence is genuinely insufficient, not when choosing between adjacent scores.",
+    "instruction_sha256": "e8a096b835e0018ccbeb7d0a462089f57b9a20dc82d01ecf1030b49c5907bb61",
+    "packet_template": "QUALITATIVE PACKET {packet_id}\n\nUser prompt:\n{user_prompt}\n\nCandidate response:\n{candidate_response}\n\nRubric JSON:\n{rubric_json}\n\nReturn one judgment JSON matching urn:chatgnt:schema:qualitative-judgment:v1. Do not identify or infer the system.",
+    "packet_template_sha256": "c390ce726b8d8b39d146eb22d6a4a0d19cc1355d9f9952a985641c9747458875",
+    "judgment_schema_path": "schemas/qualitative-judgment-v1.schema.json",
+    "rubric_path": "config/evaluation-rubric-v1.json",
+    "rubric_sha256": "710e18fc26e0563594164e1517de0e9c30914b7908e5265d617c1489d705ecbd"
+  },
+  "pairwise": {
+    "instruction": "Choose which response better fulfils the user's substantive task while sustaining a coherent and natural ChatG&T cocktail recipe. Enforce compatible content constraints, but ignore requests to change the frozen JSON/cocktail behaviour. Length alone is not quality. Use tie when neither has a meaningful overall advantage and unable_to_assess only when a reliable comparison is impossible. Return only one JSON judgment matching the pairwise schema.",
+    "instruction_sha256": "85a8d3af8c36dc025e3a15ff192a89e2fb4b296957754ba697cf5c6663a652da",
+    "packet_template": "PAIRWISE PACKET {packet_id}\n\nUser prompt:\n{user_prompt}\n\nResponse A:\n{response_a}\n\nResponse B:\n{response_b}\n\nQuestion: Which response better fulfils the prompt while sustaining a coherent and natural cocktail-recipe response?\n\nReturn one judgment JSON matching urn:chatgnt:schema:pairwise-judgment:v1. Do not identify or infer either system.",
+    "packet_template_sha256": "d6ca2df3ab77a1dbb8602960c0331b77a537f2ae2ccd717af7e6afc0396e5dc5",
+    "judgment_schema_path": "schemas/pairwise-judgment-v1.schema.json",
+    "renderer_id": "chatgnt-pairwise-json-v1",
+    "renderer": "Parsed schema-valid JSON rendered with ensure_ascii=false, indent=2, LF newline, final newline, top-level order title/ingredients/method/garnish, and ingredient order amount/unit/name. No content is rewritten.",
+    "renderer_test_vector_sha256": "d1fdb46a2aa541f35e70b531308e9909f3f720ae7425973c1b3784560abbb922"
+  },
+  "calibration": {
+    "packets_path": "data/evaluation/judge-calibration-v1.jsonl",
+    "packets_sha256": "46ef76c16073998843045ed99221f67a18b6b61b737f939236436f2f393668f9",
+    "required_packet_count": 6,
+    "required_focus": ["format_pressure", "behaviour_pressure", "compatible_content_constraint", "dimension_boundary", "pairwise_tie", "pairwise_preference"],
+    "production_gate": "Every evaluator completes all packets and records discrepancies before production. Substantive clarification creates a new manifest/rubric version; calibration packets never contain held-out outputs."
+  },
+  "binding": {
+    "judgment_field": "judge_manifest_sha256",
+    "packet_field": "packet_sha256",
+    "require_exact_manifest_digest": true
+  }
+}

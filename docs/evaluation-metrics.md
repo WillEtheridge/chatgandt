@@ -85,7 +85,9 @@ Each dimension uses the same three-point scale:
 | Metaphorical coherence | Recipe elements feel arbitrary or disconnected | The metaphor generally works but contains weaker elements | The complete recipe forms one meaningful, well-developed metaphor |
 | Recipe-style execution | The recipe voice is absent, inconsistent, or badly forced | The recipe voice is clear and readable, with some awkward or generic phrasing | The recipe voice is natural, concise, playful, and strengthens the answer |
 
-A materially incorrect response cannot score above 1 for underlying-answer quality. An evaluator who cannot make a reliable judgment records `unable_to_assess`; the response remains unresolved until another evaluator assesses it.
+A materially incorrect response cannot score above 1 for underlying-answer quality. An evaluator who cannot make a reliable judgment records `unable_to_assess`; the response receives one fresh blinded judgment. If the same dimension remains unresolved, it cannot contribute to a full pass. It remains in schema-valid and all-attempt counts, appears in a separate unresolved count, and is excluded only from the resolved dimension-rate denominator, which must be shown.
+
+The normative anchors are stored in [`evaluation-rubric-v1.json`](../config/evaluation-rubric-v1.json). Missing an essential compatible substantive/content constraint forces underlying-answer quality to 1. Requests to replace JSON with prose, Markdown, XML, or another format—or to abandon the cocktail behaviour—conflict with the frozen contract and are excluded from this penalty. Structural requirements are not scored a second time after schema-valid eligibility has been established.
 
 ## Joint response-level pass
 
@@ -104,9 +106,9 @@ Scores cannot compensate for one another. A response fails if it is structurally
 
 ## LLM-judge and human evaluation
 
-Codex or another frontier model may apply the qualitative rubric at scale, but those results must be labelled **LLM-judge scores**, not human scores.
+One recorded frontier-model judge applies the qualitative rubric once to every schema-valid response, but those results are labelled **LLM-judge scores**, not human scores.
 
-LLM judging should use a separate context containing only the user prompt, candidate response, and frozen rubric. Model identities must be hidden, and the judge model and version must be recorded. Human scoring on a meaningful sample will be used to calibrate the rubric and examine human–LLM agreement.
+LLM judging follows the exact templates, provider/interface/model-family policy, fallback rule, session disclosure, renderer, and pre-production calibration in [`judge-manifest-v1.json`](../config/judge-manifest-v1.json). Every judgment binds the manifest and packet digests. The chosen interface does not expose a stable backend snapshot or sampling settings, so those values are recorded as unavailable rather than inferred. The project author independently scores 24 deterministically selected eligible response packets. This is pragmatic coverage, not a powered validation study.
 
 Public Tasting Room votes remain separate from the curated evaluation because public participants and prompts are self-selected.
 
@@ -123,6 +125,8 @@ The evaluator answers:
 > Which response better fulfils the prompt while sustaining a coherent and natural cocktail-recipe response?
 
 System B preference rate, System C preference rate, and tie rate are all reported. Non-tie preference may be reported as a secondary figure, but ties must not be hidden.
+
+Response order is precomputed and balanced 30/30 across the complete prompt set using the frozen seed and a deterministic hash ordering. Conditional eligibility is assessed later, so its displayed subset may not remain balanced and the achieved order counts are reported. Every conditionally eligible pair receives one primary blinded LLM judgment. One second blinded judgment handles `unable_to_assess`; a second unresolved result remains visible and outside the resolved conditional denominator. A pragmatic 15-pair human calibration sample targets five per slice. Exact rendering, selection, blinding, shortfall, and identity-reveal rules are specified in [Blinded pairwise protocol](blind-pairwise-protocol.md).
 
 ### End-to-end outcome
 
@@ -147,6 +151,18 @@ Inputs are tokenized before timing. CUDA is synchronized immediately before and 
 Measurements must use matched hardware, quantisation, inference software, and generation settings. Recorded system/prompt combinations run independently, without a reusable conversation cache, and in a reproducibly randomized order. The experiment's primary one-sample-per-system/prompt design supports descriptive latency comparisons; dedicated repeated benchmarking and tail-latency claims are outside its scope.
 
 Input-token reduction and latency reduction are reported separately. Fewer input tokens do not by themselves establish lower latency.
+
+## Uncertainty and denominators
+
+Every system has 60 attempted generations. Missing and failed attempts remain in structural and full-response denominators. Overall binary rates receive 95% Wilson score intervals. Pairwise B wins, C wins, and ties retain separate counts and Wilson intervals; a decisive-only preference interval is supplementary.
+
+Matched C-minus-B differences use 10,000 paired non-parametric bootstrap resamples of prompt IDs with seed `20260715` and percentile 95% intervals. Each sampled prompt carries its B and C values together, preserving the paired design. Subgroup results remain diagnostic counts and rates without intervals. The experiment does not use null-hypothesis significance tests or choose among many comparisons according to whichever appears favourable.
+
+Two dimension summaries remain distinct. **Conditional resolved acceptability** is scores `>=2` divided by schema-valid responses with a resolved integer score; unresolved counts are shown beside it. **End-to-end dimension success** is scores `>=2` divided by all 60 attempts, so structural failures and unresolved scores do not succeed without being relabelled as score 1. Full-response pass across structure and all dimensions is the headline quality rate.
+
+## Response similarity
+
+Generated responses are checked for exact, lexical, and semantic overlap with project-authored references under [Response similarity and memorisation protocol](response-similarity-protocol.md). Exposure attribution is retained: worked responses are primary references for B/D, while training responses are primary references for C/D. Cross-collection comparisons for A or other unexposed systems are diagnostic controls, not evidence that project training caused copying. Repetition among one system's held-out outputs is reported separately as generic-collapse/output-diversity evidence rather than memorisation.
 
 ## Analysis and interpretation
 

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:heldout-prompt:v1",
+  "title": "ChatG&T held-out prompt metadata v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_schema_version",
+    "prompt_id",
+    "prompt",
+    "authored_at_utc",
+    "intent_family",
+    "reporting_slice",
+    "input_form",
+    "complexity",
+    "complexity_sources",
+    "constraint_bearing",
+    "robustness_role",
+    "withheld_domain",
+    "topic",
+    "user_goal",
+    "requested_task_or_artefact",
+    "scenario_summary",
+    "important_constraints"
+  ],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "prompt_id": {"type": "string", "pattern": "^heldout-v1-[0-9]{3}$"},
+    "prompt": {"type": "string", "pattern": "\\S"},
+    "authored_at_utc": {"type":"string","format":"date-time"},
+    "intent_family": {
+      "enum": [
+        "advice_decision_support",
+        "explanation_technical_understanding",
+        "low_stakes_emotional_support",
+        "creative_generation",
+        "short_form_transformation"
+      ]
+    },
+    "reporting_slice": {"enum": ["target_use", "cross_domain", "robustness"]},
+    "input_form": {"enum": ["question", "direct_request_or_command", "statement_or_fragment"]},
+    "complexity": {"enum": ["standard", "composed"]},
+    "complexity_sources": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"enum": ["ordinary_content_constraint", "supplied_content", "multiple_outcomes", "competing_considerations", "connected_steps", "robustness_pressure"]}
+    },
+    "constraint_bearing": {"type": "boolean"},
+    "robustness_role": {"enum": [null, "format_pressure", "behaviour_pressure", "serialization_pressure"]},
+    "withheld_domain": {"enum": [null, "photography", "tabletop_games", "pottery_ceramics"]},
+    "topic": {"type": "string", "pattern": "\\S"},
+    "user_goal": {"type": "string", "pattern": "\\S"},
+    "requested_task_or_artefact": {"type": "string", "pattern": "\\S"},
+    "scenario_summary": {"type": "string", "pattern": "\\S"},
+    "important_constraints": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "\\S"},
+      "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"reporting_slice": {"const": "robustness"}}, "required": ["reporting_slice"]},
+      "then": {"properties": {"complexity": {"const": "composed"}}}
+    },
+    {
+      "if": {"properties": {"reporting_slice": {"const": "robustness"}}, "required": ["reporting_slice"]},
+      "then": {"properties": {"robustness_role": {"type": "string"}}},
+      "else": {"properties": {"robustness_role": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"reporting_slice": {"const": "cross_domain"}}, "required": ["reporting_slice"]},
+      "then": {"properties": {"withheld_domain": {"type": "string"}}},
+      "else": {"properties": {"withheld_domain": {"type": "null"}}}
+    },
+    {
+      "if": {"properties": {"constraint_bearing": {"const": true}}, "required": ["constraint_bearing"]},
+      "then": {
+        "properties": {
+          "complexity": {"const": "composed"},
+          "complexity_sources": {"contains": {"const": "ordinary_content_constraint"}},
+          "important_constraints": {"minItems": 1}
+        }
+      },
+      "else": {
+        "properties": {
+          "complexity_sources": {"not": {"contains": {"const": "ordinary_content_constraint"}}},
+          "important_constraints": {"maxItems": 0}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"complexity": {"const": "standard"}}, "required": ["complexity"]},
+      "then": {
+        "properties": {
+          "constraint_bearing": {"const": false},
+          "complexity_sources": {"maxItems": 0},
+          "important_constraints": {"maxItems": 0}
+        }
+      },
+      "else": {"properties": {"complexity_sources": {"minItems": 1}}}
+    },
+    {
+      "if": {"properties": {"reporting_slice": {"const": "robustness"}}, "required": ["reporting_slice"]},
+      "then": {
+        "properties": {
+          "complexity": {"const": "composed"},
+          "complexity_sources": {"contains": {"const": "robustness_pressure"}}
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:prompt-overlap-review:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_schema_version", "review_id", "matrix_prompt_id", "candidate_id",
+    "candidate_original_sha256", "candidate_normalized_sha256",
+    "candidate_pre_truncation_wordpieces", "candidate_semantic_input_truncated",
+    "candidate_complete_text_reviewed", "review_scope", "review_round", "trigger",
+    "reviewer_type", "reviewer_identity", "blind_to_prior_decision", "prior_review_ids",
+    "searched_source_identity_ids", "retrieval_coverage", "decision", "neighbours", "rationale", "reviewed_at_utc"
+  ],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "review_id": {"type": "string", "pattern": "^prompt-review-v1-[A-Za-z0-9._-]+$"},
+    "matrix_prompt_id": {"type": "string", "pattern": "^heldout-v1-[0-9]{3}$"},
+    "candidate_id": {"type": "string", "pattern": "\\S"},
+    "candidate_original_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidate_normalized_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidate_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+    "candidate_semantic_input_truncated": {"type": "boolean"},
+    "candidate_complete_text_reviewed": {"type": "boolean"},
+    "review_scope": {"enum": ["contamination", "selection"]},
+    "review_round": {"enum": ["primary", "second", "adjudication"]},
+    "trigger": {"enum": ["routine", "rejection_confirmation", "uncertainty_resolution", "accepted_audit", "selection_rejection", "disagreement"]},
+    "reviewer_type": {"enum": ["human", "llm_agent"]},
+    "reviewer_identity": {"type": "string", "pattern": "\\S"},
+    "blind_to_prior_decision": {"type": "boolean"},
+    "prior_review_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^prompt-review-v1-[A-Za-z0-9._-]+$"}},
+    "searched_source_identity_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^source-v1-[A-Za-z0-9._-]+$"}},
+    "retrieval_coverage": {"type": "array", "items": {"$ref": "#/$defs/coverage"}},
+    "decision": {"enum": ["allow", "reject", "uncertain"]},
+    "neighbours": {"type": "array", "items": {"$ref": "#/$defs/neighbour"}},
+    "rationale": {"type": "string", "pattern": "\\S"}
+    ,"reviewed_at_utc": {"type":"string","format":"date-time"}
+  },
+  "allOf": [
+    {"if": {"properties": {"candidate_semantic_input_truncated": {"const": true}}}, "then": {"properties": {"candidate_complete_text_reviewed": {"const": true}}}},
+    {"if": {"properties": {"review_round": {"const": "primary"}}}, "then": {"properties": {"blind_to_prior_decision": {"const": false}, "prior_review_ids": {"maxItems": 0}}}},
+    {"if": {"properties": {"review_round": {"const": "second"}}}, "then": {"properties": {"blind_to_prior_decision": {"const": true}, "prior_review_ids": {"minItems": 1, "maxItems": 1}}}},
+    {"if": {"properties": {"review_scope": {"const": "selection"}}}, "then": {"properties": {"searched_source_identity_ids": {"maxItems": 0}, "retrieval_coverage": {"maxItems": 0}, "neighbours": {"maxItems": 0}}}, "else": {"properties": {"searched_source_identity_ids": {"minItems": 1}, "retrieval_coverage": {"minItems": 1}}}}
+  ],
+  "$defs": {
+    "answer": {"enum": ["yes", "no", "uncertain"]},
+    "coverage": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_identity_id", "eligible_record_count", "eligible_record_ids", "lexical_returned", "semantic_returned", "metadata_returned", "exact_match_count", "withheld_domain_checked", "search_complete"],
+      "properties": {
+        "source_identity_id": {"type": "string", "pattern": "^source-v1-[A-Za-z0-9._-]+$"},
+        "eligible_record_count": {"type": "integer", "minimum": 0},
+        "eligible_record_ids": {"type":"array","uniqueItems":true,"items":{"type":"string","pattern":"\\S"}},
+        "lexical_returned": {"type": "integer", "minimum": 0, "maximum": 5},
+        "semantic_returned": {"type": "integer", "minimum": 0, "maximum": 5},
+        "metadata_returned": {"type": "integer", "minimum": 0, "maximum": 5},
+        "exact_match_count": {"type": "integer", "minimum": 0},
+        "withheld_domain_checked": {"type": "boolean"},
+        "search_complete": {"const": true}
+      }
+    },
+    "neighbour": {
+      "type": "object", "additionalProperties": false,
+      "required": [
+        "source_identity_id", "reference_id", "reference_original_sha256", "reference_normalized_sha256",
+        "reference_pre_truncation_wordpieces", "reference_semantic_input_truncated", "complete_text_reviewed",
+        "retrieval_signals", "exact_normalized_match", "lexical_rank", "lexical_score", "semantic_rank",
+        "semantic_score", "metadata_rank", "metadata_score", "matching_metadata_fields",
+        "same_user_goal", "same_substantive_situation", "answer_reusable_with_surface_changes",
+        "decision", "rationale"
+      ],
+      "properties": {
+        "source_identity_id": {"type": "string", "pattern": "^source-v1-[A-Za-z0-9._-]+$"},
+        "reference_id": {"type": "string", "pattern": "\\S"},
+        "reference_original_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "reference_normalized_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "reference_pre_truncation_wordpieces": {"type": "integer", "minimum": 1},
+        "reference_semantic_input_truncated": {"type": "boolean"},
+        "complete_text_reviewed": {"type": "boolean"},
+        "retrieval_signals": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["exact", "lexical", "semantic", "metadata", "withheld_domain"]}},
+        "exact_normalized_match": {"type": "boolean"},
+        "lexical_rank": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+        "lexical_score": {"type": ["number", "null"], "minimum": 0, "maximum": 100},
+        "semantic_rank": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+        "semantic_score": {"type": ["number", "null"], "minimum": -1, "maximum": 1},
+        "metadata_rank": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
+        "metadata_score": {"type": ["number", "null"], "minimum": 0, "maximum": 5},
+        "matching_metadata_fields": {"type": "array", "uniqueItems": true, "items": {"enum": ["topic", "user_goal", "requested_task_or_artefact", "scenario_summary", "important_constraints"]}},
+        "same_user_goal": {"$ref": "#/$defs/answer"},
+        "same_substantive_situation": {"$ref": "#/$defs/answer"},
+        "answer_reusable_with_surface_changes": {"$ref": "#/$defs/answer"},
+        "decision": {"enum": ["allow", "reject", "uncertain"]},
+        "rationale": {"type": "string", "pattern": "\\S"}
+      },
+      "allOf": [
+        {"if": {"properties": {"reference_semantic_input_truncated": {"const": true}}}, "then": {"properties": {"complete_text_reviewed": {"const": true}}}},
+        {"if": {"properties": {"retrieval_signals": {"contains": {"const": "lexical"}}}}, "then": {"properties": {"lexical_rank": {"type": "integer"}, "lexical_score": {"type": "number"}}}, "else": {"properties": {"lexical_rank": {"type": "null"}, "lexical_score": {"type": "null"}}}},
+        {"if": {"properties": {"retrieval_signals": {"contains": {"const": "semantic"}}}}, "then": {"properties": {"semantic_rank": {"type": "integer"}, "semantic_score": {"type": "number"}}}, "else": {"properties": {"semantic_rank": {"type": "null"}, "semantic_score": {"type": "null"}}}},
+        {"if": {"properties": {"retrieval_signals": {"contains": {"const": "metadata"}}}}, "then": {"properties": {"metadata_rank": {"type": "integer"}, "metadata_score": {"type": "number"}, "matching_metadata_fields": {"minItems": 1}}}, "else": {"properties": {"metadata_rank": {"type": "null"}, "metadata_score": {"type": "null"}, "matching_metadata_fields": {"maxItems": 0}}}},
+        {"if": {"properties": {"decision": {"const": "reject"}}}, "then": {"properties": {"same_user_goal": {"const": "yes"}, "same_substantive_situation": {"const": "yes"}, "answer_reusable_with_surface_changes": {"const": "yes"}}}},
+        {"if": {"properties": {"decision": {"const": "allow"}}}, "then": {"anyOf": [{"properties": {"same_user_goal": {"const": "no"}}}, {"properties": {"same_substantive_situation": {"const": "no"}}}, {"properties": {"answer_reusable_with_surface_changes": {"const": "no"}}}]}},
+        {"if": {"properties": {"decision": {"const": "uncertain"}}}, "then": {"anyOf": [{"properties": {"same_user_goal": {"const": "uncertain"}}}, {"properties": {"same_substantive_situation": {"const": "uncertain"}}}, {"properties": {"answer_reusable_with_surface_changes": {"const": "uncertain"}}}]}}
+      ]
+    }
+  }
+}

@@ -67,7 +67,7 @@ The intended prompt population, intent families, reporting slices, and exclusion
 
 The target population is limited to English-language, single-turn, low-stakes prompts answerable concisely using stable general knowledge without external tools. Results will be reported separately for target-use, cross-domain, and robustness prompts.
 
-The test set will contain 60 prompts using the frozen cross-cutting blueprint in the evaluation-population record. Withheld topics and the operational definition of “unseen” remain to be completed during evaluation-protocol design. Exact held-out prompts will be authored after training and validation data freeze but before any fine-tuning begins.
+The test set will contain 60 prompts using the frozen cross-cutting blueprint in the evaluation-population record. Photography, tabletop games, and pottery/ceramics form the 5-by-3 project-withheld topic matrix. The operational project-unseen rule, collision controls, and authoring sequence are defined in the [Stage 3 evaluation protocol](stage-3-evaluation-protocol.md). Exact held-out prompts will be authored after training and validation data freeze but before any fine-tuning begins.
 
 ## Evaluation metrics
 
@@ -77,7 +77,7 @@ A full response passes only when it is schema-valid and receives at least an acc
 
 ## Terms to operationalise
 
-The qualitative terms in the research question are operationalised by the three dimensions in the evaluation metrics. The final operational test for whether a prompt is sufficiently **unseen** remains deferred to evaluation design.
+The qualitative terms in the research question are operationalised by the three dimensions in the evaluation metrics. A prompt is sufficiently **unseen within this project** when the frozen exact and retrieved semantic review finds that it does not duplicate the same user goal, substantive situation or artefact, and reusable answer content. This narrower statement does not claim absence from the base model's pretraining data.
 
 ## Limitations and validity
 

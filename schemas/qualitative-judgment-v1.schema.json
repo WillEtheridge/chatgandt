@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:qualitative-judgment:v1",
+  "title": "ChatG&T qualitative judgment v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_schema_version", "judgment_id", "protocol_sha256", "heldout_records_sha256", "run_records_sha256", "generation_manifest_sha256", "rubric_sha256", "judge_manifest_sha256", "instruction_sha256", "packet_id", "packet_sha256", "prompt_id", "response_id", "blinded_label", "judge_role", "judge_identity", "judge_session_id", "exposed_model_id", "judgment_round", "prior_judgment_id", "resolution_status", "scores", "rationales", "recorded_at_utc"],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "judgment_id": {"type": "string", "pattern": "^qual-v1-[A-Za-z0-9._-]+$"},
+    "protocol_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "heldout_records_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "run_records_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "generation_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "rubric_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "judge_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "instruction_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "packet_id": {"type": "string", "pattern": "^qual-packet-v1-[0-9a-f]{24}$"},
+    "packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "prompt_id": {"type": "string", "pattern": "^heldout-v1-[0-9]{3}$"},
+    "response_id": {"type": "string", "pattern": "\\S"},
+    "blinded_label": {"type": "string", "pattern": "\\S"},
+    "judge_role": {"enum": ["llm", "human"]},
+    "judge_identity": {"type": "string", "pattern": "\\S"},
+    "judge_session_id": {"type": "string", "pattern": "\\S"},
+    "exposed_model_id": {"type": ["string", "null"]},
+    "judgment_round": {"enum": ["primary", "second", "human_calibration"]},
+    "prior_judgment_id": {"type": ["string", "null"], "pattern": "^qual-v1-[A-Za-z0-9._-]+$"},
+    "resolution_status": {"enum": ["resolved", "pending_second", "unresolved"]},
+    "scores": {"$ref": "#/$defs/dimensions"},
+    "rationales": {"$ref": "#/$defs/rationales"},
+    "recorded_at_utc": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {"if": {"properties": {"judgment_round": {"enum": ["primary", "second"]}}, "required": ["judgment_round"]}, "then": {"properties": {"judge_role": {"const": "llm"}, "exposed_model_id": {"type": "string", "pattern": "\\S"}}}},
+    {"if": {"properties": {"judgment_round": {"const": "primary"}}}, "then": {"properties": {"prior_judgment_id": {"type": "null"}}}},
+    {"if": {"properties": {"judgment_round": {"const": "second"}}}, "then": {"properties": {"prior_judgment_id": {"type": "string"}}}},
+    {"if": {"properties": {"judgment_round": {"const": "human_calibration"}}, "required": ["judgment_round"]}, "then": {"properties": {"judge_role": {"const": "human"}, "exposed_model_id": {"type": "null"}, "prior_judgment_id": {"type": "null"}}}},
+    {"if": {"properties": {"scores": {"anyOf": [{"properties": {"underlying_answer_quality": {"const": "unable_to_assess"}}}, {"properties": {"metaphorical_coherence": {"const": "unable_to_assess"}}}, {"properties": {"recipe_style_execution": {"const": "unable_to_assess"}}}]} }}, "then": {"properties": {"resolution_status": {"enum": ["pending_second", "unresolved"]}}}, "else": {"properties": {"resolution_status": {"const": "resolved"}}}}
+  ],
+  "$defs": {
+    "score": {"oneOf": [{"type": "integer", "minimum": 1, "maximum": 3}, {"const": "unable_to_assess"}]},
+    "dimensions": {"type": "object", "additionalProperties": false, "required": ["underlying_answer_quality", "metaphorical_coherence", "recipe_style_execution"], "properties": {"underlying_answer_quality": {"$ref": "#/$defs/score"}, "metaphorical_coherence": {"$ref": "#/$defs/score"}, "recipe_style_execution": {"$ref": "#/$defs/score"}}},
+    "rationales": {"type": "object", "additionalProperties": false, "required": ["underlying_answer_quality", "metaphorical_coherence", "recipe_style_execution"], "properties": {"underlying_answer_quality": {"type": "string", "pattern": "\\S"}, "metaphorical_coherence": {"type": "string", "pattern": "\\S"}, "recipe_style_execution": {"type": "string", "pattern": "\\S"}}}
+  }
+}

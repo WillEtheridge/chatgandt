@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:withheld-domain-check:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_schema_version", "check_id", "withheld_domain", "source_identity_id", "source_collection", "checked_absent", "decision", "attestation_statement", "attestation_sha256", "reviewer_type", "reviewer_identity", "attested_at_utc", "notes"],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "check_id": {"type": "string", "pattern": "^withheld-check-v1-[A-Za-z0-9._-]+$"},
+    "withheld_domain": {"enum": ["photography", "tabletop_games", "pottery_ceramics"]},
+    "source_identity_id": {"type": "string", "pattern": "^source-v1-[A-Za-z0-9._-]+$"},
+    "source_collection": {"enum": ["worked_examples", "prompt_development", "evaluation_calibration", "training", "validation"]},
+    "checked_absent": {"const": true},
+    "decision": {"const":"absence_confirmed"},
+    "attestation_statement":{"const":"I reviewed the complete bound source collection for the named withheld domain and found no material occurrence."},
+    "attestation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reviewer_type": {"const": "human"},
+    "reviewer_identity": {"type": "string", "pattern": "\\S"},
+    "attested_at_utc": {"type": "string", "format": "date-time"},
+    "notes": {"type": "string", "pattern": "\\S"}
+  }
+}

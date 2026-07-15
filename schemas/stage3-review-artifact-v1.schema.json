@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:stage3-review-artifact:v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "review_id", "reviewer_identity", "reviewed_manifest_sha256", "reviewed_aggregate_sha256", "verdict", "unresolved_blocking_findings", "report_path", "report_sha256", "verification_evidence_path", "verification_evidence_sha256", "transition_orchestrator_sha256", "completed_at_utc"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "review_id": {"type": "string", "pattern": "^stage3-review-v1-[A-Za-z0-9._-]+$"},
+    "reviewer_identity": {"type": "string", "pattern": "\\S"},
+    "reviewed_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reviewed_aggregate_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "verdict": {"const": "pass"},
+    "unresolved_blocking_findings": {"const": 0},
+    "report_path": {"type": "string", "pattern": "^docs/.+\\.md$"},
+    "report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "verification_evidence_path": {"type": "string", "pattern": "^reviews/.+\\.json$"},
+    "verification_evidence_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "transition_orchestrator_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "completed_at_utc": {"type": "string", "format": "date-time"}
+  }
+}

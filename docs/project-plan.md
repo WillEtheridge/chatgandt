@@ -82,16 +82,16 @@ The selected base model runs reproducibly in the available environment; raw gene
 | --- | --- | --- |
 | 1. Confirm the inherited experimental boundary | Completed | Stage 2 closes with the model, v3 prompt, generation profile, seed policy, harness, validator, and development evidence frozen; no held-out output has been generated |
 | 2. Define the held-out sample architecture | Completed | The 60-prompt cross-cutting blueprint fixes intent families, reporting slices, input forms, observable task complexity, ordinary constraints, and three robustness roles without authoring prompt text |
-| 3. Operationalise “unseen” and contamination controls | Not started | Exact and semantic overlap rules for worked examples, development prompts, training data, validation data, and held-out prompts, with a documented review procedure |
-| 4. Finalise the qualitative scoring rubric | Not started | Anchored 1–3 criteria for underlying-answer quality, metaphorical coherence, and recipe-style execution, including `unable_to_assess` and the joint-pass rule |
-| 5. Define evaluator calibration and judge roles | Not started | Agreed human and LLM-judge responsibilities, calibration examples, judgment counts, disagreement handling, and agreement reporting |
-| 6. Define the blinded pairwise procedure | Not started | Exact B-versus-C eligibility, response-order randomisation, tie handling, identity reveal, conditional preference, and end-to-end outcome rules |
-| 7. Finalise automatic, efficiency, and uncertainty measurements | Not started | Frozen schema checks, token and response-length accounting, synchronized latency procedure, aggregation rules, confidence intervals, and reporting slices |
-| 8. Define memorisation and response-similarity checks | Not started | Exact and semantic procedures for detecting suspicious overlap with worked examples and training responses without overstating what can be proven |
-| 9. Define held-out authoring and review | Not started | A procedure for authoring to the frozen blueprint after training and validation data freeze, including predeclared replacement reasons, cross-domain topic controls, and reviewer separation where practical |
-| 10. Adversarially review the evaluation protocol | Not started | Independent challenges to coverage, ambiguity, leakage controls, rubric clarity, pairwise fairness, measurement validity, and executable feasibility before freeze |
-| 11. Freeze and version the evaluation protocol | Not started | Canonically stored specifications, rubrics, procedures, configurations, and digests that cannot be silently revised around later data or results |
-| 12. Conduct the Stage 3 readiness review | Not started | Confirmation that the protocol is complete, executable, and ready to govern dataset creation and later held-out authoring without yet containing exact test prompts |
+| 3. Operationalise “unseen” and contamination controls | Completed | Exact, lexical, semantic, and metadata retrieval; substantive collision rule; independent review/audit; calibration cases; and the three-domain crossed policy are specified and executable |
+| 4. Finalise the qualitative scoring rubric | Completed | Versioned anchored 1–3 criteria for underlying-answer quality, metaphorical coherence, and recipe-style execution include `unable_to_assess`, constraint handling, eligibility, and the joint-pass rule |
+| 5. Define evaluator calibration and judge roles | Completed | LLM, project-author human, fresh-judge, and public roles; deterministic 24-response and 15-pair calibration samples; shortfalls; and agreement reporting are specified honestly |
+| 6. Define the blinded pairwise procedure | Completed | B-versus-C eligibility, deterministic 30/30 response order, rendering, ties, identity reveal, conditional preference, and end-to-end outcomes are fixed |
+| 7. Finalise automatic, efficiency, and uncertainty measurements | Completed | Denominators, schema and quality reporting, token/latency aggregation, Wilson intervals, paired bootstrap, missingness, and diagnostic slices are fixed |
+| 8. Define memorisation and response-similarity checks | Completed | Exact, lexical, semantic, and review procedures distinguish suspicious generated-response overlap from prompt contamination without claiming proof |
+| 9. Define held-out authoring and review | Completed | Authoring after supervised-data freeze, executable quotas, collision review, closed replacement reasons, reviewer separation, and freeze-package requirements are specified |
+| 10. Adversarially review the evaluation protocol | Completed | Six fresh LLM review contexts challenged the package; material treatment, coverage, leakage, provenance, and measurement findings were resolved and the proportionality boundary is recorded |
+| 11. Freeze and version the evaluation protocol | Completed | The canonical live gates passed and froze the 52-asset protocol aggregate with one final verification and review record |
+| 12. Conduct the Stage 3 readiness review | Completed | The final review finds no blocker to supervised-data creation under the frozen evaluation rules |
 
 ### Stage 3 boundaries
 
@@ -141,7 +141,7 @@ Training data, validation data, and the pilot subset are reviewed, contamination
 
 - Author exactly 60 prompts to the frozen sample blueprint without generating system responses.
 - Classify and verify every cross-cutting quota.
-- Compare each candidate against worked examples, development prompts, training data, validation data, and other held-out candidates using the frozen exact and semantic overlap procedure.
+- Compare each candidate against worked examples, development prompts, training data, validation data, and other held-out candidates using the frozen exact, lexical, semantic, metadata, and recorded-review procedure.
 - Reject and replace collisions only for predeclared reasons, preserving an auditable replacement log.
 - Adversarially review ambiguity, coverage, contamination, and scoring feasibility.
 - Freeze and version the prompts, metadata, review evidence, identities, and digests.
@@ -203,4 +203,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Begin Stage 3 Step 3 by operationalising what counts as unseen and how contamination will be detected across worked examples, development prompts, training data, validation data, and the future held-out set. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.
+Begin Stage 4 by defining the supervised dataset blueprint and coverage targets under the frozen evaluation protocol. Do not author exact held-out prompts yet. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.

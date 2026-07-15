@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:heldout-replacement:v1",
+  "title": "ChatG&T held-out candidate replacement v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_schema_version", "replacement_record_id", "matrix_prompt_id", "candidate_id",
+    "candidate_prompt", "candidate_metadata", "original_sha256", "normalized_sha256", "reason",
+    "rationale", "source_identity_ids", "retrieved_reference_ids", "retrieval_report_sha256",
+    "review_ids", "replacement_status", "replacement_candidate_id", "author_identity",
+    "decision_identity", "recorded_at_utc"
+  ],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "replacement_record_id": {"type": "string", "pattern": "^replace-v1-[A-Za-z0-9._-]+$"},
+    "matrix_prompt_id": {"type": "string", "pattern": "^heldout-v1-[0-9]{3}$"},
+    "candidate_id": {"type": "string", "pattern": "\\S"},
+    "candidate_prompt": {"type": "string", "pattern": "\\S"},
+    "candidate_metadata": {"$ref": "#/$defs/metadata"},
+    "original_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "normalized_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reason": {"enum": ["scope_or_answerability", "quota_or_metadata", "exact_collision", "semantic_scenario_collision", "withheld_domain_violation", "internal_heldout_collision", "ambiguous_or_unscorable"]},
+    "rationale": {"type": "string", "pattern": "\\S"},
+    "source_identity_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^source-v1-[A-Za-z0-9._-]+$"}},
+    "retrieved_reference_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "\\S"}},
+    "retrieval_report_sha256": {"type": ["string", "null"], "pattern": "^[0-9a-f]{64}$"},
+    "review_ids": {"type": "array", "minItems": 2, "uniqueItems": true, "items": {"type": "string", "pattern": "^prompt-review-v1-[A-Za-z0-9._-]+$"}},
+    "replacement_status": {"enum": ["pending", "replaced"]},
+    "replacement_candidate_id": {"type": ["string", "null"], "pattern": "\\S"},
+    "author_identity": {"type": "string", "pattern": "\\S"},
+    "decision_identity": {"type": "string", "pattern": "\\S"},
+    "recorded_at_utc": {"type": "string", "format": "date-time"}
+  },
+  "allOf": [
+    {"if": {"properties": {"replacement_status": {"const": "pending"}}}, "then": {"properties": {"replacement_candidate_id": {"type": "null"}}}, "else": {"properties": {"replacement_candidate_id": {"type": "string"}}}},
+    {"if": {"properties": {"reason": {"enum": ["exact_collision", "semantic_scenario_collision", "withheld_domain_violation", "internal_heldout_collision"]}}}, "then": {"properties": {"retrieval_report_sha256": {"type": "string"}, "source_identity_ids": {"minItems": 1}, "retrieved_reference_ids": {"minItems": 1}}}}
+  ],
+  "$defs": {
+    "metadata": {
+      "type": "object", "additionalProperties": false,
+      "required": ["intent_family", "reporting_slice", "input_form", "complexity", "complexity_sources", "constraint_bearing", "robustness_role", "withheld_domain", "topic", "user_goal", "requested_task_or_artefact", "scenario_summary", "important_constraints"],
+      "properties": {
+        "intent_family": {"type": "string"}, "reporting_slice": {"type": "string"}, "input_form": {"type": "string"},
+        "complexity": {"type": "string"}, "complexity_sources": {"type": "array", "items": {"type": "string"}},
+        "constraint_bearing": {"type": "boolean"}, "robustness_role": {"type": ["string", "null"]},
+        "withheld_domain": {"type": ["string", "null"]}, "topic": {"type": "string"}, "user_goal": {"type": "string"},
+        "requested_task_or_artefact": {"type": "string"}, "scenario_summary": {"type": "string"},
+        "important_constraints": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}
