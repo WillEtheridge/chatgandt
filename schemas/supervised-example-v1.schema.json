@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:supervised-example:v1",
+  "title": "ChatG&T supervised example v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_schema_version", "example_id", "scenario_id", "user_prompt", "assistant_response", "metadata", "provenance", "split", "pilot_member"],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "example_id": {"type": "string", "pattern": "^dataset-v1-[0-9]{3}$"},
+    "scenario_id": {"type": "string", "pattern": "^scenario-[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "user_prompt": {"type": "string", "pattern": "\\S"},
+    "assistant_response": {"$ref": "urn:chatgnt:schema:response:v1"},
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["intent_family", "coverage_slice", "input_form", "complexity", "complexity_sources", "constraint_bearing", "robustness_role", "topic", "task_subtype", "user_goal", "requested_task_or_artefact", "scenario_summary", "important_constraints"],
+      "properties": {
+        "intent_family": {"enum": ["advice_decision_support", "explanation_technical_understanding", "low_stakes_emotional_support", "creative_generation", "short_form_transformation"]},
+        "coverage_slice": {"enum": ["target_use", "breadth", "robustness"]},
+        "input_form": {"enum": ["question", "direct_request_or_command", "statement_or_fragment"]},
+        "complexity": {"enum": ["standard", "composed"]},
+        "complexity_sources": {"type": "array", "uniqueItems": true, "items": {"enum": ["ordinary_content_constraint", "supplied_content", "multiple_outcomes", "competing_considerations", "connected_steps", "robustness_pressure"]}},
+        "constraint_bearing": {"type": "boolean"},
+        "robustness_role": {"enum": [null, "format_pressure", "behaviour_pressure", "serialization_pressure"]},
+        "topic": {"enum": ["career_and_work", "learning_and_study", "technology_and_software", "science_and_mathematics", "history_and_society", "money_and_budgeting", "relationships_and_social_life", "personal_growth_and_wellbeing", "habits_and_productivity", "home_and_everyday_life", "travel_and_places", "food_and_cooking", "arts_and_culture", "writing_and_communication", "business_and_marketing", "community_and_events", "consumer_choices", "nature_and_environment", "leisure_and_entertainment", "fictional_and_imaginative_worlds"]},
+        "task_subtype": {"enum": ["action_planning", "option_comparison", "prioritisation", "preparation", "habit_change", "interpersonal_navigation", "problem_diagnosis", "risk_and_tradeoff_assessment", "concept_explanation", "process_explanation", "cause_and_effect", "comparison_and_distinction", "worked_example", "troubleshooting", "misconception_correction", "technical_how_to", "validation_and_normalisation", "perspective_reframing", "self_compassion", "confidence_support", "manageable_next_steps", "conversation_preparation", "boundary_reflection", "supporting_someone_else", "name_generation", "slogan_or_tagline", "character_or_mascot", "story_premise_or_plot", "scene_or_opening", "concept_or_campaign", "event_or_experience", "idea_generation", "summarisation", "clarity_edit", "tone_shift", "audience_adaptation", "notes_to_finished_copy", "shortening", "message_or_reply_drafting", "constraint_preserving_rewrite"]},
+        "user_goal": {"type": "string", "pattern": "\\S"},
+        "requested_task_or_artefact": {"type": "string", "pattern": "\\S"},
+        "scenario_summary": {"type": "string", "pattern": "\\S"},
+        "important_constraints": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "\\S"}}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authoring_batch_id", "initial_draft_source", "initial_draft_model_id", "model_revision_used", "material_human_edit"],
+      "properties": {
+        "authoring_batch_id": {"type": "string", "pattern": "^dataset-v1-batch-[0-9]{2}$"},
+        "initial_draft_source": {"enum": ["human", "frontier_model"]},
+        "initial_draft_model_id": {"type": ["string", "null"]},
+        "model_revision_used": {"type": "boolean"},
+        "material_human_edit": {"type": "boolean"}
+      }
+    },
+    "split": {"enum": [null, "train", "validation"]},
+    "pilot_member": {"type": "boolean"}
+  },
+  "allOf": [
+    {"if": {"properties": {"metadata": {"properties": {"coverage_slice": {"const": "robustness"}}, "required": ["coverage_slice"]}}, "required": ["metadata"]}, "then": {"properties": {"metadata": {"properties": {"complexity": {"const": "composed"}, "complexity_sources": {"contains": {"const": "robustness_pressure"}}, "robustness_role": {"type": "string"}}}}}, "else": {"properties": {"metadata": {"properties": {"complexity_sources": {"not": {"contains": {"const": "robustness_pressure"}}}, "robustness_role": {"type": "null"}}}}}},
+    {"if": {"properties": {"metadata": {"properties": {"complexity": {"const": "standard"}}, "required": ["complexity"]}}, "required": ["metadata"]}, "then": {"properties": {"metadata": {"properties": {"complexity_sources": {"maxItems": 0}, "constraint_bearing": {"const": false}, "important_constraints": {"maxItems": 0}}}}}, "else": {"properties": {"metadata": {"properties": {"complexity_sources": {"minItems": 1}}}}}},
+    {"if": {"properties": {"metadata": {"properties": {"constraint_bearing": {"const": true}}, "required": ["constraint_bearing"]}}, "required": ["metadata"]}, "then": {"properties": {"metadata": {"properties": {"complexity": {"const": "composed"}, "complexity_sources": {"contains": {"const": "ordinary_content_constraint"}}, "important_constraints": {"minItems": 1}}}}}, "else": {"properties": {"metadata": {"properties": {"complexity_sources": {"not": {"contains": {"const": "ordinary_content_constraint"}}}, "important_constraints": {"maxItems": 0}}}}}},
+    {"if": {"properties": {"pilot_member": {"const": true}}, "required": ["pilot_member"]}, "then": {"properties": {"split": {"const": "train"}}}},
+    {"if": {"properties": {"provenance": {"properties": {"initial_draft_source": {"const": "human"}}, "required": ["initial_draft_source"]}}, "required": ["provenance"]}, "then": {"properties": {"provenance": {"properties": {"initial_draft_model_id": {"type": "null"}}}}}, "else": {"properties": {"provenance": {"properties": {"initial_draft_model_id": {"type": "string", "minLength": 1}}}}}}
+  ]
+}

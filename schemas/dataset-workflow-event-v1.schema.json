@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:dataset-workflow-event:v1",
+  "title": "ChatG&T dataset workflow event v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_schema_version", "event_id", "example_id", "prior_event_id", "event_type", "content_sha256", "actor_type", "actor_identity", "model_id", "recorded_at_utc", "outcome", "reason_codes", "notes"],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "event_id": {"type": "string", "pattern": "^dataset-event-v1-[0-9]{4}$"},
+    "example_id": {"type": "string", "pattern": "^dataset-v1-[0-9]{3}$"},
+    "prior_event_id": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^dataset-event-v1-[0-9]{4}$"}]},
+    "event_type": {"enum": ["draft_created", "model_revision", "human_edit", "quality_review", "accepted", "rejected"]},
+    "content_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "actor_type": {"enum": ["human", "frontier_model", "automated_validator"]},
+    "actor_identity": {"type": "string", "pattern": "\\S"},
+    "model_id": {"type": ["string", "null"]},
+    "recorded_at_utc": {"type": "string", "format": "date-time", "pattern": "Z$"},
+    "outcome": {"enum": ["created", "revised", "pass", "revision_requested", "rejection_recommended", "accepted", "rejected"]},
+    "reason_codes": {"type": "array", "uniqueItems": true, "items": {"enum": ["schema_invalid", "cross_field_invalid", "unclear_underlying_task", "underlying_answer_not_useful", "factual_or_language_error", "metaphor_incoherent", "recipe_execution_weak", "method_not_procedural", "requested_artefact_incomplete", "compatible_constraint_missed", "safety_or_scope_concern", "duplicate_or_near_duplicate", "scenario_collision", "withheld_domain_violation", "coverage_mismatch", "response_templating", "provenance_invalid"]}},
+    "notes": {"type": "string"}
+  },
+  "allOf": [
+    {"if": {"properties": {"actor_type": {"const": "frontier_model"}}, "required": ["actor_type"]}, "then": {"properties": {"model_id": {"type": "string", "minLength": 1}}}, "else": {"properties": {"model_id": {"type": "null"}}}},
+    {"if": {"properties": {"event_type": {"const": "draft_created"}}, "required": ["event_type"]}, "then": {"properties": {"prior_event_id": {"type": "null"}, "outcome": {"const": "created"}, "actor_type": {"enum": ["human", "frontier_model"]}}}, "else": {"properties": {"prior_event_id": {"type": "string"}}}},
+    {"if": {"properties": {"event_type": {"const": "model_revision"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"const": "revised"}, "actor_type": {"const": "frontier_model"}}}},
+    {"if": {"properties": {"event_type": {"const": "human_edit"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"const": "revised"}, "actor_type": {"const": "human"}}}},
+    {"if": {"properties": {"event_type": {"const": "quality_review"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"enum": ["pass", "revision_requested", "rejection_recommended"]}, "actor_type": {"enum": ["human", "frontier_model"]}}}},
+    {"if": {"properties": {"event_type": {"const": "accepted"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"const": "accepted"}, "actor_type": {"const": "human"}, "reason_codes": {"maxItems": 0}}}},
+    {"if": {"properties": {"event_type": {"const": "rejected"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"const": "rejected"}, "actor_type": {"enum": ["human", "automated_validator"]}, "reason_codes": {"minItems": 1}}}}
+  ]
+}

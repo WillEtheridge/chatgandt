@@ -1234,3 +1234,233 @@ Adversarial review improved the experiment materially, including exposing a gap 
 - Any normative evaluation change requires a new protocol version.
 - The six review cycles are represented by one honest summary, not as six independent human audits.
 - Exact held-out prompts remain prohibited until the supervised dataset is frozen.
+
+## D-044 — Store semantic source records and isolate dataset splits by scenario
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; Stage 4 design
+
+### Decision
+
+Dataset v1 will store one single-turn user prompt and one schema-valid assistant response object as its canonical source record, with stable example and scenario identities plus metadata and provenance. A deterministic preparation step will add the explicit empty system message, serialize the assistant object as canonical JSON, and apply the pinned Qwen chat template. Model-ready messages are derived artefacts rather than the authored source of truth.
+
+The dataset will use frontier-model-assisted synthetic drafting with recorded provenance, automated structural checks, separate quality review, representative project-author inspection, and project-author responsibility for inclusion. Qwen outputs will not be used as target responses or as signals for choosing examples.
+
+Authors may use the frozen behaviour, schema, safety, coverage, and exclusion rules. Five-shot examples, development scenarios and outputs, later held-out candidates, and target-model outputs may not be used as drafting seeds or templates.
+
+Closely related examples will share a scenario ID when they have the same substantive user goal and situation or artefact, and their answer can be reused through surface substitutions. Split assignment operates on whole scenario groups, with uncertain cases conservatively kept together.
+
+### Rationale
+
+Separating semantic source content from Qwen rendering makes the dataset easier to validate, inspect, and reuse while keeping the exact training representation reproducible. Honest model-assistance provenance is more credible than presenting a large synthetic dataset as hand-written. Restricting existing examples protects the distinction between prompt engineering and fine-tuning, while scenario-group splits prevent validation from being inflated by paraphrases of training examples.
+
+### Implications
+
+- Step 5 must define a closed source-record and provenance schema plus deterministic renderer.
+- Training records contain no five-shot context.
+- Dataset quality requires review beyond schema validity.
+- Split assignment occurs only after scenario grouping.
+- Exact held-out prompts remain unavailable throughout Stage 4.
+
+## D-045 — Target 200 accepted examples with a scenario-isolated 160/40 split
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; Stage 4 design
+
+### Decision
+
+Dataset v1 will contain 200 accepted supervised examples. The target allocation is 160 training examples and 40 validation examples, with a fixed 40-example pilot selected only from training after split assignment. Authoring may create approximately 220–240 candidates to accommodate recorded rejection, but quality and coverage take precedence over filling the dataset with weak records.
+
+Each of the five intent families initially targets 40 accepted examples: 32 training, eight validation, and eight members of the training-only pilot. Scenario groups are indivisible, so isolation takes precedence over exact split or family arithmetic and any achieved deviation is reported.
+
+The validation split supports loss monitoring, overfitting diagnosis, qualitative transfer inspection, and proportionate configuration selection. It is not held-out evidence. The pilot tests the training pipeline and early learning behaviour; it is not an additional evaluation split and cannot be used to revise examples around Qwen outputs.
+
+Dataset freeze will report prompt, response, and supervised token counts and distributions by split and intent family, plus sequence-length truncation. Example counts alone do not establish a balanced optimisation signal.
+
+### Rationale
+
+Two hundred examples provide enough room for varied demonstrations of the joint ChatG&T behaviour while remaining feasible to review. A 20% validation allocation gives 40 unseen scenarios—large enough to reveal substantial loss or behavioural differences without claiming precise performance estimates. Forty pilot examples provide eight per intent family and are sufficient to exercise the LoRA path cheaply.
+
+Grouping before splitting prevents near-duplicate validation records from inflating apparent transfer. Token reporting prevents short and long examples from appearing balanced merely because their record counts match.
+
+### Implications
+
+- Candidate rejection history is retained; 220–240 is an authoring estimate, not a required count.
+- Scenario groups never cross training and validation.
+- The pilot is a subset of training and adds no new examples to the dataset total.
+- Final held-out performance remains the job of the later frozen 60-prompt evaluation.
+- The next decision is the cross-cutting dataset coverage blueprint.
+
+## D-046 — Use cross-cutting coverage targets and audit response diversity
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; Stage 4 design
+
+### Decision
+
+Each of the five intent families will contain 40 accepted examples. Within every family, the targets are 28 target-use, six breadth, and six robustness examples; 10 questions, 20 direct requests or commands, and 10 statements or fragments; 24 standard and 16 composed examples; and 12 examples with compatible explicit constraints. Across the full dataset this produces 140/30/30 coverage-slice counts, 50/100/50 input-form counts, 120/80 complexity counts, and 60 compatible-constraint examples.
+
+All 30 robustness examples count as composed. Each family contains two format-pressure, two behaviour-pressure, and two serialization-pressure examples, yielding 10 of each role overall. Robustness pressure is separate from compatible constraints and does not satisfy that quota by itself.
+
+The accepted set will cover at least 12 substantive domains overall and eight per intent family. No topic may exceed 10% of the dataset. Each intent family will cover at least six task subtypes, with no subtype exceeding 25% of that family. Frozen withheld domains remain prohibited.
+
+Ingredient counts, method construction, title and unit patterns, metaphor and advice reuse, garnish style, tone, and lexical and semantic similarity will be audited for diversity rather than assigned dense quotas. Every permitted ingredient count must occur, no one count should occupy more than approximately one third of the set, and repeated distinctive templates or phrases require review.
+
+Validation targets eight examples per family and collectively covers every input form, both complexity levels, all three coverage slices, compatible constraints, and all robustness roles. Scenario isolation remains the higher-priority rule and achieved deviations will be reported.
+
+### Rationale
+
+The model must learn several behaviours simultaneously: answer the underlying request, sustain a coherent cocktail metaphor, obey the JSON contract, and sometimes satisfy supplied constraints or withstand contrary instructions. Forty percent composed examples gives this joint behaviour meaningful supervision rather than teaching only the easiest output shape.
+
+Cross-cutting targets make the intended population inspectable without pretending that every desirable stylistic variation can be independently balanced in a 200-example dataset. Concentration limits prevent narrow topic repetition, while an audit can detect templating and collapse without encouraging filler or unnatural writing solely to hit decorative quotas.
+
+### Implications
+
+- One record carries several coverage labels; quota totals are not added together.
+- Step 5 must encode the closed coverage vocabulary and validate the hard counts and concentration limits.
+- The authoring guide must define standard versus composed complexity, compatible constraints, coverage slices, robustness roles, and task-subtype assignment.
+- Response diversity findings prompt review and justified revision, not automatic rejection based on arbitrary style counts.
+- The next decision is the versioned dataset record schema and validator contract.
+
+## D-047 — Separate canonical examples, workflow history, and training rendering
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; Stage 4 design
+
+### Decision
+
+The canonical supervised record will contain `record_schema_version`, stable example and scenario IDs, the user prompt, a response object governed by the frozen ChatG&T response schema, coverage and retrieval metadata, a compact provenance summary, split assignment, and pilot membership. Unexpected fields are invalid.
+
+Coverage metadata reuses the held-out protocol's intent, input-form, complexity, constraint, robustness, topic, user-goal, requested-task-or-artefact, scenario-summary, and important-constraints concepts. Dataset records add `coverage_slice` and `task_subtype`. Category fields use closed enums or versioned controlled registries; explanatory metadata remains non-empty text.
+
+The provenance summary records the authoring batch, whether the initial draft was human or frontier-model produced, the initial model identity when applicable, whether a model revision was used, and whether a material human edit occurred. Detailed drafting, revision, review, acceptance, and rejection history is held in separate append-only workflow records keyed by example ID.
+
+Split is null during authoring and becomes `train` or `validation` before freeze. Only training examples can be pilot members. Cross-field validators enforce the relationships among robustness, complexity, constraints, split, pilot status, and scenario grouping.
+
+The deterministic training renderer reads only the user prompt and assistant response. It inserts an empty system message, preserves the user text, canonically serializes the response object, and then applies the pinned Qwen chat template. IDs, metadata, provenance, workflow history, split, and pilot status never enter the training conversation.
+
+### Rationale
+
+One readable semantic record is easier to author, validate, inspect, and reuse than a stored model-specific conversation. Reusing evaluation metadata gives later coverage and contamination tooling a common language. Separate workflow history preserves honest provenance without turning each training example into a project-management document.
+
+Explicit cross-field redundancy makes human inspection easier while executable invariants prevent contradictory classifications. Separating rendering from source data also ensures that changes to model preparation are reproducible transformations rather than silent edits to authored supervision.
+
+### Implications
+
+- The response object must reference `chatgnt-response-v1` rather than duplicate its rules.
+- Topic and task-subtype registries must be agreed before the record validator is complete.
+- Step 7 closes review outcomes and workflow reason codes.
+- Dataset-level validation must enforce ID uniqueness, scenario-isolated splits, quotas, concentration limits, and pilot eligibility beyond single-record JSON Schema checks.
+- Frozen manifests bind both the semantic records and the renderer identity.
+- Step 5 remains open until the schemas, registries, renderer, and validators are executable and tested.
+
+## D-048 — Classify each example with one controlled topic and one family-specific task subtype
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; Stage 4 design
+
+### Decision
+
+Every supervised example receives one primary topic from a 20-value version 1 registry: career and work; learning and study; technology and software; science and mathematics; history and society; money and budgeting; relationships and social life; personal growth and wellbeing; habits and productivity; home and everyday life; travel and places; food and cooking; arts and culture; writing and communication; business and marketing; community and events; consumer choices; nature and environment; leisure and entertainment; or fictional and imaginative worlds.
+
+The primary topic is the context most necessary to answering the prompt, not every subject mentioned. There is no `other` value. A genuinely missing domain requires an explicit registry revision before dataset freeze. Wellbeing excludes medical diagnosis and treatment; money and budgeting excludes personalised investment, tax, and debt-crisis advice; and all frozen withheld-domain rules continue to apply inside broader topics.
+
+Every record also receives one primary task subtype from an eight-value registry specific to its intent family:
+
+- advice and decision support: action planning, option comparison, prioritisation, preparation, habit change, interpersonal navigation, problem diagnosis, and risk-and-tradeoff assessment;
+- explanation and technical understanding: concept explanation, process explanation, cause and effect, comparison and distinction, worked example, troubleshooting, misconception correction, and technical how-to;
+- low-stakes emotional support: validation and normalisation, perspective reframing, self-compassion, confidence support, manageable next steps, conversation preparation, boundary reflection, and supporting someone else;
+- creative generation: name generation, slogan or tagline, character or mascot, story premise or plot, scene or opening, concept or campaign, event or experience, and idea generation; and
+- short-form transformation: summarisation, clarity edit, tone shift, audience adaptation, notes to finished copy, shortening, message or reply drafting, and constraint-preserving rewrite.
+
+Topic and task subtype are independent of each other and of intent family, coverage slice, complexity, and robustness role. The existing diversity gates remain: at least 12 topics overall, at least eight per family, no topic above 20 examples, at least six subtypes per family, and no subtype above 10 examples within its family. All eight subtypes are desirable when natural, but equal subtype allocation is not required.
+
+### Rationale
+
+A shared topic registry prevents spelling variants such as work, career, and employment from creating false diversity. A family-specific task registry captures the capability being demonstrated without confusing it with subject matter. Their independence allows the dataset to cross domains and operations instead of teaching simplistic associations between a topic and one kind of answer.
+
+Broad categories keep counts meaningful at portfolio scale. Removing an `other` escape hatch makes gaps visible, while allowing explicit pre-freeze revisions avoids forcing genuinely new material into an inaccurate label. Concentration limits protect diversity without requiring an artificial full factorial or exactly balanced subtype counts.
+
+### Implications
+
+- The record schema must enforce the 20 topic values and the intent-family/task-subtype relationship.
+- The authoring guide must include boundary examples for ambiguous family and subtype assignments.
+- Coverage reports count one primary topic and one primary subtype per example.
+- Robustness records retain their underlying task subtype rather than using the pressure mechanism as the task label.
+- Step 5 now requires executable schemas, renderer, and validators rather than further record-shape decisions.
+
+## D-049 — Implement the reviewed dataset-v1 contract without rewriting frozen Stage 3 evidence
+
+- **Date:** 2026-07-15
+- **Status:** Adopted and implemented; Stage 4 Step 5 complete
+
+### Decision
+
+Dataset v1 is governed by an executable configuration, a supervised-example schema, a workflow-event schema, and a conditional split-deviation schema. The implementation provides strict canonical JSONL loading, single-record and cross-field validation, append-only lifecycle validation, authoring and freeze modes, deterministic behavioural-order response rendering, canonical train/validation/pilot projection checks, hard coverage gates, and a read-only verification CLI.
+
+Workflow events bind authored `content_sha256`, which excludes only split and pilot allocation. Complete allocated records and projections retain their own identities. This permits project-author acceptance before scenario-level split assignment without presenting allocation as a content revision. Freeze requires every candidate to reach exactly one terminal acceptance or rejection, and public training-message rendering requires a validated terminal acceptance chain.
+
+Exact 160/40 and per-family allocation remains the default. A scenario-driven deviation requires a separate schema-valid record that binds the exact candidate and projection files, recomputed expected and achieved counts, affected scenario groups, rationale, and project-author approval. It cannot waive total accepted count, family totals, scenario isolation, pilot eligibility, content coverage, or any other dataset gate.
+
+The focused dataset contract suite lives under `contract_tests/` rather than `tests/`. Stage 3 evidence intentionally binds every `tests/test_*.py` digest, so adding a new file to that historical identity set would invalidate the evidence. The separate suite extends verification while leaving the frozen 128-test command and evidence unchanged.
+
+### Rationale
+
+Executable contracts prevent inconsistent labels, invalid response objects, provenance gaps, allocation leakage, and renderer drift from becoming silent training inputs. Separating content and allocation identity reflects the real lifecycle: examples are written and reviewed before scenario groups are assigned to splits.
+
+Historical evidence should remain evidence of what was verified at that time. Recapturing Stage 3 merely because Stage 4 adds tests would blur that boundary. An explicitly separate extension suite preserves both the old attestation and the new checks.
+
+### Verification
+
+- Contract CLI: pass, configuration/schema parity and built-in lifecycle confirmed.
+- Focused dataset contract suite: 8/8 pass.
+- Existing frozen suite: 128/128 pass.
+- Python compilation, JSON parsing, and `git diff --check`: pass.
+- No supervised or held-out examples were authored.
+- No model was loaded, queried, or trained.
+
+### Implications
+
+- Candidate authoring must use the canonical source and workflow contracts rather than ad hoc JSON.
+- Authoring mode permits an accepted candidate to remain unassigned; freeze mode requires every accepted candidate to be allocated.
+- Stage 6 training may render only terminally accepted records from validated frozen projections.
+- Step 6 must implement the scenario-group allocation procedure and attempt exact targets before any deviation is considered.
+- Step 7 must turn the reason-code vocabulary into concrete authoring and review guidance before examples are drafted.
+
+## D-050 — Allocate whole scenarios with deterministic coverage-aware optimisation
+
+- **Date:** 2026-07-15
+- **Status:** Adopted and implemented; Stage 4 Step 6 complete
+
+### Decision
+
+Terminally accepted, unallocated candidates will be grouped by exact scenario ID. Every scenario group must belong to one intent family and is assigned wholly to training or validation. A deterministic dynamic program enumerates attainable validation counts and coverage masks within each family, then combines the five family state sets.
+
+The selected allocation first minimises the largest absolute deviation from eight validation examples in any family, then the sum of family deviations, then total deviation from 40, and finally a seeded SHA-256 priority signature. Validation must still contain all required input forms, complexity levels, coverage slices, a compatible constraint, and all robustness roles. Exact 8-per-family and 40-overall allocation therefore wins whenever it is feasible with full coverage.
+
+The seed `20260715` and namespace `dataset-validation-allocation-v1` provide reproducible tie-breaking; they do not make the authored sample random. If indivisible scenario groups produce a non-exact allocation, the allocator records the achieved counts and marks that a separate project-author-approved split-deviation artefact is required. It never crosses scenarios or generates that approval itself.
+
+After the split, a second deterministic procedure selects exactly eight training examples per family for the 40-example pilot. Greedy selection prioritises new input-form, complexity, slice, constraint, and robustness-role coverage, then new topics and task subtypes, then a separately namespaced hash tie-breaker. The pilot must remain training-only and pass its frozen representation checks.
+
+### Rationale
+
+Individual random splitting could place paraphrases of the same situation on both sides and inflate validation performance. Scenario-level assignment protects the intended generalisation boundary. Count-only assignment could still create a validation set missing the behaviours it is supposed to monitor, so coverage is part of feasibility rather than a later cosmetic audit.
+
+An explicit optimisation order makes every tie and trade-off reproducible. The hash seed prevents file order or author preference from silently choosing among equally valid allocations without implying population sampling. A separate deviation approval keeps an algorithmic result distinct from a project decision to accept that result.
+
+### Verification
+
+- Split-configuration and report-schema check: pass.
+- Additive dataset contract and allocation suite: 14/14 pass.
+- Existing frozen suite: 128/128 pass.
+- Exact, grouped, cross-family rejection, non-exact, pilot, dry-run, and atomic-write paths exercised with synthetic records.
+- Compilation, JSON parsing, and `git diff --check`: pass.
+- No real dataset record or model output was created.
+
+### Implications
+
+- Scenario IDs must be final and family-consistent before allocation.
+- All candidates must reach terminal disposition before the allocator runs.
+- Inputs must be unallocated; the pure operation returns allocated copies and never mutates source objects.
+- Exact allocation needs no exception record; non-exact allocation cannot freeze until separately approved and bound.
+- Step 7 can author examples against a known, testable split and pilot procedure rather than deciding allocation after seeing model behaviour.

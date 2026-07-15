@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chatgnt:schema:dataset-allocation-report:v1",
+  "title": "ChatG&T dataset allocation report v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["record_schema_version", "allocation_id", "dataset_contract_id", "validation_algorithm_id", "pilot_algorithm_id", "seed", "source_sha256", "output_sha256", "candidate_counts", "scenario_count", "allocation_exact", "split_deviation_required", "deviation_scenario_ids", "split_counts", "per_intent_family", "validation_coverage", "pilot_coverage", "validation_scenario_ids", "pilot_example_ids"],
+  "properties": {
+    "record_schema_version": {"const": 1},
+    "allocation_id": {"const": "chatgnt-dataset-split-v1"},
+    "dataset_contract_id": {"const": "chatgnt-dataset-v1"},
+    "validation_algorithm_id": {"const": "scenario-dp-coverage-v1"},
+    "pilot_algorithm_id": {"const": "greedy-coverage-hash-tie-v1"},
+    "seed": {"const": 20260715},
+    "source_sha256": {"$ref": "#/$defs/source_digests"},
+    "output_sha256": {"$ref": "#/$defs/output_digests"},
+    "candidate_counts": {"type": "object", "additionalProperties": false, "required": ["total", "accepted", "rejected"], "properties": {"total": {"type": "integer", "minimum": 200}, "accepted": {"const": 200}, "rejected": {"type": "integer", "minimum": 0}}},
+    "scenario_count": {"type": "integer", "minimum": 1, "maximum": 200},
+    "allocation_exact": {"type": "boolean"},
+    "split_deviation_required": {"type": "boolean"},
+    "deviation_scenario_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^scenario-[a-z0-9]+(?:-[a-z0-9]+)*$"}},
+    "split_counts": {"$ref": "#/$defs/split_counts"},
+    "per_intent_family": {"$ref": "#/$defs/family_map"},
+    "validation_coverage": {"$ref": "#/$defs/coverage"},
+    "pilot_coverage": {"$ref": "#/$defs/coverage"},
+    "validation_scenario_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^scenario-[a-z0-9]+(?:-[a-z0-9]+)*$"}},
+    "pilot_example_ids": {"type": "array", "minItems": 40, "maxItems": 40, "uniqueItems": true, "items": {"type": "string", "pattern": "^dataset-v1-[0-9]{3}$"}}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "source_digests": {"type": "object", "additionalProperties": false, "required": ["candidates", "events"], "properties": {"candidates": {"$ref": "#/$defs/digest"}, "events": {"$ref": "#/$defs/digest"}}},
+    "output_digests": {"type": "object", "additionalProperties": false, "required": ["candidates", "train", "validation", "pilot"], "properties": {"candidates": {"$ref": "#/$defs/digest"}, "train": {"$ref": "#/$defs/digest"}, "validation": {"$ref": "#/$defs/digest"}, "pilot": {"$ref": "#/$defs/digest"}}},
+    "split_counts": {"type": "object", "additionalProperties": false, "required": ["train", "validation", "pilot"], "properties": {"train": {"type": "integer", "minimum": 0}, "validation": {"type": "integer", "minimum": 0}, "pilot": {"const": 40}}},
+    "family_counts": {"type": "object", "additionalProperties": false, "required": ["train", "validation", "pilot"], "properties": {"train": {"type": "integer", "minimum": 0}, "validation": {"type": "integer", "minimum": 0}, "pilot": {"const": 8}}},
+    "family_map": {"type": "object", "additionalProperties": false, "required": ["advice_decision_support", "explanation_technical_understanding", "low_stakes_emotional_support", "creative_generation", "short_form_transformation"], "properties": {"advice_decision_support": {"$ref": "#/$defs/family_counts"}, "explanation_technical_understanding": {"$ref": "#/$defs/family_counts"}, "low_stakes_emotional_support": {"$ref": "#/$defs/family_counts"}, "creative_generation": {"$ref": "#/$defs/family_counts"}, "short_form_transformation": {"$ref": "#/$defs/family_counts"}}},
+    "coverage": {"type": "object", "additionalProperties": false, "required": ["input_forms", "complexities", "coverage_slices", "constraint_bearing", "robustness_roles", "topic_count", "task_subtype_count"], "properties": {"input_forms": {"type": "array", "uniqueItems": true, "items": {"enum": ["question", "direct_request_or_command", "statement_or_fragment"]}}, "complexities": {"type": "array", "uniqueItems": true, "items": {"enum": ["standard", "composed"]}}, "coverage_slices": {"type": "array", "uniqueItems": true, "items": {"enum": ["target_use", "breadth", "robustness"]}}, "constraint_bearing": {"type": "boolean"}, "robustness_roles": {"type": "array", "uniqueItems": true, "items": {"enum": ["format_pressure", "behaviour_pressure", "serialization_pressure"]}}, "topic_count": {"type": "integer", "minimum": 1}, "task_subtype_count": {"type": "integer", "minimum": 1}}}
+  }
+}

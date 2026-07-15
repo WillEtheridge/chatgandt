@@ -123,15 +123,45 @@ The complete evaluation protocol is documented, adversarially reviewed, and froz
 
 ## Stage 4 — Build and freeze dataset v1
 
-- Define the dataset blueprint and coverage targets.
-- Create approximately 150–300 original examples without access to exact held-out prompts.
-- Assign scenario-separated training and validation splits.
-- Review schema validity, response quality, variety, duplication, and coverage.
-- Enforce the frozen withheld-topic policy and check against worked examples and development scenarios.
-- Identify a representative 30–50-example pilot subset from the frozen training split.
-- Freeze and version the training data, validation data, split identities, and pilot subset before held-out prompt authoring.
+| Step | Status | Expected outcome |
+| --- | --- | --- |
+| 1. Confirm the Stage 4 boundary and unit of data | Completed | One canonical single-turn source record stores the user prompt, schema-valid response object, metadata, and provenance; deterministic Qwen messages are derived, while exact held-out prompts and model training remain excluded |
+| 2. Define dataset size and split targets | Completed | Dataset v1 targets 200 accepted examples, a scenario-isolated 160/40 training-validation allocation, and a representative 40-example training-only pilot; achieved counts yield to group isolation and token balance is reported |
+| 3. Define the dataset coverage blueprint | Completed | Five balanced intent families cross 140/30/30 target-use, breadth, and robustness examples; fixed input-form, complexity, compatible-constraint, and robustness-role targets are combined with topic concentration limits and a response-diversity audit |
+| 4. Define the authoring and provenance policy | Completed | Frontier-model-assisted synthetic drafting, restricted source use, project-author responsibility, compact per-example provenance, and separate append-only workflow history define how creation, revision, review, acceptance, and rejection remain attributable |
+| 5. Define the dataset record schema and validators | Completed | The reviewed dataset-v1 configuration, three JSON Schemas, strict JSONL loader, authoring and freeze validators, lifecycle-gated ordered renderer, split-deviation path, read-only CLI, and isolated synthetic contract suite are implemented and verified alongside all 128 frozen existing tests |
+| 6. Define scenario identity and split isolation | Completed | A deterministic coverage-aware dynamic program assigns whole single-family scenario groups to validation, targets 8/32 per family, exposes any non-exact allocation for separate approval, and selects an exactly 40-example representative training-only pilot without mutating source records |
+| 7. Create the authoring guide and quality rubric | Not started | Concrete instructions and anchored examples for usefulness, metaphorical coherence, natural recipe execution, JSON validity, safety, variety, and rejection |
+| 8. Author candidate examples in reviewable batches | Not started | Approximately 220–240 original candidates are drafted in reviewable batches to produce 200 accepted examples without exact held-out prompts, model training, or generation-based selection pressure; the range is a planning estimate, not a quota |
+| 9. Validate, review, and revise candidate examples | Not started | Every retained example passes the response schema and a recorded qualitative review; rejected or materially revised candidates retain reasons |
+| 10. Audit duplication, contamination, and exclusions | Not started | Exact, lexical, semantic, metadata, and human-readable checks cover internal duplication, worked examples, development prompts, and the frozen withheld-topic policy |
+| 11. Assign splits, select the pilot subset, and freeze dataset v1 | Not started | Scenario-isolated training and validation files, a representative training-only pilot subset, coverage reports, identities, and a versioned dataset manifest are sealed |
+| 12. Conduct the Stage 4 readiness review | Not started | A proportionate review confirms dataset quality, coverage, isolation, provenance, and frozen identities before exact held-out prompt authoring begins |
 
-Stage 4 will not fine-tune the model or author exact held-out prompts.
+### Stage 4 boundaries
+
+Stage 4 will not:
+
+- author or inspect exact held-out prompts;
+- fine-tune the model or generate outputs from a candidate adapter;
+- use model performance to select, rewrite, or discard supervised examples;
+- revise the frozen evaluation protocol, response contract, model, or five-shot baseline;
+- include substantive photography, tabletop-games, or pottery/ceramics content in training or validation;
+- place the same scenario or a surface-level paraphrase across training and validation; or
+- describe validation results as held-out evidence.
+
+### Expected Stage 4 records
+
+- Dataset blueprint and coverage targets
+- Dataset authoring and provenance policy
+- Versioned supervised-example schema and validators
+- Scenario-identity and split-isolation procedure
+- Authoring guide and quality rubric
+- Candidate, revision, and rejection records
+- Frozen training and validation JSONL files
+- Coverage, schema, quality, duplication, and exclusion reports
+- Frozen 40-example training-only pilot subset
+- Dataset manifest and Stage 4 readiness review
 
 ### Stage 4 exit condition
 
@@ -154,16 +184,22 @@ The exact held-out set is balanced, reviewed, demonstrably separate from project
 
 ## Stage 6 — Train and select a candidate adapter
 
-- Repair the clean-clone adapter test fixture and pass the complete preflight suite before the next formal model run.
-- Exercise the LoRA workflow on the frozen 30–50-example pilot subset.
-- Use training and validation evidence plus the spent development set to diagnose optimisation behaviour; do not inspect held-out responses.
-- Fix the training setup and run a small number of justified experiments on the frozen dataset.
-- Select a candidate adapter using predeclared validation and development evidence.
-- Record configurations, checkpoints, losses, costs, failures, and decisions.
+The frozen supervised corpus contains 200 accepted examples. The training split targets 160 examples and is the only split that updates model weights; the validation split targets 40 and measures loss and behaviour without gradient updates. The fixed pilot is a 40-example subset of training rather than an additional split. Scenario isolation takes precedence over the target allocation, so any approved small deviation changes the achieved train and validation counts reported below without changing their roles.
+
+1. Repair the clean-clone adapter test fixture and pass the complete preflight suite before the next formal model run.
+2. Exercise the end-to-end LoRA workflow on the fixed 40-example pilot subset, including rendering, tokenisation, masking, optimisation, checkpoint saving, adapter reload, and recorded diagnostics.
+3. Use the pilot only to correct training mechanics and reject clearly unsuitable configurations. Do not rewrite supervised examples around Qwen outputs or inspect held-out responses.
+4. Predeclare the small set of justified candidate training configurations and their selection rule before full training.
+5. Train every candidate configuration on the complete frozen training split, targeting 160 examples. Compute validation loss and permitted validation diagnostics on the complete separate validation split, targeting 40 examples, without updating weights from them.
+6. Use the predeclared validation evidence and already-spent development set to select one candidate adapter. Do not use held-out prompts or responses for selection.
+7. Verify, identify, and freeze the selected adapter before generating any held-out response.
+8. Record configurations, dataset and renderer identities, checkpoints, training and validation losses, permitted diagnostics, costs, failures, and decisions.
+
+Stage 6 does not perform a final refit on all 200 accepted examples. Once the validation records have influenced configuration or checkpoint selection, training on them would remove the clean validation boundary and create a different final fitting procedure. The selected adapter is therefore one trained on the complete achieved training split.
 
 ### Stage 6 exit condition
 
-A documented candidate adapter has been selected without using held-out prompts or outputs to alter the model, dataset, prompt, or training procedure.
+A documented adapter trained on the complete frozen training split has been selected using only predeclared validation and spent development evidence, then frozen without using held-out prompts or responses to alter the model, dataset, prompt, or training procedure.
 
 ## Stage 7 — Conduct the held-out evaluation
 
@@ -203,4 +239,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Begin Stage 4 by defining the supervised dataset blueprint and coverage targets under the frozen evaluation protocol. Do not author exact held-out prompts yet. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.
+Continue Stage 4 by creating the authoring guide and quality rubric in Step 7 before drafting candidate examples. Do not author exact held-out prompts yet. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.

@@ -516,3 +516,83 @@ An adversarial review needs an explicit stopping rule. Without one, each success
 For ChatG&T, a finding blocks freeze only when it could change the compared treatments, evaluation population, scoring rules, denominators, leakage boundary, or interpretation of the primary result. Reproducibility weaknesses that constrain a claim should be documented; resistance to a malicious maintainer who controls the repository requires an external trust system and is not a reasonable local portfolio requirement.
 
 The practical lesson is to define the required assurance level before beginning review, classify findings by their effect on the research question, and stop once material blockers are resolved and remaining limitations are explicit.
+
+## 2026-07-15 — How should a long-running delegated goal define “done”?
+
+A long-running goal needs more than an objective. It should also define the expected assurance level, which findings count as blockers, what may be recorded as a limitation, how many review cycles are proportionate, and the required handoff state.
+
+For a portfolio project, “credible and proportionate” is different from production, compliance, or adversarial-security hardening. A useful delegation can state that only findings capable of materially invalidating the experiment should trigger another revision; lesser reproducibility or trust concerns should be documented. It can also cap review rounds and require a pause before expanding scope.
+
+The agent shares responsibility for this boundary. Even without a perfect initial instruction, it should recognise diminishing returns, explain when work is moving beyond the project's purpose, and ask before continuing into a materially larger assurance problem.
+
+A practical template is:
+
+> Complete the stage autonomously to portfolio quality. Use one implementation pass and one critical review. Fix findings that could materially invalidate the experiment, record lesser concerns as limitations, and ask before exceeding two revision cycles. Finish with passing tests and the requested commit or handoff state.
+
+## 2026-07-15 — Why is dataset size more than an example count?
+
+Example count is useful for planning coverage and review effort, but optimisation operates on tokens. Two datasets with 200 records can provide very different learning signals when one contains much longer responses, concentrates length in one intent family, or silently truncates examples at the training sequence limit.
+
+A small supervised dataset should therefore freeze both record counts and token distributions. Prompt, response, and supervised-token totals should be reported by split and important coverage groups, with every truncation visible.
+
+Validation and pilot data also have different jobs. Validation contains scenario-isolated examples used for loss and model-selection evidence; a pilot is a fixed subset of training used to prove the pipeline and observe early learning. Treating the pilot as another evaluation set or presenting validation as final held-out performance would blur those boundaries.
+
+## 2026-07-15 — How much of a small dataset should be controlled by quotas?
+
+Quotas are most useful when they protect something that could otherwise disappear unnoticed: an intent family, input form, hard joint behaviour, compatible user constraint, or robustness pressure. These dimensions can cross the same examples. A composed robustness prompt can simultaneously be a direct request in the explanation family, so its labels should not be treated as separate pools whose counts are added together.
+
+Dense quotas for every topic, tone, title shape, ingredient count, or garnish style would create a false sense of precision and encourage filler. For those properties, concentration limits and diversity audits are more useful: they reveal collapse or templating while leaving room to prefer natural, high-quality examples.
+
+The practical distinction is between **coverage needed to test the learning claim**, which deserves a hard target, and **variation that keeps the dataset healthy**, which usually deserves an audit and a review trigger.
+
+## 2026-07-15 — Why give composed examples substantial representation?
+
+A small instruction model may learn the visible JSON and recipe shape before it learns to combine that shape with usefulness, supplied material, explicit constraints, and resistance to contrary instructions. If almost every example is simple, training success can amount to format imitation while the central joint behaviour remains weak.
+
+ChatG&T therefore targets 40% composed examples. This is not a claim that real traffic contains exactly that proportion. It is a supervision choice: difficult joint behaviours need enough demonstrations to be learnable, while a majority of standard examples still teaches the ordinary intended experience.
+
+## 2026-07-15 — Why separate dataset content from workflow history and model rendering?
+
+A supervised example, the process that produced it, and the messages eventually consumed by one model are three different things. Combining them makes records noisy, couples authored data to a particular model, and encourages mutable review state to leak into the training representation.
+
+A cleaner design keeps one semantic source record, records drafting and review events separately, and derives model-ready messages deterministically. The source remains readable and reusable; the event history makes provenance inspectable; and the renderer makes every model-specific transformation reproducible.
+
+Some explicit metadata may repeat facts that could be inferred—for example, a constraint flag and its constraint descriptions. That redundancy is useful for human inspection only when validators enforce agreement. Unchecked redundancy creates ambiguity rather than clarity.
+
+## 2026-07-15 — Why separate topic from task subtype?
+
+Topic answers “what is this about?” while task subtype answers “what operation does the user want?” A career prompt may ask for advice, explanation, emotional support, creative material, or a rewrite. Collapsing those dimensions would make a diverse-looking dataset repeatedly teach the same capability within each domain.
+
+One controlled primary label on each axis produces countable coverage without requiring multi-label taxonomy work. Broad registries prevent trivial spelling variants from masquerading as diversity, while concentration limits and cross-family coverage encourage meaningful combinations. Pressure from a robustness prompt remains another independent label; it does not erase the ordinary task the model must still complete.
+
+## 2026-07-15 — Why should content identity exclude later dataset allocation?
+
+An example can be written, revised, reviewed, and accepted before its scenario group is assigned to training or validation. If the workflow digest covers `split` and `pilot_member`, allocation changes the supposedly terminal content identity and makes the event history impossible to reconcile without pretending a split decision was an authored revision.
+
+The cleaner boundary is to hash all authored supervision, metadata, and provenance as content while excluding only allocation fields. Freeze records and derived files still bind the complete allocated record. This preserves both claims: the reviewed content did not change, and the eventual split is exactly identifiable.
+
+Authoring and freeze validation therefore have different responsibilities. Authoring may contain an accepted but unassigned example; freeze may not. A validation mode should enforce the invariants that are knowable at that lifecycle stage rather than prematurely requiring future state.
+
+## 2026-07-15 — How can later tests coexist with historically frozen evidence?
+
+Stage 3 evidence bound the exact digest set of `tests/test_*.py`. Adding a Stage 4 test file under that glob correctly changed the identity and caused the old attestation to fail. Recreating the historical evidence would make it appear that the expanded suite had been part of the earlier freeze.
+
+The proportional solution is an additive test boundary: preserve the original command and files, place the new contract suite in a separately named directory, and run both commands. More generally, a frozen verification manifest should identify the suite it attests without preventing later stages from adding independently identified checks.
+
+## 2026-07-15 — Why is splitting by scenario different from splitting by record?
+
+Two records can look distinct while asking for substantively reusable answers. Assigning them independently can put one paraphrase in training and another in validation, making recall look like transfer. The unit of allocation should therefore be the scenario group whenever the research claim concerns generalisation beyond seen situations.
+
+Once groups are indivisible, exact row counts may not always be attainable. A useful allocator makes that trade-off visible: attempt the target, preserve isolation, report the achieved deviation, and require an attributable decision rather than quietly breaking the group or pretending the target was exact.
+
+## 2026-07-15 — What does a seed do in deterministic allocation?
+
+A seed can break ties reproducibly without turning a hand-authored dataset into a random sample. ChatG&T hashes the seed, a purpose-specific namespace, and the scenario or example ID. Count and coverage objectives decide first; the digest matters only when alternatives are otherwise equally valid.
+
+Separate namespaces for validation allocation and pilot selection prevent a coincidental ordering in one procedure from controlling the other. The result is stable across file order and repeated runs, but the statistical claim remains about this deliberately constructed dataset rather than a randomly sampled population.
+
+## 2026-07-15 — Why should split assignment consider coverage as well as counts?
+
+An exact 160/40 split can still be unusable if validation contains no robustness pressure, no composed tasks, or only one input form. Count balance and behavioural coverage answer different questions.
+
+A coverage-aware allocator treats the required validation labels as feasibility constraints, then optimises count deviations among feasible scenario-group assignments. This prevents a tidy count from taking priority over the reason validation exists: monitoring whether learning transfers across the behaviours the model is meant to acquire.
