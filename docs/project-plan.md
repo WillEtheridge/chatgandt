@@ -78,16 +78,49 @@ The selected base model runs reproducibly in the available environment; raw gene
 
 ## Stage 3 — Design and freeze the evaluation
 
-- Create an anchored qualitative rubric for human and LLM-judge scoring.
-- Define the held-out test categories.
-- Write, review, and freeze the held-out prompts.
-- Freeze the five-shot prompt before held-out evaluation.
-- Define the blind pairwise evaluation procedure.
-- Finalise memorisation, input-token, latency, and response-length measurement procedures.
+| Step | Status | Expected outcome |
+| --- | --- | --- |
+| 1. Confirm the inherited experimental boundary | Completed | Stage 2 closes with the model, v3 prompt, generation profile, seed policy, harness, validator, and development evidence frozen; no held-out output has been generated |
+| 2. Define the held-out sample architecture | Not started | A justified total size and quotas across intent families, reporting slices, input forms, difficulty, constraints, and robustness roles |
+| 3. Operationalise “unseen” and contamination controls | Not started | Exact and semantic overlap rules for worked examples, development prompts, training data, validation data, and held-out prompts, with a documented review procedure |
+| 4. Finalise the qualitative scoring rubric | Not started | Anchored 1–3 criteria for underlying-answer quality, metaphorical coherence, and recipe-style execution, including `unable_to_assess` and the joint-pass rule |
+| 5. Define evaluator calibration and judge roles | Not started | Agreed human and LLM-judge responsibilities, calibration examples, judgment counts, disagreement handling, and agreement reporting |
+| 6. Define the blinded pairwise procedure | Not started | Exact B-versus-C eligibility, response-order randomisation, tie handling, identity reveal, conditional preference, and end-to-end outcome rules |
+| 7. Finalise automatic, efficiency, and uncertainty measurements | Not started | Frozen schema checks, token and response-length accounting, synchronized latency procedure, aggregation rules, confidence intervals, and reporting slices |
+| 8. Define memorisation and response-similarity checks | Not started | Exact and semantic procedures for detecting suspicious overlap with worked examples and training responses without overstating what can be proven |
+| 9. Author the held-out prompts to the frozen blueprint | Not started | A complete prompt set written without model generation, balanced against the agreed quotas, and separated from all development and training assets |
+| 10. Adversarially review the evaluation package | Not started | Independent challenges to prompt coverage, ambiguity, leakage, rubric clarity, pairwise fairness, measurement validity, and executable feasibility before freeze |
+| 11. Freeze and version all evaluation assets | Not started | Canonically stored prompts, digests, specifications, rubrics, procedures, and automated identity checks that cannot be silently edited after training begins |
+| 12. Repair the clean-clone adapter test fixture | Not started | The adapter-loading unit test creates its own disposable fixture and the complete suite passes without relying on ignored local artefacts |
+| 13. Conduct the Stage 3 readiness review | Not started | Confirmation that evaluation design and held-out prompts are frozen, executable, uncontaminated, and ready before pilot fine-tuning begins |
+
+### Stage 3 boundaries
+
+Stage 3 will not:
+
+- generate model responses for held-out prompts;
+- use held-out prompts to revise the five-shot baseline, response contract, or evaluation criteria;
+- create fine-tuning examples from held-out scenarios;
+- begin pilot training before the evaluation package is frozen;
+- present development results as estimates of held-out performance; or
+- treat one evaluator or one model judge as representative of public preference.
+
+### Expected Stage 3 records
+
+- Held-out sample and quota plan
+- Operational unseen and contamination protocol
+- Final qualitative rubric and evaluator-calibration procedure
+- Blind pairwise evaluation specification
+- Automatic, efficiency, and uncertainty analysis plan
+- Memorisation and similarity-check procedure
+- Reviewed and frozen held-out prompt set
+- Versioned evaluation configuration and identity checks
+- Clean-clone test-fixture correction
+- Stage 3 readiness review
 
 ### Stage 3 exit condition
 
-The final evaluation procedure is documented and the held-out prompts are frozen before training begins.
+The complete evaluation procedure is documented and executable; the held-out prompts and every result-affecting scoring rule are frozen before training begins; contamination checks pass; and the project can run the later held-out comparison without making new interpretive decisions after seeing model outputs.
 
 ## Stage 4 — Run a pilot fine-tune
 
@@ -151,4 +184,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Begin Stage 3 by deciding the final held-out evaluation sample design and judge-calibration procedure before writing or inspecting held-out prompts. Fix the non-portable adapter unit-test fixture before the next formal model run.
+Begin Stage 3 Step 2 by defining the held-out sample architecture before writing any prompt text: total size, intent-family quotas, reporting slices, input-form coverage, difficulty, constraints, and robustness allocation. Fix the non-portable adapter unit-test fixture before the next formal model run and no later than the Stage 3 readiness review.
