@@ -398,3 +398,31 @@ An immutable run should not become invalid merely because later development adds
 The correct reference is the state recorded by the run. The manifest's behaviour-file identities and tree digest establish internal integrity, while a clean recorded Git commit can establish which package files existed at that revision. The current checkout is not evidence of what should have existed in an earlier commit.
 
 This distinction is important for long-lived experiments: verification code may become stricter, but it should verify historical claims against historical identities rather than silently redefining them using today's repository contents. A regression test now requires the accepted 40-attempt run to remain inspectable after later package files are added.
+
+## 2026-07-15 — Can a local ignored artefact hide a non-portable test?
+
+Yes. ChatG&T's adapter-loading unit test referred to the lifecycle adapter generated during an earlier local diagnostic. The artefact was correctly excluded from Git, but its presence made the test pass locally. On a fresh Runpod clone the same test failed before reaching its mocked adapter loader because the directory did not exist.
+
+A unit test should create every disposable fixture it needs or mock the boundary it is not testing. Depending on leftover local state makes a test result describe the workstation rather than the repository. Fresh-clone execution is therefore a useful portability check even when the code already passes locally.
+
+The failure did not invalidate the base-only v3 confirmation path, but it exposed a test-design defect that must be fixed before the next formal run. More generally, ignored files should be treated as absent when assessing whether a test suite is reproducible.
+
+## 2026-07-15 — Does better schema adherence imply a better complete response?
+
+No. Pinned prompt v3 improved schema validity from v1's 9 out of 20 responses to 12 out of 20, but full response passes fell from six to five. Five structurally valid v3 responses lost the natural recipe voice and became ordinary prose placed inside recipe-shaped JSON. Four structurally valid responses also failed the user's underlying task.
+
+This is why structural and qualitative evaluation cannot be collapsed into one metric. A concrete output skeleton can help a model reproduce braces, fields, and arrays without teaching it to reason accurately, deliver a requested artefact, or sustain a coherent style.
+
+Local-to-formal transfer can also differ by dimension. V3's local structural count transferred closely, while its local recipe-style result did not. A fast approximate runtime can identify promising interventions, but candidate confirmation must examine the complete behaviour rather than only the metric the intervention directly targeted.
+
+The mixed result is useful for fine-tuning design. Training data must repeatedly demonstrate the joint behaviour—correct task completion, coherent metaphor, natural recipe execution, and valid JSON—because optimising only the easiest objective can move failures into a softer dimension.
+
+## 2026-07-15 — What is a readiness review for?
+
+A readiness review asks whether a stage has produced enough trustworthy evidence to support the next kind of work. It is not a demand that the whole project be finished or defect-free.
+
+Unresolved items should be classified by consequence. A **blocker** prevents the next stage from producing valid work. A **hard gate for a later action** permits current progress but must be resolved before a named future operation. A **limitation** does not necessarily require correction, but constrains what can be claimed.
+
+For ChatG&T, the non-portable adapter unit test does not block held-out evaluation design, so Stage 3 can begin. It does block the next formal model run, making it a concrete gate before Stage 4 GPU execution. Mixed prompt-transfer results are limitations and design evidence rather than unfinished prompt work.
+
+This classification prevents both extremes: declaring readiness while hiding consequential defects, or keeping a stage open indefinitely because unrelated later decisions remain. A useful exit decision states what is ready, what remains, when each remaining item becomes mandatory, and which claims are still unavailable.

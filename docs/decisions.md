@@ -946,7 +946,7 @@ Treating local outputs as formal evidence would overstate comparability because 
 ## D-032 — Select five-shot prompt v3 and stop prompt development
 
 - **Date:** 2026-07-15
-- **Status:** Adopted; pinned confirmation pending
+- **Status:** Adopted; pinned structural confirmation complete
 
 ### Decision
 
@@ -965,4 +965,76 @@ Version 3 wins on the first and primary selection criterion: seven full response
 - Development metrics remain diagnostic and cannot support held-out generalisation claims.
 - No fifth prompt version may be derived from these development outputs.
 - A material local-to-formal discrepancy is reported rather than tuned away after the revision budget has closed.
-- Formal confirmation may measure v3 transfer, but final B-versus-C quality and latency claims still require a matched held-out run.
+- Formal confirmation measured mixed v3 transfer; final B-versus-C quality and latency claims still require a matched held-out run.
+
+## D-033 — Accept the pinned System B v3 confirmation run
+
+- **Date:** 2026-07-15
+- **Status:** Adopted; structural and qualitative scoring complete
+
+### Decision
+
+Run `development-b-v3-confirmation-20260715` is accepted as complete development evidence. All 20 scheduled base-System-B attempts completed through the pinned BF16 harness, the immutable local copy passes inspection, and the frozen structural evaluator found 12 schema-valid responses.
+
+The `$0.14` run is accepted despite one preflight unit-test error. That test depended on a Git-ignored diagnostic adapter missing from the fresh clone; the confirmation selected no adapted system and loaded no adapter. The fixture dependency must be removed before the next formal run.
+
+### Rationale
+
+The failure was isolated to test setup for an unused runtime path. The manifest proves that the authorised clean commit, pinned base model, selected v3 prompt, frozen prompts, configuration, seed, and base-only System B path produced the recorded responses. Rejecting those responses would not provide a more faithful measurement of prompt transfer.
+
+Pinned v3's 12 schema-valid responses are close to local v3's 11 and improve on pinned v1 System B's nine. This is structural development evidence only; qualitative scoring and held-out evaluation remain necessary.
+
+### Implications
+
+- The raw run remains immutable and the preflight deviation remains visible.
+- The adapter-loading unit test must use a self-contained disposable fixture before another formal run.
+- Cross-session A/B latency must not be treated as matched evidence.
+- Prompt version 3 remains closed to further development revision.
+
+## D-034 — Treat v3 prompt transfer as structurally successful but qualitatively mixed
+
+- **Date:** 2026-07-15
+- **Status:** Adopted
+
+### Decision
+
+Retain `five-shot-v3` as the frozen System B prompt while recording that its pinned transfer result is mixed.
+
+Pinned v3 produced 12 schema-valid responses and five full passes from 20 attempts. Local v3 produced 11 schema-valid responses and seven full passes. Pinned v1 produced nine schema-valid responses and six full passes. V3 therefore improved the structural count without improving the end-to-end full-pass count on the pinned development run.
+
+### Rationale
+
+The prompt was selected by a rule frozen before version outputs were inspected. Reopening prompt development because the confirmation result is less favourable would undermine that boundary and tune further against the same 20 known prompts.
+
+The confirmation has still done its job: it showed which local behaviour transferred and which did not. Structure transferred approximately; natural recipe voice and simultaneous task fulfilment were less reliable. That is actionable evidence for dataset design and the later fine-tuning comparison.
+
+### Implications
+
+- Version 3 remains the five-shot prompt used by Systems B and D.
+- Development results do not support a claim that v3 is categorically better than v1.
+- Training examples must demonstrate useful task completion and natural recipe execution, not merely valid schema shape.
+- Stage 3 evaluation must preserve separate structural and qualitative measurements.
+
+## D-035 — Close Stage 2 and proceed to evaluation design
+
+- **Date:** 2026-07-15
+- **Status:** Adopted
+
+### Decision
+
+Stage 2 passes its readiness review and is complete. ChatG&T will proceed to Stage 3 using Qwen2.5-1.5B-Instruct, `five-shot-v3`, the pinned generation profile, and the accepted harness and validation tooling as its technical baseline.
+
+The full assessment is recorded in [Stage 2 readiness review](stage-2-readiness-review.md).
+
+### Rationale
+
+The selected model, dependency environment, LoRA lifecycle, representative training workload, base and adapted CUDA inference, evidence harness, structural validator, development population, prompt baseline, and System A/B development evidence have all been exercised and recorded. No held-out evaluation output has been used.
+
+The non-portable adapter-loading unit fixture is a real defect but does not prevent Stage 3's documentation and dataset-design work. It is a hard gate before the next formal model run rather than a reason to keep Stage 2 open.
+
+### Implications
+
+- No further System B prompt revision is authorised from the spent development set.
+- Stage 3 must freeze the final evaluation before pilot training begins.
+- Development results remain diagnostic and cannot become headline claims.
+- The adapter test fixture must be corrected and clean-clone verified before Stage 4 GPU execution.

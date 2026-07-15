@@ -41,13 +41,13 @@ We can state exactly what is being tested, which systems are being compared, wha
 | 3. Research and shortlist candidate models | Completed | An evidence-backed comparison using current model cards and documentation |
 | 4. Run model feasibility checks | Completed | Loading, generation, the LoRA lifecycle, and a representative BF16 training workload passed on a rented 24 GB RTX 3090 with substantial VRAM headroom |
 | 5. Select and record the base model | Completed | Qwen2.5-1.5B-Instruct is selected, pinned, justified, and confirmed across local and rented-GPU feasibility checks |
-| 6. Establish the reproducible environment | In progress | Python, dependencies, model revision, rented-GPU compatibility, generation profile, and seed policy are pinned and verified; the final training configuration remains |
+| 6. Establish the reproducible environment | Completed | Python, dependencies, model revision, rented-GPU compatibility, generation profile, and seed policy are pinned and verified; pilot training hyperparameters remain a later experimental decision |
 | 7. Build the inference and capture harness | Completed | Specification 1.2 passed four adversarial reviews; implementation, 40 tests, real base/adapter CPU inference, and the two-runtime CUDA end-to-end diagnostic all pass |
 | 8. Implement schema validation | Completed | Specification 1.3 is implemented; the exact schema, strict parser, stable diagnostics, deterministic serializer, 33 focused tests, and complete 73-test regression suite pass |
 | 9. Create the prompt-development set | Completed | Twenty exact user prompts and closed metadata are reviewed, canonically stored, digest-bound as version 1, and verified before model generation |
 | 10. Develop and version the five-shot prompt | Completed | Four frozen prompt versions were compared under a predeclared stopping and selection rule; v3 is selected after v4 regressed |
-| 11. Run Systems A and B on development prompts | In progress | The initial 40-attempt GPU run is accepted and all local prompt versions are structurally and qualitatively scored; unchanged v3 pinned confirmation remains |
-| 12. Conduct the Stage 2 readiness review | Not started | Confirmation that the model, harness, validator, prompt baseline, and records are ready for formal evaluation design |
+| 11. Run Systems A and B on development prompts | Completed | Pinned v3 confirmation produced 12/20 schema-valid and 5/20 full-pass responses; transfer is structurally close but qualitatively mixed |
+| 12. Conduct the Stage 2 readiness review | Completed | Stage 2 passes with no Stage 3 blocker; one non-portable adapter test fixture is a hard gate before the next formal model run |
 
 ### Stage 2 boundaries
 
@@ -73,6 +73,8 @@ Stage 2 will not:
 ### Stage 2 exit condition
 
 The selected base model runs reproducibly in the available environment; raw generations and operational measurements are captured; schema validation works; and Systems A and B have documented development baselines produced without using the held-out test set.
+
+**Exit decision:** Passed on 2026-07-15. See [Stage 2 readiness review](stage-2-readiness-review.md).
 
 ## Stage 3 — Design and freeze the evaluation
 
@@ -149,4 +151,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Review and commit the complete prompt-development record, then execute the prepared System B v3 confirmation through the pinned BF16 harness when a paid GPU session is authorised. The harness now captures Git identity before creating its operational lock and collects the CUDA driver through `nvidia-smi`; both corrections must pass the full regression suite before that run.
+Begin Stage 3 by deciding the final held-out evaluation sample design and judge-calibration procedure before writing or inspecting held-out prompts. Fix the non-portable adapter unit-test fixture before the next formal model run.

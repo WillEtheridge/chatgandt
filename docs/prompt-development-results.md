@@ -3,7 +3,7 @@
 - **Date:** 2026-07-15
 - **Population:** 20 frozen development prompts
 - **Selected candidate:** `five-shot-v3`
-- **Status:** Local selection complete; pinned BF16 confirmation pending
+- **Status:** Local selection and pinned structural and qualitative confirmation complete
 
 ## Scope
 
@@ -49,6 +49,10 @@ Prompt development stops because:
 
 No fifth version will be created from these development outputs. `five-shot-v3`, SHA-256 `cdd68af07f6668c8526c357a7f9df6600d95cbfa03da83bcb5280ee053a89d31`, is the selected System B candidate.
 
-## Remaining boundary
+## Pinned transfer check
 
-The v3 prompt text must be confirmed unchanged through the pinned Hugging Face BF16 harness before it becomes the formal baseline. The prepared confirmation runs only System B over the same 20 development prompts. It is a transfer check, not a new prompt-development opportunity and not held-out evidence.
+The unchanged v3 prompt subsequently produced 12 schema-valid responses from 20 attempts through the pinned Hugging Face BF16 harness, compared with 11 locally. All 20 generations completed successfully, and the run is accepted in [Development System B v3 confirmation acceptance](development-b-v3-confirmation-acceptance.md).
+
+Blinded scoring found five full passes, eight acceptable underlying answers, nine acceptable metaphors, and seven acceptable recipe-style executions. Local v3 had seven full passes, while pinned v1 had six. The result therefore supports close structural transfer but not an overall quality improvement.
+
+The confirmation remains development evidence rather than a new prompt-development opportunity or held-out result. Version 3 remains frozen because it won the predeclared local rule; the mixed transfer result becomes evidence for dataset and evaluation design rather than justification for a fifth prompt version.

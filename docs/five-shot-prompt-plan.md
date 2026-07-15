@@ -1,7 +1,7 @@
 # Five-Shot Prompt Plan
 
 - **Plan version:** 1.0
-- **Status:** Four-version development loop complete; version 3 selected pending pinned confirmation
+- **Status:** Four-version loop complete; version 3 selected and structurally confirmed on the pinned runtime
 - **Date:** 2026-07-14
 
 ## Purpose
@@ -78,4 +78,4 @@ The exact version-selection rule is now operationalised in [Prompt-development p
 
 Four permitted versions were generated and evaluated under the frozen local procedure. Version 3 produced the strongest selection vector and is now the selected System B candidate. Version 4 regressed, so the stopping rule closed prompt iteration. The complete evidence and selection rationale are recorded in [Prompt-development results](prompt-development-results.md).
 
-The remaining step is an unchanged pinned BF16 confirmation using the prepared [System B v3 confirmation runbook](development-b-v3-confirmation-runbook.md).
+The unchanged pinned BF16 confirmation produced 12 schema-valid responses and five full passes from 20 attempts, compared with 11 schema-valid responses and seven full passes locally. Its [acceptance record](development-b-v3-confirmation-acceptance.md) establishes close structural transfer but mixed qualitative transfer. Version 3 remains frozen under the predeclared selection rule.

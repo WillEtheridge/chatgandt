@@ -52,7 +52,7 @@ Controls:
 - give the five-shot prompt a genuine development process; and
 - freeze all systems before held-out evaluation.
 
-The exact prompt-development stopping rule remains deferred.
+Prompt development used a predeclared four-version ceiling and lexicographic selection rule. The selected v3 prompt transferred closely on structure but not on full-response quality, and no fifth version is authorised from the spent development set.
 
 ### Inference configuration
 
@@ -91,6 +91,12 @@ The original pretraining data is not fully observable. The experiment can invest
 Memorisation claims must be limited accordingly.
 
 ## Evaluation validity
+
+### Development transfer evidence
+
+Prompt v1 and v3 were confirmed in separate rented-GPU sessions, while prompt selection used a local quantised Ollama runtime. Their development counts can diagnose transfer but are not a matched latency comparison or a statistically reliable prompt ranking.
+
+The development qualitative evaluation used one blinded LLM-judge session whose exact backend snapshot was unavailable. These scores guide engineering and dataset design; final conclusions require the frozen Stage 3 procedure and separately labelled human calibration.
 
 ### Qualitative subjectivity
 
@@ -182,7 +188,6 @@ Public votes are supplementary observational evidence and do not replace the fro
 
 Later stages must determine and record:
 
-- prompt-development budget and stopping rule;
 - held-out sample size and quotas;
 - operational definition of semantic overlap;
 - number of human and LLM judges;
