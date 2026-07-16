@@ -2,7 +2,7 @@
 
 - **Run:** one 40-example LoRA pipeline rehearsal
 - **Configuration:** `config/pilot-training-v1.toml`
-- **Execution commit:** set after the pilot implementation is committed
+- **Execution commit:** `81b586d` (`Prepare reproducible LoRA pilot training`)
 - **Expected GPU time:** comfortably below one hour on a suitable 24 GB NVIDIA GPU
 - **Status:** Prepared; not yet executed
 
@@ -37,7 +37,7 @@ nvidia-smi
 df -h /workspace
 cd /workspace/chatgnt
 git fetch origin
-git checkout --detach EXECUTION_COMMIT
+git checkout --detach 81b586d
 git status --short
 ```
 
