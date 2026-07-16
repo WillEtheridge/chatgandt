@@ -48,8 +48,9 @@ function chooseSpecials(items: readonly string[]) {
 
 export function HouseSpecials({
   items = HOUSE_SPECIALS,
+  onSelect,
   orientation = "stacked",
-}: Readonly<{ items?: readonly string[]; orientation?: "horizontal" | "stacked" }>) {
+}: Readonly<{ items?: readonly string[]; onSelect?: (item: string) => void; orientation?: "horizontal" | "stacked" }>) {
   const isHorizontal = orientation === "horizontal";
   const [visibleItems, setVisibleItems] = useState(() => items.slice(0, 3));
 
@@ -76,6 +77,7 @@ export function HouseSpecials({
                 : "flex h-full w-full cursor-pointer items-start justify-between gap-6 border-b border-outline px-4 py-4 text-left text-sm leading-relaxed last:border-b-0 hover:bg-steel hover:text-concrete sm:px-6"
             }
             key={item}
+            onClick={() => onSelect?.(item)}
             type="button"
           >
             <span>{item}</span>

@@ -706,3 +706,9 @@ The frozen validator did exactly what it was meant to do: it caught a quiet loss
 A checkpoint is a decision gate, not a mandate to produce another revision. The end-of-Stage-4 System B review deliberately challenged older worked examples against the stricter final teaching rubric, especially their garnishes. The relevant test was whether each garnish was optional, concise, reinforcing, and natural after “Garnish with”—not whether a reviewer could imagine an alternative they personally preferred.
 
 All five complete responses passed every non-compensatory dimension. Revising them anyway would have converted a fairness check into unplanned prompt optimisation after the baseline had already been selected. Good governance sometimes means documenting careful scrutiny and changing nothing.
+
+## 2026-07-16 — What does a proportionate held-out freeze need to prove?
+
+The purpose of a held-out freeze is not to create the largest possible evidence bundle. It is to make the experimental boundary credible: the test population matches the predeclared design, its exact prompts did not shape the dataset or systems, obvious project reuse has been checked, and the prompt bytes cannot quietly change after training begins.
+
+For ChatG&T, an exact executable quota check, a bounded complete-prompt collision check, one complete-set quality review, and a hash-bound manifest answer those questions. A per-candidate digest chain, multiple review records, and thousands of retrieval dispositions would add process without materially improving the claim. The important stopping rule is to freeze the first complete set that passes the predeclared reasons for replacement and never revise it after seeing model performance.

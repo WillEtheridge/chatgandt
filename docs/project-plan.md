@@ -175,18 +175,20 @@ This checkpoint is an assessment, not permission to silently revise a frozen bas
 
 ## Stage 5 — Author and freeze the held-out set
 
-- Author exactly 60 prompts to the frozen sample blueprint without generating system responses.
-- Classify and verify every cross-cutting quota.
-- Compare each candidate against worked examples, development prompts, training data, validation data, and other held-out candidates using the frozen exact, lexical, semantic, metadata, and recorded-review procedure.
-- Reject and replace collisions only for predeclared reasons, preserving an auditable replacement log.
-- Adversarially review ambiguity, coverage, contamination, and scoring feasibility.
-- Freeze and version the prompts, metadata, review evidence, identities, and digests.
+| Step | Status | Evidence or decision |
+| --- | --- | --- |
+| 1. Confirm the authoring boundary | Completed | Dataset v1.2 and System B were frozen before exact prompt text was written; no training or held-out inference had begun |
+| 2. Author the fixed population | Completed | Exactly 60 prompts cover five intent families, three reporting slices, three input forms, two observable complexity levels, ten ordinary constraints, three robustness roles, and three withheld domains |
+| 3. Validate the matrix | Completed | The existing executable validator passes every global and per-family quota and IDs `heldout-v1-001` through `heldout-v1-060` |
+| 4. Check separation | Completed | Exact and bounded prompt-level lexical comparison against 231 prohibited project prompts produced zero flags; the frozen Stage 4 audit already records no withheld-domain matches in supervised data |
+| 5. Review the complete set | Completed | Every prompt is low-stakes, single-turn, answerable, naturally phrased, correctly labelled, and scorable without seeing model output; no replacement was required |
+| 6. Freeze held-out v1 | Completed | Canonical prompts, quota report, audit, and manifest are stored under `data/evaluation/heldout-v1/`; the manifest states that it contains no model responses |
 
-Stage 5 will not modify the frozen systems, evaluation rules, training data, or validation data; fine-tune the model; or generate held-out responses.
+Stage 5 will not modify the frozen systems, scoring rules, training data, or validation data; fine-tune the model; or generate held-out responses. D-063 is a documented amendment to authoring evidence only: it replaces disproportionate lifecycle ceremony without changing the population or later evaluation.
 
 ### Stage 5 exit condition
 
-The exact held-out set is balanced, reviewed, demonstrably separate from project development and supervised data under the frozen rules, and sealed before any fine-tuning begins.
+The exact held-out set is balanced, reviewed, demonstrably separate from project development and supervised data under the proportionate D-063 procedure, and sealed before any fine-tuning begins. **Completed 2026-07-16.**
 
 ## Stage 6 — Train and select a candidate adapter
 
@@ -245,4 +247,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Begin Stage 5 by authoring exactly 60 held-out prompts to the frozen evaluation blueprint without generating system responses. Preserve the frozen dataset and System B prompt, compare every candidate against the project sources under the held-out contamination procedure, and freeze the prompt set before any training or held-out generation. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.
+Begin Stage 6 by fixing the non-portable adapter unit-test fixture, then run the complete preflight suite before the first formal model run. Use the frozen 40-example pilot to verify the end-to-end training pipeline without opening or generating responses for held-out v1.

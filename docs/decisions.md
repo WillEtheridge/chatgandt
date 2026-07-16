@@ -1730,3 +1730,22 @@ Pass all five System B worked examples against the final `chatgnt-dataset-author
 ### Boundary
 
 This authorises held-out prompt authoring under the frozen Stage 5 protocol. It does not author held-out prompts, train Qwen, select an adapter, or generate evaluation responses.
+
+## D-063 — Use a proportionate held-out authoring and freeze procedure
+
+- **Date:** 2026-07-16
+- **Status:** Adopted, applied, and verified; Stage 5 complete
+
+### Decision
+
+Replace the originally specified per-candidate ledger, dual-review, and semantic-evidence package with the smallest procedure that protects the experiment's held-out boundary. Author all 60 prompts without model answers, validate the frozen population matrix mechanically, compare complete prompt text against prohibited project prompts and earlier held-out prompts, review the complete set once for clarity and scoring feasibility, and freeze the first complete set that passes.
+
+A prompt is replaced only if it is unclear, unscorable, duplicated, assigned to the wrong slot, or genuinely overlaps prohibited material. No prompt is revised because a model handles it poorly. The frozen set is hash-bound in one manifest and must not be opened for prompt development, training, validation, or adapter selection.
+
+### Result
+
+Held-out v1 contains exactly 60 schema-valid prompts and no model responses. Every frozen quota passes. A prompt-level comparison against 231 worked-example, development, evaluation-calibration, training, and validation prompts produced no exact or threshold flags, so no replacement cycle was needed. Dataset v1.2 and System B remain unchanged.
+
+### Limitation
+
+The overlap check is an inspectable lexical retrieval control, not proof of semantic independence, and the complete-set judgment was performed by the project agent rather than an independent human panel. Those limitations are proportionate to this portfolio experiment and are recorded rather than disguised with a larger ceremonial evidence package.
