@@ -1491,3 +1491,156 @@ Separating hard gates, per-example quality, and corpus-level diversity avoids bo
 - Coverage gaps determine what to draft next but never lower the acceptance bar.
 - A passing model review does not itself accept an example; terminal inclusion remains attributable to the project author.
 - Step 8 may now begin without reopening the quality dimensions or workflow outcomes.
+
+## D-052 — Treat garnish as an optional recipe flourish, not an overflow field
+
+- **Date:** 2026-07-15
+- **Status:** Adopted from calibration evidence; authoring rubric amended to version 1.1
+
+### Decision
+
+A dataset garnish must be a concise optional metaphorical flourish or serving accent. It should read naturally after “Garnish with…” or “Serve with…”, reinforce the particular recipe, and remain removable without making the substantive answer incomplete.
+
+A garnish may not introduce an essential instruction, warning, correction, decision rule, requested artefact, factual explanation, or other answer content. Those belong in ingredients or method. Violations receive `recipe_execution_weak` and cannot pass teaching-target review merely because the extra content is relevant or useful.
+
+### Rationale
+
+Every garnish in the first 10-candidate calibration draft used the field for an additional tip, warning, explanation, choice, catchphrase, or posting instruction. The independent reviewer passed this pattern because version 1 described a garnish broadly as a relevant final detail. Project-author inspection correctly identified that relevance did not make those sentences garnishes.
+
+This is the purpose of a calibration batch: expose a shared interpretation failure before scaling it across the dataset. Tightening the authoring rubric is more honest than individually polishing ten symptoms while leaving the rule that produced them unchanged.
+
+### Experimental boundary
+
+The Stage 3 evaluation protocol and `docs/behavioural-contract.md` remain byte-for-byte unchanged because they are part of the frozen evaluation identity. The existing recipe-style evaluation question already asks whether the response sustains a natural cocktail-recipe voice. Version 1.1 is a stricter teaching-target interpretation for Stage 4, not a silent alteration of the frozen scoring protocol.
+
+### Implications
+
+- The original ten garnishes are recorded as project-author revision requests.
+- All ten candidate snapshots require a truthful revision event and fresh review before acceptance.
+- Later reviewers must apply the removal test and reject method-like garnish overflow.
+- No calibration candidate is accepted solely on the earlier model review.
+
+## D-053 — Apply a holistic bartender test to teaching targets
+
+- **Date:** 2026-07-15
+- **Status:** Adopted from calibration evidence; authoring rubric amended to version 1.2
+
+### Decision
+
+A candidate passes recipe-style execution only when, without relying on the JSON field names, its title, measurements, ingredients, preparation language, and garnish still unmistakably sound like a bartender presenting a metaphorical cocktail recipe.
+
+Cocktail-like measures should dominate, with real units retained when they carry useful task meaning. Quantities communicate relative emphasis or composition rather than pretend scoring. Preparation language must map naturally to the substantive reasoning across the method; isolated bar verbs cannot rescue an ordinary checklist. No title or garnish may carry the complete stylistic burden.
+
+### Rationale
+
+After the garnish correction, direct review of candidates 001 and 002 revealed a broader failure: both were useful and structurally recipe-shaped, but their bodies still read as household and consumer checklists. Component-by-component review had rewarded valid fields while missing the overall experience.
+
+The bartender test turns that gestalt into an operational anchor without adding another scored dimension. It preserves the existing three-dimension rubric while making recipe-style execution harder to satisfy through labels alone.
+
+### Calibration exception and stopping rule
+
+The 10-candidate calibration batch receives one bounded whole-response rewrite under version 1.2. For candidates already at the ordinary two-revision limit, this is a documented exception caused by a project-author amendment to the shared quality standard, not another autonomous polishing cycle. No candidate receives a further content revision: a remaining failure after direct inspection is rejected and replaced.
+
+### Implications
+
+- Candidates 001 and 002 use the project-author-approved conversation rewrites.
+- Candidates 003–010 receive one whole-response rewrite against the same standard.
+- Every rewritten snapshot remains unresolved until direct project-author review.
+- Production batches begin under version 1.2 rather than inheriting the calibration failure.
+
+## D-054 — Freeze the first 20-slot production matrix before drafting
+
+- **Date:** 2026-07-16
+- **Status:** Project-author approved
+
+### Decision
+
+Freeze `dataset-v1-batch-02` with four planned candidates per intent family and 20 distinct scenario identities before authoring any exact prompt or ideal response. The batch contains 15 target-use, three breadth, and two robustness slots; four questions, nine direct requests, and seven statements or fragments; 14 standard and six composed slots; six compatible-constraint slots; and one behaviour-pressure plus one serialization-pressure slot.
+
+The frozen matrix identity is `3e75545490a265e1f4447d579bfe55464e431710d17d44401e0579052f765c09`. Exact drafting may fill these slots but may not silently change their IDs, scenarios, metadata, or coverage roles.
+
+### Rationale
+
+Calibration left different slice combinations in each family. Adding the proposed slots brings the cumulative 30-example corpus to four target-use, one breadth, and one robustness example in every family. Freezing scenario intent before wording reduces the opportunity to relabel convenient drafts after seeing their quality and keeps coverage pressure separate from acceptance judgment.
+
+### Workflow boundary
+
+A fresh drafting context receives the frozen matrix and authoring standard but does not review or accept its own work. It stops after creating 20 candidate snapshots, corresponding `draft_created` events, and structural-validation evidence. Qualitative review occurs in a separate context, and only the project author may record terminal acceptance.
+
+## D-055 — Treat plausible pours, not unit variety, as the measurement standard
+
+- **Date:** 2026-07-16
+- **Status:** Project-author approved; authoring rubric amended to version 1.3
+
+### Decision
+
+Keep `ml` as ChatG&T's expected default measurement. Judge quantities by whether they resemble a plausible bartender composition: a base pour, smaller modifiers, and accents expressed naturally through smaller ml amounts, dashes, drops, splashes, twists, or a substantively useful real unit.
+
+Adopt the Batch 02 review's systematic `response_templating` finding with a narrowed interpretation. Repeated use of `ml` and shared cocktail vocabulary are not failures. The defect is repeated score-like amount sequences, routine normalisation of abstract ingredients to an exact total, and generic preparation scaffolds across unrelated answers.
+
+### Rationale
+
+Cocktails are normally made with measured pours; removing or artificially rationing `ml` would make the teaching targets less authentic. The original ChatG&T example already establishes the desired grammar: a substantial base, smaller supporting pours, and a dash-like accent. Batch 02's first drafts instead made many unrelated answers resemble allocations from the same 100-point template.
+
+The correction should therefore increase compositional authenticity without turning unit diversity into another quota. Recipe construction follows the answer's hierarchy and method, not an arbitrary demand that every record look different.
+
+### Bounded correction
+
+All 20 Batch 02 candidates receive one coordinated material revision because the review finding belongs to the collection. Prompts, scenarios, metadata, substantive goals, and sound underlying answers remain fixed. A frozen per-candidate construction overlay guides one fresh revision pass, followed by one separate post-revision review. That review is the stopping point for whole-batch correction; no further batch-wide polishing loop is authorised.
+
+### Frozen identities
+
+- Authoring guide v1.3: `04a3a75604a2ef77e41a210a20fcb2b054cf07703104954ea198fdab7eb7f2b1`
+- Machine-readable rubric v1.3: `4d8df1ee6db926cc4d4e28a55f8bffbe06aa81eac2d1cc959a554364e4a65201`
+- Batch 02 revision overlay: `49e5606c11bd1ac333c8ee92afe2d86de5e2caba13a358768aac20c83b3a293b`
+
+## D-056 — Separate qualitative judgment from deterministic terminal acceptance
+
+- **Date:** 2026-07-16
+- **Status:** Adopted and implemented; supersedes only the human-only acceptance clauses in D-051 and D-054
+
+### Decision
+
+Retain independent qualitative review as the inclusion judgment: a current review must attest that underlying-answer quality, metaphorical coherence, and recipe-style execution all pass. Replace mandatory per-example project-author acceptance with deterministic terminalisation by `chatgnt-dataset-terminalizer-v1`.
+
+The workflow schema permits `accepted` events from a human or `automated_validator`, but not from a frontier model. Automated acceptance must immediately follow a passing review of the same content digest, use a fixed code-owned identity and null model identity, and have an empty reason-code list. The review actor must differ from the latest actor that drafted or materially revised the current content.
+
+The finalizer validates the complete input collection, fails if any unresolved candidate lacks a current pass, constructs all acceptance events in memory, validates the proposed post-state, checks that the event file has not changed since reading, and atomically replaces only that canonical JSONL file. A repeated run makes no additions.
+
+### Rationale
+
+Batch 02 exposed that human-only acceptance duplicated the already-recorded qualitative decision and would force the project author to approve hundreds of examples individually. Labelling model actions as human would corrupt provenance; allowing the reviewing model to accept directly would blur judgment and bookkeeping. Deterministic terminalisation keeps the substantive model review visible while making the administrative transition reproducible and scalable.
+
+Actor-identity separation is a mechanically checkable proxy, not cryptographic proof that two contexts are epistemically independent. The production workflow therefore also uses fresh reviewer contexts and retains every draft, revision, and review event. Human involvement remains available for genuine changes to the research question or scope, but ordinary example acceptance no longer depends on it.
+
+### Implications
+
+- Existing human acceptance events remain valid historical evidence.
+- A `pass` outcome semantically attests that all three frozen qualitative dimensions pass; the validator does not independently judge prose quality.
+- Frontier-model authors and revisers cannot review their own current content for automated acceptance.
+- Batches fail closed when even one unresolved candidate lacks a passing terminal review.
+- Dataset rendering and split assignment still require a validated terminal `accepted` event.
+
+## D-057 — Produce the remaining corpus in four bounded concurrent waves
+
+- **Date:** 2026-07-16
+- **Status:** Adopted for Stage 4 production scaling
+
+### Decision
+
+Produce Batches 04–11 in four waves: 04/05, 06/07, 08/09, and 10/11. Batches within a wave may author and review concurrently because they own disjoint example IDs, directories, and reserved workflow-event blocks. The master agent freezes both matrices, waits for both terminal dispositions, audits their combined effect on the accepted corpus, and only then opens the next wave.
+
+The versioned production schedule preallocates the exact remaining per-family slice, input-form, complexity, compatible-constraint, and robustness-role counts needed to reach the 200-example contract from the 50 accepted examples already closed. Full batches contain four candidates per family; the final batch contains two. Reserved 100-ID event blocks remove cross-batch coordination over append order while retaining globally unique IDs.
+
+### Rationale
+
+Independent batch files make drafting and review genuinely parallelisable, but unlimited fan-out would sacrifice adaptive coverage and amplify mistakes. Wave barriers preserve the research benefit of closed-batch audits while using the available agent slots efficiently. Predeclared quota arithmetic prevents concurrent planners from both filling the same apparent gap.
+
+### Guardrails
+
+- No two live agents may edit the same batch files.
+- Drafting and review remain separate contexts within each batch.
+- Each batch retains one consolidated repair pass and one terminal review.
+- Deterministic acceptance occurs only after every unresolved candidate in that batch has an independent pass.
+- A wave-wide audit may alter later scenario choices but not the frozen numerical schedule unless a recorded rejection makes exact completion impossible.
+- Exact held-out prompts, Qwen outputs, training, and split allocation remain unavailable throughout production.

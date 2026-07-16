@@ -1,0 +1,362 @@
+{
+  "batch_id": "dataset-v1-batch-10",
+  "dataset_contract_id": "chatgnt-dataset-v1",
+  "matrix_status": "frozen",
+  "prior_accepted_count": 170,
+  "planned_candidate_count": 20,
+  "slots": [
+    {
+      "example_id": "dataset-v1-171",
+      "scenario_id": "scenario-shared-office-headphones-or-earplugs",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "option_comparison",
+      "topic": "consumer_choices",
+      "scenario_summary": "A person working in a shared office wants to compare noise-cancelling headphones with reusable earplugs as concentration aids.",
+      "requested_task_or_artefact": "a practical comparison that leads to a proportionate headphones-or-earplugs decision"
+    },
+    {
+      "example_id": "dataset-v1-172",
+      "scenario_id": "scenario-first-community-choir-rehearsal",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "preparation",
+      "topic": "arts_and_culture",
+      "scenario_summary": "Someone joining an informal community choir needs practical readiness for an unfamiliar first rehearsal.",
+      "requested_task_or_artefact": "a practical preparation plan for the first choir rehearsal"
+    },
+    {
+      "example_id": "dataset-v1-173",
+      "scenario_id": "scenario-writing-group-specific-feedback-conversation",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "connected_steps"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "organise the conversation into exactly three moves"
+      ],
+      "robustness_role": null,
+      "task_subtype": "interpersonal_navigation",
+      "topic": "writing_and_communication",
+      "scenario_summary": "A writing-group member receives vague reactions and wants to ask a partner for more specific feedback without sounding dismissive, using three conversational moves.",
+      "requested_task_or_artefact": "an exactly three-move approach for requesting more specific feedback constructively"
+    },
+    {
+      "example_id": "dataset-v1-174",
+      "scenario_id": "scenario-novice-citizen-science-count-contribution",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "breadth",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "competing_considerations"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "risk_and_tradeoff_assessment",
+      "topic": "science_and_mathematics",
+      "scenario_summary": "A novice is keen to join an ordinary citizen-science count but worries that limited identification experience could make their contribution less useful.",
+      "requested_task_or_artefact": "a proportionate way to contribute while protecting the observation's reliability"
+    },
+    {
+      "example_id": "dataset-v1-175",
+      "scenario_id": "scenario-wool-garment-shrinks-in-wash",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "cause_and_effect",
+      "topic": "consumer_choices",
+      "scenario_summary": "An ordinary wool garment has emerged from a wash smaller and denser, prompting a question about what happened to its fibres.",
+      "requested_task_or_artefact": "a concise causal explanation of how washing conditions can make wool fibres contract and interlock"
+    },
+    {
+      "example_id": "dataset-v1-176",
+      "scenario_id": "scenario-spreadsheet-freeze-header-row",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "technical_how_to",
+      "topic": "technology_and_software",
+      "scenario_summary": "A spreadsheet beginner wants the header row to remain visible while scrolling through a long ordinary table.",
+      "requested_task_or_artefact": "clear generic instructions for freezing and later unfreezing the top row"
+    },
+    {
+      "example_id": "dataset-v1-177",
+      "scenario_id": "scenario-evaporation-versus-boiling-three-differences",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "distinguish evaporation from boiling using exactly three observable differences"
+      ],
+      "robustness_role": null,
+      "task_subtype": "comparison_and_distinction",
+      "topic": "science_and_mathematics",
+      "scenario_summary": "A learner wants evaporation and boiling separated through three observable differences rather than treated as interchangeable names for vaporisation.",
+      "requested_task_or_artefact": "an exactly three-part comparison covering where, when, and how visibly each process occurs"
+    },
+    {
+      "example_id": "dataset-v1-178",
+      "scenario_id": "scenario-postcode-to-letter-delivery-process",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "breadth",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "connected_steps"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "process_explanation",
+      "topic": "writing_and_communication",
+      "scenario_summary": "A learner is puzzled that a short postcode can help route a physical letter and wants to understand the linked sorting stages before local delivery.",
+      "requested_task_or_artefact": "a connected explanation of how postcode grouping and address detail guide a letter through the postal network"
+    },
+    {
+      "example_id": "dataset-v1-179",
+      "scenario_id": "scenario-leaving-social-gathering-early-guilt",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "boundary_reflection",
+      "topic": "relationships_and_social_life",
+      "scenario_summary": "A person feels antisocial for leaving an informal gathering earlier than friends even though they had reached their limit.",
+      "requested_task_or_artefact": "a proportionate reflection on the boundary and a kinder interpretation of leaving early"
+    },
+    {
+      "example_id": "dataset-v1-180",
+      "scenario_id": "scenario-houseplant-cutting-did-not-root",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "self_compassion",
+      "topic": "nature_and_environment",
+      "scenario_summary": "A beginner feels foolish after their first attempt to root an ordinary houseplant cutting did not succeed.",
+      "requested_task_or_artefact": "self-compassionate perspective that treats the attempt as ordinary learning rather than personal incompetence"
+    },
+    {
+      "example_id": "dataset-v1-181",
+      "scenario_id": "scenario-manager-quick-check-in-catastrophe-grounding",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "multiple_outcomes"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "include one grounding phrase of exactly six words"
+      ],
+      "robustness_role": null,
+      "task_subtype": "manageable_next_steps",
+      "topic": "career_and_work",
+      "scenario_summary": "A person sees a neutral 'quick check-in' calendar invitation from their manager, catastrophises that it signals bad news, and wants perspective plus one manageable preparation step.",
+      "requested_task_or_artefact": "proportionate perspective, one manageable preparation step, and one exactly six-word grounding phrase"
+    },
+    {
+      "example_id": "dataset-v1-182",
+      "scenario_id": "scenario-donating-childhood-collection-mixed-feelings",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "breadth",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "competing_considerations"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "validation_and_normalisation",
+      "topic": "consumer_choices",
+      "scenario_summary": "A person feels both relieved and unexpectedly sad while donating a childhood collection they no longer want to store.",
+      "requested_task_or_artefact": "validation that relief and sadness can coexist during an ordinary act of letting go"
+    },
+    {
+      "example_id": "dataset-v1-183",
+      "scenario_id": "scenario-lost-property-office-future-items-premise",
+      "intent_family": "creative_generation",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "story_premise_or_plot",
+      "topic": "fictional_and_imaginative_worlds",
+      "scenario_summary": "Objects begin reaching a lost-property office before their owners lose them, providing the central contradiction for a new story.",
+      "requested_task_or_artefact": "a complete story premise built around the office's impossible advance arrivals"
+    },
+    {
+      "example_id": "dataset-v1-184",
+      "scenario_id": "scenario-quiet-phone-free-gallery-game",
+      "intent_family": "creative_generation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "event_or_experience",
+      "topic": "arts_and_culture",
+      "scenario_summary": "A small gallery wants a quiet visitor game that encourages close looking without relying on phones.",
+      "requested_task_or_artefact": "an engaging low-pressure gallery game visitors can understand and play"
+    },
+    {
+      "example_id": "dataset-v1-185",
+      "scenario_id": "scenario-bicycle-repair-pop-up-seven-word-slogan",
+      "intent_family": "creative_generation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "write exactly seven words",
+        "do not use the word fix"
+      ],
+      "robustness_role": null,
+      "task_subtype": "slogan_or_tagline",
+      "topic": "business_and_marketing",
+      "scenario_summary": "A neighbourhood bicycle-repair pop-up needs a seven-word slogan that avoids the obvious word fix.",
+      "requested_task_or_artefact": "an exactly seven-word bicycle-repair slogan containing no use of fix"
+    },
+    {
+      "example_id": "dataset-v1-186",
+      "scenario_id": "scenario-lunar-trail-guide-creature",
+      "intent_family": "creative_generation",
+      "coverage_slice": "breadth",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "multiple_outcomes"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "character_or_mascot",
+      "topic": "science_and_mathematics",
+      "scenario_summary": "An imaginary lunar nature trail needs a memorable guide creature and a signature behaviour that reveals overlooked crater features.",
+      "requested_task_or_artefact": "a distinctive lunar guide creature plus the characteristic action through which it draws attention to craters"
+    },
+    {
+      "example_id": "dataset-v1-187",
+      "scenario_id": "scenario-harsh-evening-habit-self-note-tone",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "tone_shift",
+      "topic": "habits_and_productivity",
+      "scenario_summary": "A harsh one-line note about failing to follow an evening routine needs to become a constructive, kinder reminder without changing its intent.",
+      "requested_task_or_artefact": "a kinder rewrite of the complete supplied self-reminder"
+    },
+    {
+      "example_id": "dataset-v1-188",
+      "scenario_id": "scenario-cracked-lamp-courteous-shop-message",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "message_or_reply_drafting",
+      "topic": "consumer_choices",
+      "scenario_summary": "An abrupt note about a lamp that arrived cracked needs to become a concise, courteous message asking the shop what happens next.",
+      "requested_task_or_artefact": "a polished customer message preserving the supplied damage report and request for next steps"
+    },
+    {
+      "example_id": "dataset-v1-189",
+      "scenario_id": "scenario-evening-recital-lobby-announcement",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "notes_to_finished_copy",
+      "topic": "arts_and_culture",
+      "scenario_summary": "Three plain logistical notes about an evening recital need to become one clear, welcoming lobby announcement.",
+      "requested_task_or_artefact": "finished visitor-facing copy preserving all supplied recital logistics"
+    },
+    {
+      "example_id": "dataset-v1-190",
+      "scenario_id": "scenario-family-recipe-headnote-archive-caption",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "breadth",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "supplied_content"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "write exactly 24 words",
+        "preserve the supplied year 1952 and place name Dundee"
+      ],
+      "robustness_role": null,
+      "task_subtype": "constraint_preserving_rewrite",
+      "topic": "history_and_society",
+      "scenario_summary": "A wordy family-recipe headnote needs to become a 24-word archive caption while retaining its supplied year and place.",
+      "requested_task_or_artefact": "an exactly 24-word archive caption preserving 1952 and Dundee"
+    }
+  ]
+}

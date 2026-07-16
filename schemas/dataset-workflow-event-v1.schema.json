@@ -26,7 +26,7 @@
     {"if": {"properties": {"event_type": {"const": "model_revision"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"const": "revised"}, "actor_type": {"const": "frontier_model"}}}},
     {"if": {"properties": {"event_type": {"const": "human_edit"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"const": "revised"}, "actor_type": {"const": "human"}}}},
     {"if": {"properties": {"event_type": {"const": "quality_review"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"enum": ["pass", "revision_requested", "rejection_recommended"]}, "actor_type": {"enum": ["human", "frontier_model"]}}}},
-    {"if": {"properties": {"event_type": {"const": "accepted"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"const": "accepted"}, "actor_type": {"const": "human"}, "reason_codes": {"maxItems": 0}}}},
+    {"if": {"properties": {"event_type": {"const": "accepted"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"const": "accepted"}, "actor_type": {"enum": ["human", "automated_validator"]}, "reason_codes": {"maxItems": 0}}}},
     {"if": {"properties": {"event_type": {"const": "rejected"}}, "required": ["event_type"]}, "then": {"properties": {"outcome": {"const": "rejected"}, "actor_type": {"enum": ["human", "automated_validator"]}, "reason_codes": {"minItems": 1}}}}
   ]
 }

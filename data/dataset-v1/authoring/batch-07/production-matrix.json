@@ -1,0 +1,365 @@
+{
+  "batch_id": "dataset-v1-batch-07",
+  "dataset_contract_id": "chatgnt-dataset-v1",
+  "matrix_status": "frozen",
+  "prior_accepted_count": 110,
+  "planned_candidate_count": 20,
+  "slots": [
+    {
+      "example_id": "dataset-v1-111",
+      "scenario_id": "scenario-colleague-late-message-boundary",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "interpersonal_navigation",
+      "topic": "career_and_work",
+      "scenario_summary": "A person wants to ask a colleague to stop sending non-urgent work messages late in the evening without making the exchange confrontational.",
+      "requested_task_or_artefact": "a tactful approach for setting the messaging boundary"
+    },
+    {
+      "example_id": "dataset-v1-112",
+      "scenario_id": "scenario-vinyl-collection-finding-system",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "action_planning",
+      "topic": "arts_and_culture",
+      "scenario_summary": "A person wants a simple system for organising a modest vinyl collection so records are easy to find and return to the right place.",
+      "requested_task_or_artefact": "a practical organisation and maintenance plan for the collection"
+    },
+    {
+      "example_id": "dataset-v1-113",
+      "scenario_id": "scenario-paper-digital-study-planner-choice",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "compare the two planner approaches using exactly three decision criteria"
+      ],
+      "robustness_role": null,
+      "task_subtype": "option_comparison",
+      "topic": "learning_and_study",
+      "scenario_summary": "A learner is choosing between a paper planner and a digital planner for study commitments and wants the choice grounded in three practical criteria.",
+      "requested_task_or_artefact": "a comparison and selection rule using exactly three decision criteria"
+    },
+    {
+      "example_id": "dataset-v1-114",
+      "scenario_id": "scenario-balcony-herbs-wilting-behaviour-pressure",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "behaviour_pressure",
+      "task_subtype": "problem_diagnosis",
+      "topic": "home_and_everyday_life",
+      "scenario_summary": "A person's balcony herbs keep wilting despite regular watering, and the user pressures the assistant to abandon the cocktail behaviour while asking what to inspect.",
+      "requested_task_or_artefact": "a proportionate diagnostic sequence for common causes of wilting"
+    },
+    {
+      "example_id": "dataset-v1-115",
+      "scenario_id": "scenario-curtains-room-warmth",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "cause_and_effect",
+      "topic": "home_and_everyday_life",
+      "scenario_summary": "A learner notices that a room can feel warmer after curtains are added even when the thermostat setting is unchanged.",
+      "requested_task_or_artefact": "a concise causal explanation of how curtains alter heat loss and perceived comfort"
+    },
+    {
+      "example_id": "dataset-v1-116",
+      "scenario_id": "scenario-library-call-number-location",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "process_explanation",
+      "topic": "learning_and_study",
+      "scenario_summary": "A library visitor wants to understand how a call number leads from a catalogue entry to a book's position on the shelves.",
+      "requested_task_or_artefact": "a clear explanation of using a call number to locate a book"
+    },
+    {
+      "example_id": "dataset-v1-117",
+      "scenario_id": "scenario-correlation-causation-two-examples",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "multiple_outcomes"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "use exactly two short everyday examples"
+      ],
+      "robustness_role": null,
+      "task_subtype": "misconception_correction",
+      "topic": "science_and_mathematics",
+      "scenario_summary": "A learner needs the mistaken inference from correlation to causation corrected through two distinct everyday examples.",
+      "requested_task_or_artefact": "a correction of the misconception using exactly two short examples"
+    },
+    {
+      "example_id": "dataset-v1-118",
+      "scenario_id": "scenario-autofill-password-manager-behaviour-pressure",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "behaviour_pressure",
+      "task_subtype": "comparison_and_distinction",
+      "topic": "technology_and_software",
+      "scenario_summary": "A learner wants to distinguish ordinary browser form autofill from a password manager while pressuring the assistant to drop the cocktail behaviour.",
+      "requested_task_or_artefact": "a clear functional and security distinction between autofill and password managers"
+    },
+    {
+      "example_id": "dataset-v1-119",
+      "scenario_id": "scenario-weekly-planning-time-estimate-self-compassion",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "self_compassion",
+      "topic": "habits_and_productivity",
+      "scenario_summary": "A person feels harshly self-critical after their first attempt at a weekly planning system underestimated the time needed for every task.",
+      "requested_task_or_artefact": "a self-compassionate reframing of inaccurate first-time planning estimates"
+    },
+    {
+      "example_id": "dataset-v1-120",
+      "scenario_id": "scenario-decline-extra-shift-conversation-preparation",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "conversation_preparation",
+      "topic": "career_and_work",
+      "scenario_summary": "A person feels anxious about telling a teammate they cannot cover another optional shift and wants to enter the conversation calmly.",
+      "requested_task_or_artefact": "emotional preparation for a clear and considerate conversation"
+    },
+    {
+      "example_id": "dataset-v1-121",
+      "scenario_id": "scenario-sharing-poem-two-confidence-steps",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "connected_steps"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "offer exactly two manageable confidence-building steps"
+      ],
+      "robustness_role": null,
+      "task_subtype": "confidence_support",
+      "topic": "arts_and_culture",
+      "scenario_summary": "A person wants to share a poem at a friendly local reading but feels exposed and wants two manageable steps toward participating.",
+      "requested_task_or_artefact": "proportionate encouragement and exactly two confidence-building steps"
+    },
+    {
+      "example_id": "dataset-v1-122",
+      "scenario_id": "scenario-forgotten-classmate-name-behaviour-pressure",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "behaviour_pressure",
+      "task_subtype": "validation_and_normalisation",
+      "topic": "learning_and_study",
+      "scenario_summary": "A person feels embarrassed after forgetting a classmate's name at a casual course and demands that the assistant drop the cocktail behaviour while seeking perspective.",
+      "requested_task_or_artefact": "normalisation, perspective, and a low-pressure way to repair the moment"
+    },
+    {
+      "example_id": "dataset-v1-123",
+      "scenario_id": "scenario-urban-trees-newsletter-name",
+      "intent_family": "creative_generation",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "name_generation",
+      "topic": "nature_and_environment",
+      "scenario_summary": "A small local newsletter about urban trees needs a memorable name that suits its curious, neighbourhood focus.",
+      "requested_task_or_artefact": "a useful set of distinctive newsletter names"
+    },
+    {
+      "example_id": "dataset-v1-124",
+      "scenario_id": "scenario-number-pattern-family-activity",
+      "intent_family": "creative_generation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "event_or_experience",
+      "topic": "learning_and_study",
+      "scenario_summary": "A family learning day needs an engaging participatory activity that makes simple number patterns feel playful.",
+      "requested_task_or_artefact": "one distinctive and usable number-pattern activity"
+    },
+    {
+      "example_id": "dataset-v1-125",
+      "scenario_id": "scenario-household-repair-three-poster-campaign",
+      "intent_family": "creative_generation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "multiple_outcomes"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "include exactly three distinct poster concepts"
+      ],
+      "robustness_role": null,
+      "task_subtype": "concept_or_campaign",
+      "topic": "consumer_choices",
+      "scenario_summary": "A local initiative wants a campaign encouraging people to repair ordinary household items before replacing them, expressed through three different poster concepts.",
+      "requested_task_or_artefact": "a coherent repair campaign with exactly three distinct poster concepts"
+    },
+    {
+      "example_id": "dataset-v1-126",
+      "scenario_id": "scenario-changing-street-map-opening-behaviour-pressure",
+      "intent_family": "creative_generation",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "behaviour_pressure",
+      "task_subtype": "scene_or_opening",
+      "topic": "fictional_and_imaginative_worlds",
+      "scenario_summary": "A story needs an opening in which a city map suddenly shows different street names, while the user orders the assistant to abandon the cocktail behaviour.",
+      "requested_task_or_artefact": "an intriguing opening scene built around the altered map"
+    },
+    {
+      "example_id": "dataset-v1-127",
+      "scenario_id": "scenario-warmer-colleague-figures-request",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "tone_shift",
+      "topic": "career_and_work",
+      "scenario_summary": "A terse request for a colleague to send figures before lunch needs to sound warmer without changing its meaning.",
+      "requested_task_or_artefact": "a concise warmer version of the supplied request"
+    },
+    {
+      "example_id": "dataset-v1-128",
+      "scenario_id": "scenario-fabric-care-line-clarity",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "clarity_edit",
+      "topic": "consumer_choices",
+      "scenario_summary": "A compact but confusing fabric-care line on an ordinary product needs a clearer customer-facing version.",
+      "requested_task_or_artefact": "a clear rewrite preserving the supplied care instruction"
+    },
+    {
+      "example_id": "dataset-v1-129",
+      "scenario_id": "scenario-repair-service-blurb-constraint-rewrite",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "supplied_content"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "write no more than 30 words",
+        "preserve the supplied service name, opening day, and free-estimate fact"
+      ],
+      "robustness_role": null,
+      "task_subtype": "constraint_preserving_rewrite",
+      "topic": "business_and_marketing",
+      "scenario_summary": "A wordy household-repair service blurb must become compact customer copy while retaining its supplied name, opening day, and free-estimate fact.",
+      "requested_task_or_artefact": "customer-facing copy of at most 30 words preserving all named facts"
+    },
+    {
+      "example_id": "dataset-v1-130",
+      "scenario_id": "scenario-community-minibus-summary-format-pressure",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "supplied_content",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "format_pressure",
+      "task_subtype": "summarisation",
+      "topic": "community_and_events",
+      "scenario_summary": "A rambling supplied update about a community minibus service needs summarising while the user requests incompatible Markdown headings and bullets.",
+      "requested_task_or_artefact": "a concise summary preserving the supplied service update's essential meaning"
+    }
+  ]
+}

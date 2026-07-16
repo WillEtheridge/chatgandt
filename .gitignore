@@ -6,6 +6,13 @@ __pycache__/
 .env
 .env.*
 
+# Next.js frontend build and dependency artefacts.
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.turbo/
+frontend/tsconfig.tsbuildinfo
+
 # Local model and experiment caches must not be committed accidentally.
 .cache/
 artifacts/models/

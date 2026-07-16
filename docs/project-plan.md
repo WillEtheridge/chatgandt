@@ -128,12 +128,12 @@ The complete evaluation protocol is documented, adversarially reviewed, and froz
 | 1. Confirm the Stage 4 boundary and unit of data | Completed | One canonical single-turn source record stores the user prompt, schema-valid response object, metadata, and provenance; deterministic Qwen messages are derived, while exact held-out prompts and model training remain excluded |
 | 2. Define dataset size and split targets | Completed | Dataset v1 targets 200 accepted examples, a scenario-isolated 160/40 training-validation allocation, and a representative 40-example training-only pilot; achieved counts yield to group isolation and token balance is reported |
 | 3. Define the dataset coverage blueprint | Completed | Five balanced intent families cross 140/30/30 target-use, breadth, and robustness examples; fixed input-form, complexity, compatible-constraint, and robustness-role targets are combined with topic concentration limits and a response-diversity audit |
-| 4. Define the authoring and provenance policy | Completed | Frontier-model-assisted synthetic drafting, restricted source use, project-author responsibility, compact per-example provenance, and separate append-only workflow history define how creation, revision, review, acceptance, and rejection remain attributable |
+| 4. Define the authoring and provenance policy | Completed | Frontier-model-assisted synthetic drafting, restricted source use, independent review, compact per-example provenance, and deterministic terminal acceptance define how creation, revision, review, acceptance, and rejection remain attributable |
 | 5. Define the dataset record schema and validators | Completed | The reviewed dataset-v1 configuration, three JSON Schemas, strict JSONL loader, authoring and freeze validators, lifecycle-gated ordered renderer, split-deviation path, read-only CLI, and isolated synthetic contract suite are implemented and verified alongside all 128 frozen existing tests |
 | 6. Define scenario identity and split isolation | Completed | A deterministic coverage-aware dynamic program assigns whole single-family scenario groups to validation, targets 8/32 per family, exposes any non-exact allocation for separate approval, and selects an exactly 40-example representative training-only pilot without mutating source records |
-| 7. Create the authoring guide and quality rubric | Completed | A frozen guide and machine-readable rubric separate automated hard gates from three non-compensatory `pass`/`revise`/`reject` judgments, anchor every dimension, map all reason codes, and define bounded batch, revision, review, and project-author acceptance workflows |
-| 8. Author candidate examples in reviewable batches | Not started | Approximately 220–240 original candidates are drafted in reviewable batches to produce 200 accepted examples without exact held-out prompts, model training, or generation-based selection pressure; the range is a planning estimate, not a quota |
-| 9. Validate, review, and revise candidate examples | Not started | Every retained example passes the response schema and a recorded qualitative review; rejected or materially revised candidates retain reasons |
+| 7. Create the authoring guide and quality rubric | Completed | A frozen guide and machine-readable rubric separate automated hard gates from three non-compensatory `pass`/`revise`/`reject` judgments, anchor every dimension, map all reason codes, and define bounded batch, revision, independent-review, and deterministic terminal-acceptance workflows |
+| 8. Author candidate examples in reviewable batches | Completed | Batches 01–11 provide exactly 200 terminally accepted examples; four bounded production waves used disjoint paths and event blocks with synchronization audits between waves |
+| 9. Validate, review, and revise candidate examples | Completed | All 200 retained examples pass the response schema and recorded independent qualitative review; revisions, replacement reasons, failed replacement evidence, terminal reviews, and deterministic acceptances remain in 784 append-only events |
 | 10. Audit duplication, contamination, and exclusions | Not started | Exact, lexical, semantic, metadata, and human-readable checks cover internal duplication, worked examples, development prompts, and the frozen withheld-topic policy |
 | 11. Assign splits, select the pilot subset, and freeze dataset v1 | Not started | Scenario-isolated training and validation files, a representative training-only pilot subset, coverage reports, identities, and a versioned dataset manifest are sealed |
 | 12. Conduct the Stage 4 readiness review | Not started | A proportionate review confirms dataset quality, coverage, isolation, provenance, and frozen identities before exact held-out prompt authoring begins |
@@ -166,6 +166,12 @@ Stage 4 will not:
 ### Stage 4 exit condition
 
 Training data, validation data, and the pilot subset are reviewed, contamination-checked, versioned, and frozen without the dataset authors knowing the exact held-out prompts.
+
+### End-of-Stage-4 System B checkpoint
+
+Before declaring Stage 4 ready, reassess all five worked examples in System B against the final dataset authoring standard. The JSON contract remains unchanged, but the examples must demonstrate the same underlying-answer quality, metaphorical coherence, garnish discipline, and holistic cocktail-recipe execution expected of the fine-tuning targets.
+
+This checkpoint is an assessment, not permission to silently revise a frozen baseline. If every example passes, record that evidence and preserve System B unchanged. If any example fails, pause the stage transition and conduct a separately versioned, documented amendment to System B before held-out authoring, training, or final evaluation. Replacement examples must remain distinct from supervised examples and must enter the later contamination audit.
 
 ## Stage 5 — Author and freeze the held-out set
 
@@ -239,4 +245,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Continue Stage 4 by authoring and reviewing the 10-candidate calibration batch in Step 8 under the frozen guide. Do not author exact held-out prompts, query Qwen, or train a model yet. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.
+Continue Stage 4 with Step 10: run and record the formal duplication, contamination, and exclusions audit over the 200 accepted examples, including worked examples and development prompts as prohibited-source collections. Do not assign splits, author exact held-out prompts, query Qwen, or train a model until that audit closes. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.

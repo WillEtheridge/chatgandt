@@ -224,6 +224,7 @@ def _validate_chain(example: dict[str, Any], chain: list[dict[str, Any]], contra
         raise ContractError(f"workflow {example['example_id']}: missing event chain")
     terminal_seen = False
     previous: dict[str, Any] | None = None
+    last_content_actor: str | None = None
     for index, event in enumerate(chain):
         if event["example_id"] != example["example_id"]:
             raise ContractError(f"workflow {example['example_id']}: cross-example event")
@@ -245,8 +246,14 @@ def _validate_chain(example: dict[str, Any], chain: list[dict[str, Any]], contra
         if event["event_type"] == "accepted":
             if previous is None or previous["event_type"] != "quality_review" or previous["outcome"] != "pass":
                 raise ContractError(f"workflow {example['example_id']}: acceptance must immediately follow a passing quality review")
+            if event["actor_type"] == "automated_validator" and previous["actor_identity"] == last_content_actor:
+                raise ContractError(
+                    f"workflow {example['example_id']}: automated acceptance requires a reviewer independent of the latest content actor"
+                )
         if event["event_type"] in {"accepted", "rejected"}:
             terminal_seen = True
+        if event["event_type"] in {"draft_created", "model_revision", "human_edit"}:
+            last_content_actor = event["actor_identity"]
         previous = event
     if chain[-1]["content_sha256"] != content_sha256(example):
         raise ContractError(f"workflow {example['example_id']}: latest event content digest does not match candidate")
@@ -692,7 +699,7 @@ def verify_dataset_contract(contract_path: str | Path = DEFAULT_CONTRACT_PATH) -
     fixture_events = [
         {"record_schema_version": 1, "event_id": "dataset-event-v1-0001", "example_id": "dataset-v1-001", "prior_event_id": None, "event_type": "draft_created", "content_sha256": digest, "actor_type": "human", "actor_identity": "contract-fixture-author", "model_id": None, "recorded_at_utc": "2026-07-15T12:00:00Z", "outcome": "created", "reason_codes": [], "notes": "Initial fixture."},
         {"record_schema_version": 1, "event_id": "dataset-event-v1-0002", "example_id": "dataset-v1-001", "prior_event_id": "dataset-event-v1-0001", "event_type": "quality_review", "content_sha256": digest, "actor_type": "human", "actor_identity": "contract-fixture-reviewer", "model_id": None, "recorded_at_utc": "2026-07-15T12:01:00Z", "outcome": "pass", "reason_codes": [], "notes": "Fixture passes."},
-        {"record_schema_version": 1, "event_id": "dataset-event-v1-0003", "example_id": "dataset-v1-001", "prior_event_id": "dataset-event-v1-0002", "event_type": "accepted", "content_sha256": digest, "actor_type": "human", "actor_identity": "contract-fixture-approver", "model_id": None, "recorded_at_utc": "2026-07-15T12:02:00Z", "outcome": "accepted", "reason_codes": [], "notes": "Fixture accepted."},
+        {"record_schema_version": 1, "event_id": "dataset-event-v1-0003", "example_id": "dataset-v1-001", "prior_event_id": "dataset-event-v1-0002", "event_type": "accepted", "content_sha256": digest, "actor_type": "automated_validator", "actor_identity": "chatgnt-dataset-terminalizer-v1", "model_id": None, "recorded_at_utc": "2026-07-15T12:02:00Z", "outcome": "accepted", "reason_codes": [], "notes": "Fixture terminalised automatically after a passing review."},
     ]
     messages = render_training_messages(fixture, fixture_events, contract)
     target_digest = _digest_bytes(messages[2]["content"].encode("utf-8"))

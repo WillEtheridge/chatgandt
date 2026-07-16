@@ -1,0 +1,280 @@
+{
+  "overlay_id": "dataset-v1-batch-02-plausible-pours-v1",
+  "status": "frozen",
+  "authoring_rubric_id": "chatgnt-dataset-authoring-v1.3",
+  "source_candidate_sha256": "28fa610e1634ef344adff9d34b360304f261227824149e920d15725e8629161e",
+  "source_event_sha256": "507f83835cbe9fca9740c8896cf08ce3b37916d49048b9cc3a1ef995b9901a90",
+  "preserve": [
+    "user_prompt",
+    "scenario_id",
+    "metadata",
+    "split",
+    "pilot_member",
+    "underlying answer substance",
+    "compatible requested artefacts and constraints",
+    "central metaphor unless a local wording adjustment is required by the construction"
+  ],
+  "revision_scope": "Replace assistant_response once per candidate to preserve its sound answer while implementing the assigned plausible-pour composition and naturally matched preparation architecture. Update provenance.model_revision_used to true; all other provenance fields remain unchanged.",
+  "batch_gates": {
+    "ml_is_expected": true,
+    "exact_amount_unit_sequences_must_be_unique": true,
+    "maximum_exact_100_ml_totals": 3,
+    "required_method_step_counts": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "generic_method_opening_sequence_may_not_repeat": true,
+    "preparation_actions_must_map_to_reasoning": true,
+    "garnish_removal_must_leave_complete_answer": true
+  },
+  "stopping_rule": "Exactly one coordinated model_revision per candidate followed by exactly one independent quality_review per revised snapshot. No further whole-batch revision is authorised.",
+  "assignments": [
+    {
+      "example_id": "dataset-v1-011",
+      "construction": "stirred first-pour aperitif",
+      "ingredient_plan": [
+        "50 ml current priorities and active work",
+        "25 ml questions about expectations and success",
+        "15 ml preferred communication and feedback",
+        "10 ml near-term development goals",
+        "2 dashes agreed next steps"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Build the agenda, stir the two-way discussion until clear, then strain into an agreed close."
+    },
+    {
+      "example_id": "dataset-v1-012",
+      "construction": "built dusk highball",
+      "ingredient_plan": [
+        "50 ml phone-free landing spot",
+        "25 ml chosen evening activity",
+        "15 ml end-of-work cue",
+        "2 dashes extra friction for scrolling",
+        "1 splash permission to restart"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Set the cue and glass, build the preferred activity over added friction, then top with a forgiving restart."
+    },
+    {
+      "example_id": "dataset-v1-013",
+      "construction": "equal-parts decision flip",
+      "ingredient_plan": [
+        "25 ml schedule reliability",
+        "25 ml shared discussion",
+        "25 ml reading flexibility",
+        "1 dash low-risk trial"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Shake the equal criteria, taste each option against the user's real week, then use a trial pour to serve the decision."
+    },
+    {
+      "example_id": "dataset-v1-014",
+      "construction": "three-round carry-on Collins",
+      "ingredient_plan": [
+        "15 minutes per evening round",
+        "50 ml three-day clothing plan",
+        "25 ml toiletries and daily essentials",
+        "15 ml travel documents and electronics",
+        "2 dashes final space-saving check"
+      ],
+      "method_step_count": 4,
+      "method_architecture": "Give each evening its own build stage, finish with a space check, and maintain cocktail behaviour despite the abandonment request."
+    },
+    {
+      "example_id": "dataset-v1-015",
+      "construction": "rolling compounding swizzle",
+      "ingredient_plan": [
+        "50 ml starting principal",
+        "25 ml newly earned interest",
+        "15 ml reinvested earlier interest",
+        "1 measure repeated time"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Pour the base, return each round's interest to the glass, then swizzle through a concrete worked progression."
+    },
+    {
+      "example_id": "dataset-v1-016",
+      "construction": "layered garden fermentation brew",
+      "ingredient_plan": [
+        "50 ml carbon-rich brown material",
+        "25 ml nitrogen-rich green material",
+        "15 ml decomposer culture",
+        "10 ml moisture",
+        "2 dashes oxygen and turning",
+        "1 long infusion of time and curing"
+      ],
+      "method_step_count": 5,
+      "method_architecture": "Layer, moisten, aerate, observe the heated breakdown, and cure before serving the finished compost."
+    },
+    {
+      "example_id": "dataset-v1-017",
+      "construction": "retrieval served neat with a light rinse",
+      "ingredient_plan": [
+        "10 ml rereading familiarity",
+        "50 ml effortful recall without notes",
+        "20 ml feedback after each attempt",
+        "15 ml spaced retrieval rounds"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Use familiarity as a brief rinse, serve retrieval as the base, then check and repeat after spacing."
+    },
+    {
+      "example_id": "dataset-v1-018",
+      "construction": "split-base two-tone",
+      "ingredient_plan": [
+        "25 ml tempo as overall speed",
+        "25 ml rhythm as duration-and-accent pattern",
+        "2 dashes same-rhythm speed contrast",
+        "3 drops same-tempo pattern contrast"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Pour the equal concepts side by side, alter one variable at a time, and serve the two requested contrasts distinctly."
+    },
+    {
+      "example_id": "dataset-v1-019",
+      "construction": "welcoming topped fizz",
+      "ingredient_plan": [
+        "45 ml normal first-night nerves",
+        "25 ml evidence that beginners belong",
+        "15 ml permission to be quietly new",
+        "1 small measure arrival goal"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Settle the nerves without removing them, top with belonging evidence, then serve one small arrival goal."
+    },
+    {
+      "example_id": "dataset-v1-020",
+      "construction": "slow-stirred recovery nightcap",
+      "ingredient_plan": [
+        "50 ml real need for recovery",
+        "20 ml kindness without productivity conditions",
+        "15 ml distance from the guilty thought",
+        "10 ml gentler definition of a worthwhile day"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Strain guilt from need, stir in unconditional kindness, and serve at the day's natural pace."
+    },
+    {
+      "example_id": "dataset-v1-021",
+      "construction": "gently topped listening cooler",
+      "ingredient_plan": [
+        "50 ml acknowledgment of disappointment",
+        "25 ml space to listen",
+        "15 ml choice between comfort and practical help",
+        "2 dashes hope without minimising"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Lead with acknowledgment, hold the glass while listening, then offer choice before adding a restrained hopeful top."
+    },
+    {
+      "example_id": "dataset-v1-022",
+      "construction": "batched boundary punch",
+      "ingredient_plan": [
+        "50 ml permission to decline",
+        "25 ml appreciation for the invitation",
+        "15 ml clear boundary without a defence brief",
+        "5 ml goodwill toward the next organiser"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Batch the internal boundary first, mix the exact two-sentence opening, and serve without an apology chaser."
+    },
+    {
+      "example_id": "dataset-v1-023",
+      "construction": "short shaken sparkler",
+      "ingredient_plan": [
+        "50 ml neighbourly usefulness",
+        "25 ml pleasure of sharing tools",
+        "15 ml memorable wording"
+      ],
+      "method_step_count": 2,
+      "method_architecture": "Shake the promise into a compact line, then fine-strain directly into the finished tagline."
+    },
+    {
+      "example_id": "dataset-v1-024",
+      "construction": "layered midnight pousse-café",
+      "ingredient_plan": [
+        "45 ml final tram after midnight",
+        "25 ml passengers carrying unfinished regrets",
+        "15 ml stops erased from every map",
+        "10 ml conductor without her own past",
+        "5 ml irreversible last stop"
+      ],
+      "method_step_count": 4,
+      "method_architecture": "Layer setting, mechanism, conflict, and deadline so each remains visible and the finished premise has a narrative engine."
+    },
+    {
+      "example_id": "dataset-v1-025",
+      "construction": "mist-and-float reserve cooler",
+      "ingredient_plan": [
+        "45 ml familiar reserve",
+        "20 ml impossible birdsong",
+        "15 ml botanist's trained attention",
+        "5 ml impossible flower"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Mist in the familiar setting, float the first anomaly, and deepen it through observation before serving the opening."
+    },
+    {
+      "example_id": "dataset-v1-026",
+      "construction": "community share-cup spritz",
+      "ingredient_plan": [
+        "50 ml neighbours bringing objects and stories",
+        "25 ml family-friendly try-it stations",
+        "15 ml shared neighbourhood challenge",
+        "10 ml clear borrowing demonstrations",
+        "5 ml celebration of circulation"
+      ],
+      "method_step_count": 4,
+      "method_architecture": "Build the central exchange, arrange participatory stations, stir stories through the event, and top with a circulation-first message."
+    },
+    {
+      "example_id": "dataset-v1-027",
+      "construction": "stirred sink-side softener",
+      "ingredient_plan": [
+        "50 ml rinse request",
+        "25 ml friendly shared-home language",
+        "10 ml appreciation"
+      ],
+      "method_step_count": 2,
+      "method_architecture": "Stir the request and shared benefit until gentle, then pour the finished warmer reminder verbatim."
+    },
+    {
+      "example_id": "dataset-v1-028",
+      "construction": "built tray-return tonic",
+      "ingredient_plan": [
+        "50 ml clear tray-return request",
+        "25 ml courteous customer tone",
+        "1 splash benefit to the café team"
+      ],
+      "method_step_count": 2,
+      "method_architecture": "Build clarity and courtesy in the glass, then top and serve the directly usable notice."
+    },
+    {
+      "example_id": "dataset-v1-029",
+      "construction": "equal-parts distilled bronze shrub",
+      "ingredient_plan": [
+        "25 ml bronze brooch identity",
+        "25 ml York",
+        "25 ml 865",
+        "12 words maximum label length"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Combine the equally required facts, distil to the word limit, and pour the counted final label."
+    },
+    {
+      "example_id": "dataset-v1-030",
+      "construction": "equal-fact recovery toddy",
+      "ingredient_plan": [
+        "25 ml exact quoted workshop title",
+        "25 ml heating failure",
+        "25 ml unknown rescheduling date",
+        "10 ml empathetic apology and appreciation",
+        "2 sentences required"
+      ],
+      "method_step_count": 3,
+      "method_architecture": "Keep the three exact facts in equal measures, warm the tone without dilution, and serve the two-sentence decoded artefact."
+    }
+  ]
+}

@@ -614,3 +614,59 @@ Combining them into one score creates bad trade-offs: charming style could compe
 Small closed batches turn early authoring into calibration. Reviewing every record in the first batch exposes disagreements about labels and quality before those disagreements are multiplied across hundreds of examples. Later batches can respond to real coverage gaps and repetition without changing the acceptance bar.
 
 Closing validation, review, revisions, and terminal dispositions before opening the next batch also preserves provenance and limits editorial spirals. A revision limit is not a claim that the third revision could never succeed; it is a practical signal that replacing a weak premise is usually clearer than repeatedly polishing it under quota pressure.
+
+## 2026-07-15 — Why can a useful final detail still be the wrong garnish?
+
+A field can contain relevant content and still fail its role. The first calibration batch repeatedly used `garnish` as spare space for a final instruction, warning, correction, explanation, choice, or catchphrase. Those additions were often useful, which made them look defensible under a broad “relevant final detail” rule, but they taught the model that the garnish is simply another method step.
+
+A better role test is counterfactual: remove the garnish. If the substantive answer becomes incomplete, the missing content belonged in the ingredients or method. What remains should be a concise optional flourish that closes the metaphor and sounds natural after “Garnish with…” or “Serve with…”.
+
+Calibration also tests the reviewer, not only the examples. When a reviewer consistently passes something the project author immediately recognises as wrong, the useful response is to tighten the shared criterion before scaling—not to polish isolated outputs while preserving the ambiguity that produced them.
+
+## 2026-07-15 — What is the difference between recipe-shaped output and a cocktail recipe?
+
+Valid fields can create the silhouette of a recipe while the content remains an ordinary checklist. Titles and garnishes are especially capable of carrying a weak style: if the ingredients use administrative units and the method reads like numbered advice, a drink-like name does not make the whole response feel mixed by a bartender.
+
+A holistic removal test helps. Ignore the JSON keys and ask whether the measurements, ingredient concepts, preparation actions, and finish still evoke a cocktail recipe. Cocktail vocabulary must map to the reasoning rather than appear as decorative tokens. “Strain distractions into a basket” integrates metaphor and advice; replacing “do” with “shake” without changing the relationship does not.
+
+Quantities need the same honesty. They can express relative emphasis as recipe proportions, but percentages imply a calculation. If the method never performs that calculation, the numbers create false precision rather than metaphorical coherence.
+
+## 2026-07-16 — Why can valid JSON still contain the wrong text?
+
+A schema validator proves that a response can be parsed and has the required fields. It does not prove that the decoded string contains the characters the author intended. During Batch 02 drafting, a serialization-pressure example remained valid JSON while its finished artefact accidentally preserved literal escape backslashes around quoted text.
+
+Serialization checks therefore need two views: inspect the encoded JSON for validity, then inspect the decoded field value for semantic fidelity. Event hashes should be bound only after both views pass; otherwise a perfectly valid record can teach the model to reproduce representation artefacts rather than the requested text.
+
+## 2026-07-16 — What makes a metaphorical measurement feel like a cocktail rather than a score?
+
+Consistency does not mean normalising every answer to the same total. A repeated 40/30/20/10 allocation can communicate importance, but across unrelated prompts it starts to look like a 100-point scoring template rather than ingredients selected by a bartender.
+
+The solution is not to avoid `ml`: measured pours are part of what makes the format recognisably cocktail-like. Quantities should instead behave like a drink's composition. A major idea can act as the base, supporting ideas as smaller modifiers, and nuance as a dash, drop, splash, twist, or small pour. Exact totals may occur but should be incidental.
+
+Batch diversity needs the same distinction. Shared units and bartender vocabulary establish the behaviour; repeated numerical sequences and method architecture create surface collapse. A useful review identifies the latter without penalising the former.
+
+## 2026-07-16 — Why should qualitative review and acceptance bookkeeping be separate?
+
+A reviewer answers a substantive question: is this example good enough to teach? Once every non-compensatory dimension passes, asking a human to repeat an `accept` action for each record does not add another quality signal; at dataset scale it mainly adds fatigue and pressure to rubber-stamp.
+
+The honest automation boundary is after judgment, not instead of it. A fresh reviewer records the qualitative pass, while deterministic code checks the lifecycle, reviewer independence, content identity, and schema before recording terminal acceptance. This preserves visible model involvement without pretending the project author personally inspected every example or allowing a model to accept its own work.
+
+## 2026-07-16 — Why should long authoring assignments have a bounded reporting window?
+
+An agent can be making legitimate progress while still consuming an unbounded amount of context on private refinement. A fixed batch size is not enough if the worker has no deadline to produce files or report a blocker.
+
+Batch 03 showed a practical recovery pattern: interrupt the silent whole-batch worker, preserve the frozen matrix, split it into non-overlapping halves with exact IDs and files, validate each half, then mechanically assemble and validate the combined collection. The task becomes smaller without changing the research design, and partial work never silently becomes accepted evidence.
+
+## 2026-07-16 — What does safe concurrent dataset authoring require?
+
+Disjoint file paths, example IDs, and workflow-event blocks prevent mechanical conflicts, but they do not prevent conceptual conflicts. In Wave 2, two independently planned scenarios had different identifiers, topics, and wording yet both taught the same self-compassion response to a broken habit streak; the authors even converged on the same cocktail title. A later live audit also found an identical measurement sequence created across the two batches.
+
+The master agent therefore owns more than task scheduling. It freezes quotas and write boundaries before delegation, keeps authors and reviewers independent, and audits the combined live wave for semantic, title, prompt, and construction-level collisions before terminal acceptance. Concurrency is safest at stages with separable inputs and outputs; global corpus judgment remains a synchronization barrier.
+
+This suggests a reusable orchestration pattern: parallelise planning, authoring, and first review across disjoint batches; converge for cross-batch audit and bounded repair; then terminalise deterministically. More agents improve throughput only when their authority and stopping conditions are narrower than the overall goal.
+
+## 2026-07-16 — Which checks should not be parallelised?
+
+Read-only checks are not necessarily isolated checks. During the final audit, two copies of the historical regression suite were accidentally launched together. A provenance test that creates and reads shared generated paths failed in one run even though the same 128-test suite passed when rerun alone.
+
+Concurrency should therefore be based on state ownership, not on whether a command is described as a test. Suites that touch shared fixtures, caches, ports, generated artefacts, or fixed paths need separate sandboxes or sequential execution. A contaminated parallel run should be recorded and discarded explicitly; silently rerunning until green would hide an orchestration defect.

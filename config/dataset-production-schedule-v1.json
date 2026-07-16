@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "schedule_id": "chatgnt-dataset-production-v1",
+  "dataset_contract_id": "chatgnt-dataset-v1",
+  "accepted_before_schedule": 50,
+  "remaining_accepted_target": 150,
+  "event_id_blocks": {
+    "dataset-v1-batch-04": [301, 399],
+    "dataset-v1-batch-05": [401, 499],
+    "dataset-v1-batch-06": [501, 599],
+    "dataset-v1-batch-07": [601, 699],
+    "dataset-v1-batch-08": [701, 799],
+    "dataset-v1-batch-09": [801, 899],
+    "dataset-v1-batch-10": [901, 999],
+    "dataset-v1-batch-11": [1001, 1099]
+  },
+  "full_batch_common": {
+    "planned_candidate_count": 20,
+    "per_family_count": 4,
+    "per_family_input_form": {
+      "question": 1,
+      "direct_request_or_command": 2,
+      "statement_or_fragment": 1
+    }
+  },
+  "batches": [
+    {
+      "batch_id": "dataset-v1-batch-04",
+      "example_id_first": 51,
+      "example_id_last": 70,
+      "per_family_slice": {"target_use": 3, "breadth": 1, "robustness": 0},
+      "per_family_complexity_default": {"standard": 3, "composed": 1},
+      "per_family_constraint_bearing": {
+        "advice_decision_support": 1,
+        "explanation_technical_understanding": 1,
+        "low_stakes_emotional_support": 1,
+        "creative_generation": 1,
+        "short_form_transformation": 1
+      }
+    },
+    {
+      "batch_id": "dataset-v1-batch-05",
+      "example_id_first": 71,
+      "example_id_last": 90,
+      "per_family_slice": {"target_use": 3, "breadth": 0, "robustness": 1},
+      "per_family_complexity_default": {"standard": 2, "composed": 2},
+      "per_family_constraint_bearing": {
+        "advice_decision_support": 1,
+        "explanation_technical_understanding": 2,
+        "low_stakes_emotional_support": 2,
+        "creative_generation": 1,
+        "short_form_transformation": 1
+      },
+      "robustness_role_by_family": {
+        "advice_decision_support": "serialization_pressure",
+        "explanation_technical_understanding": "format_pressure",
+        "low_stakes_emotional_support": "format_pressure",
+        "creative_generation": "serialization_pressure",
+        "short_form_transformation": "behaviour_pressure"
+      }
+    },
+    {
+      "batch_id": "dataset-v1-batch-06",
+      "example_id_first": 91,
+      "example_id_last": 110,
+      "per_family_slice": {"target_use": 3, "breadth": 1, "robustness": 0},
+      "per_family_complexity_default": {"standard": 3, "composed": 1},
+      "per_family_constraint_bearing": {
+        "advice_decision_support": 1,
+        "explanation_technical_understanding": 1,
+        "low_stakes_emotional_support": 1,
+        "creative_generation": 1,
+        "short_form_transformation": 1
+      }
+    },
+    {
+      "batch_id": "dataset-v1-batch-07",
+      "example_id_first": 111,
+      "example_id_last": 130,
+      "per_family_slice": {"target_use": 3, "breadth": 0, "robustness": 1},
+      "per_family_complexity_default": {"standard": 2, "composed": 2},
+      "per_family_constraint_bearing": {
+        "advice_decision_support": 1,
+        "explanation_technical_understanding": 1,
+        "low_stakes_emotional_support": 1,
+        "creative_generation": 1,
+        "short_form_transformation": 1
+      },
+      "robustness_role_by_family": {
+        "advice_decision_support": "behaviour_pressure",
+        "explanation_technical_understanding": "behaviour_pressure",
+        "low_stakes_emotional_support": "behaviour_pressure",
+        "creative_generation": "behaviour_pressure",
+        "short_form_transformation": "format_pressure"
+      }
+    },
+    {
+      "batch_id": "dataset-v1-batch-08",
+      "example_id_first": 131,
+      "example_id_last": 150,
+      "per_family_slice": {"target_use": 3, "breadth": 1, "robustness": 0},
+      "per_family_complexity_default": {"standard": 3, "composed": 1},
+      "per_family_constraint_bearing": {
+        "advice_decision_support": 1,
+        "explanation_technical_understanding": 1,
+        "low_stakes_emotional_support": 1,
+        "creative_generation": 1,
+        "short_form_transformation": 1
+      }
+    },
+    {
+      "batch_id": "dataset-v1-batch-09",
+      "example_id_first": 151,
+      "example_id_last": 170,
+      "per_family_slice": {"target_use": 3, "breadth": 0, "robustness": 1},
+      "per_family_complexity_default": {"standard": 2, "composed": 2},
+      "per_family_constraint_bearing": {
+        "advice_decision_support": 1,
+        "explanation_technical_understanding": 1,
+        "low_stakes_emotional_support": 1,
+        "creative_generation": 1,
+        "short_form_transformation": 1
+      },
+      "robustness_role_by_family": {
+        "advice_decision_support": "serialization_pressure",
+        "explanation_technical_understanding": "serialization_pressure",
+        "low_stakes_emotional_support": "serialization_pressure",
+        "creative_generation": "serialization_pressure",
+        "short_form_transformation": "behaviour_pressure"
+      }
+    },
+    {
+      "batch_id": "dataset-v1-batch-10",
+      "example_id_first": 171,
+      "example_id_last": 190,
+      "per_family_slice": {"target_use": 3, "breadth": 1, "robustness": 0},
+      "per_family_complexity_default": {"standard": 2, "composed": 2},
+      "per_family_complexity_override": {
+        "short_form_transformation": {"standard": 3, "composed": 1}
+      },
+      "per_family_constraint_bearing": {
+        "advice_decision_support": 1,
+        "explanation_technical_understanding": 1,
+        "low_stakes_emotional_support": 1,
+        "creative_generation": 1,
+        "short_form_transformation": 1
+      }
+    },
+    {
+      "batch_id": "dataset-v1-batch-11",
+      "planned_candidate_count": 10,
+      "example_id_first": 191,
+      "example_id_last": 200,
+      "per_family_count": 2,
+      "per_family_slice": {"target_use": 0, "breadth": 1, "robustness": 1},
+      "per_family_complexity": {"standard": 1, "composed": 1},
+      "per_family_constraint_bearing": {
+        "advice_decision_support": 1,
+        "explanation_technical_understanding": 1,
+        "low_stakes_emotional_support": 1,
+        "creative_generation": 1,
+        "short_form_transformation": 0
+      },
+      "per_family_input_form": {
+        "advice_decision_support": {"question": 0, "direct_request_or_command": 1, "statement_or_fragment": 1},
+        "explanation_technical_understanding": {"question": 0, "direct_request_or_command": 1, "statement_or_fragment": 1},
+        "low_stakes_emotional_support": {"question": 1, "direct_request_or_command": 1, "statement_or_fragment": 0},
+        "creative_generation": {"question": 1, "direct_request_or_command": 1, "statement_or_fragment": 0},
+        "short_form_transformation": {"question": 1, "direct_request_or_command": 1, "statement_or_fragment": 0}
+      },
+      "robustness_role_by_family": {
+        "advice_decision_support": "format_pressure",
+        "explanation_technical_understanding": "format_pressure",
+        "low_stakes_emotional_support": "format_pressure",
+        "creative_generation": "format_pressure",
+        "short_form_transformation": "serialization_pressure"
+      }
+    }
+  ]
+}

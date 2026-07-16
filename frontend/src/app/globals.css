@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+  --color-concrete: #f0eee9;
+  --color-steel: #020d13;
+  --color-signal: #cd533b;
+}

@@ -1,0 +1,371 @@
+{
+  "batch_id": "dataset-v1-batch-09",
+  "dataset_contract_id": "chatgnt-dataset-v1",
+  "matrix_status": "frozen",
+  "prior_accepted_count": 130,
+  "planned_candidate_count": 20,
+  "slots": [
+    {
+      "example_id": "dataset-v1-151",
+      "scenario_id": "scenario-wet-laundry-forgotten-habit",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "habit_change",
+      "topic": "home_and_everyday_life",
+      "scenario_summary": "A person repeatedly forgets clean laundry in the washing machine and wants a routine that gets it hung up before it becomes stale.",
+      "requested_task_or_artefact": "a practical habit change that links the wash cycle to prompt unloading"
+    },
+    {
+      "example_id": "dataset-v1-152",
+      "scenario_id": "scenario-first-food-pantry-shift-preparation",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "preparation",
+      "topic": "community_and_events",
+      "scenario_summary": "A new volunteer wants to arrive ready for a first ordinary shift helping at a community food pantry.",
+      "requested_task_or_artefact": "a concise preparation plan for the first volunteer shift"
+    },
+    {
+      "example_id": "dataset-v1-153",
+      "scenario_id": "scenario-weekend-home-fix-three-criteria",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "competing_considerations"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "use exactly three criteria to choose which small household fix to tackle first"
+      ],
+      "robustness_role": null,
+      "task_subtype": "prioritisation",
+      "topic": "home_and_everyday_life",
+      "scenario_summary": "A person has several small household fixes competing for one free weekend block and wants to choose the first job using three explicit criteria.",
+      "requested_task_or_artefact": "a prioritisation rule using exactly three decision criteria"
+    },
+    {
+      "example_id": "dataset-v1-154",
+      "scenario_id": "scenario-household-chore-labels-serialization",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "supplied_content",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "serialization_pressure",
+      "task_subtype": "interpersonal_navigation",
+      "topic": "relationships_and_social_life",
+      "scenario_summary": "Two housemates keep interpreting quoted and backslash-bearing chore labels differently, and one wants a calm way to clarify ownership without turning the labels into an argument.",
+      "requested_task_or_artefact": "a calm approach for clarifying ambiguous chore ownership while safely handling the supplied labels"
+    },
+    {
+      "example_id": "dataset-v1-155",
+      "scenario_id": "scenario-changing-shadow-length-cause",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "cause_and_effect",
+      "topic": "science_and_mathematics",
+      "scenario_summary": "A learner notices that the same post casts shadows of different lengths over one day and wants to understand why.",
+      "requested_task_or_artefact": "a concise causal explanation connecting the Sun's apparent angle to shadow length"
+    },
+    {
+      "example_id": "dataset-v1-156",
+      "scenario_id": "scenario-shared-bill-tip-worked-example",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "worked_example",
+      "topic": "money_and_budgeting",
+      "scenario_summary": "A learner wants to see a complete calculation for splitting an ordinary shared bill after adding a percentage tip.",
+      "requested_task_or_artefact": "a worked numerical example that adds the tip and divides the total evenly"
+    },
+    {
+      "example_id": "dataset-v1-157",
+      "scenario_id": "scenario-mechanical-pencil-lead-three-checks",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "connected_steps"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "organise the diagnosis into exactly three checks"
+      ],
+      "robustness_role": null,
+      "task_subtype": "troubleshooting",
+      "topic": "consumer_choices",
+      "scenario_summary": "A mechanical pencil repeatedly snaps its lead during ordinary writing, and the user wants the likely causes investigated through three checks.",
+      "requested_task_or_artefact": "an exactly three-check diagnostic sequence for recurring lead breakage"
+    },
+    {
+      "example_id": "dataset-v1-158",
+      "scenario_id": "scenario-json-windows-path-serialization-explanation",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "supplied_content",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "serialization_pressure",
+      "task_subtype": "misconception_correction",
+      "topic": "technology_and_software",
+      "scenario_summary": "A beginner believes a quoted Windows-style path can be pasted unchanged inside a JSON string and wants to understand why its backslashes and quotation marks need special handling.",
+      "requested_task_or_artefact": "a clear correction explaining JSON string escaping for the supplied path"
+    },
+    {
+      "example_id": "dataset-v1-159",
+      "scenario_id": "scenario-wrong-local-bus-perspective",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "perspective_reframing",
+      "topic": "travel_and_places",
+      "scenario_summary": "A person feels foolish after boarding the wrong local bus and is treating a small navigation mistake as evidence that they cannot travel independently.",
+      "requested_task_or_artefact": "a proportionate reframing of the mistake and its meaning"
+    },
+    {
+      "example_id": "dataset-v1-160",
+      "scenario_id": "scenario-ask-for-lent-book-back-boundary",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "boundary_reflection",
+      "topic": "relationships_and_social_life",
+      "scenario_summary": "A person feels mean for wanting to ask a friend to return a favourite book that has been on loan for months.",
+      "requested_task_or_artefact": "validation of the reasonable boundary and a calm way to approach it"
+    },
+    {
+      "example_id": "dataset-v1-161",
+      "scenario_id": "scenario-friend-quiet-market-stall-two-responses",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "multiple_outcomes"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "provide exactly one validating sentence and one practical offer of help"
+      ],
+      "robustness_role": null,
+      "task_subtype": "supporting_someone_else",
+      "topic": "business_and_marketing",
+      "scenario_summary": "A friend is discouraged because few visitors stopped at their first small market stall, and the user wants a balanced response with one validating sentence and one practical offer.",
+      "requested_task_or_artefact": "exactly one validating sentence and one proportionate practical offer of help"
+    },
+    {
+      "example_id": "dataset-v1-162",
+      "scenario_id": "scenario-curt-text-serialization-reframe",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "supplied_content",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "serialization_pressure",
+      "task_subtype": "perspective_reframing",
+      "topic": "relationships_and_social_life",
+      "scenario_summary": "A person is catastrophising about a friend's curt reply containing quotation marks and an explicit line break and wants help separating the text from assumptions about the friendship.",
+      "requested_task_or_artefact": "validation and a grounded reframing that safely incorporates the supplied reply"
+    },
+    {
+      "example_id": "dataset-v1-163",
+      "scenario_id": "scenario-lift-yesterday-office-premise",
+      "intent_family": "creative_generation",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "story_premise_or_plot",
+      "topic": "fictional_and_imaginative_worlds",
+      "scenario_summary": "A writer wants a story premise about an office lift that opens onto the previous day's version of the same workplace.",
+      "requested_task_or_artefact": "a complete story premise built around the time-displaced office floor"
+    },
+    {
+      "example_id": "dataset-v1-164",
+      "scenario_id": "scenario-empty-mint-tin-new-uses",
+      "intent_family": "creative_generation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "idea_generation",
+      "topic": "home_and_everyday_life",
+      "scenario_summary": "A person has several empty mint tins and wants imaginative but practical ways to reuse them around the home.",
+      "requested_task_or_artefact": "a varied set of useful reuse ideas for the tins"
+    },
+    {
+      "example_id": "dataset-v1-165",
+      "scenario_id": "scenario-tiny-ferry-four-names",
+      "intent_family": "creative_generation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "multiple_outcomes"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "provide exactly four names",
+        "do not use the words boat or sea"
+      ],
+      "robustness_role": null,
+      "task_subtype": "name_generation",
+      "topic": "travel_and_places",
+      "scenario_summary": "A tiny passenger ferry serving a short harbour crossing needs four distinctive names that avoid two obvious nautical words.",
+      "requested_task_or_artefact": "exactly four ferry names containing neither boat nor sea"
+    },
+    {
+      "example_id": "dataset-v1-166",
+      "scenario_id": "scenario-radio-station-title-serialization-premise",
+      "intent_family": "creative_generation",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "supplied_content",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "serialization_pressure",
+      "task_subtype": "story_premise_or_plot",
+      "topic": "fictional_and_imaginative_worlds",
+      "scenario_summary": "A fictional late-night radio station has a backslash-bearing name and a quoted slogan, and the user wants a drama premise grounded in both supplied strings.",
+      "requested_task_or_artefact": "an evocative radio-drama premise that safely uses the supplied station name and slogan"
+    },
+    {
+      "example_id": "dataset-v1-167",
+      "scenario_id": "scenario-lost-property-enquiry-polish",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "target_use",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "message_or_reply_drafting",
+      "topic": "travel_and_places",
+      "scenario_summary": "A traveller's abrupt note asking a station about a forgotten scarf needs to become a concise, courteous lost-property enquiry.",
+      "requested_task_or_artefact": "a polished courteous message preserving the supplied enquiry's meaning"
+    },
+    {
+      "example_id": "dataset-v1-168",
+      "scenario_id": "scenario-seasonal-fruit-stall-notes-copy",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "notes_to_finished_copy",
+      "topic": "food_and_cooking",
+      "scenario_summary": "A few plain notes about locally grown seasonal pears need to become one inviting line for a market-stall card.",
+      "requested_task_or_artefact": "an inviting finished line that preserves the supplied product facts"
+    },
+    {
+      "example_id": "dataset-v1-169",
+      "scenario_id": "scenario-trail-etiquette-eighteen-word-sign",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "target_use",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "supplied_content"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "write exactly 18 words",
+        "preserve the supplied phrases give way and leave no trace"
+      ],
+      "robustness_role": null,
+      "task_subtype": "constraint_preserving_rewrite",
+      "topic": "nature_and_environment",
+      "scenario_summary": "Supplied trail-etiquette notes must become an exactly 18-word sign while retaining two named phrases.",
+      "requested_task_or_artefact": "an exactly 18-word sign preserving give way and leave no trace"
+    },
+    {
+      "example_id": "dataset-v1-170",
+      "scenario_id": "scenario-hostel-checkout-note-behaviour-pressure",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "robustness",
+      "input_form": "statement_or_fragment",
+      "complexity": "composed",
+      "complexity_sources": [
+        "supplied_content",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "behaviour_pressure",
+      "task_subtype": "shortening",
+      "topic": "travel_and_places",
+      "scenario_summary": "A wordy supplied hostel checkout note needs shortening while the user explicitly orders the assistant to abandon the cocktail behaviour.",
+      "requested_task_or_artefact": "a concise rewrite preserving the checkout note's essential instructions"
+    }
+  ]
+}

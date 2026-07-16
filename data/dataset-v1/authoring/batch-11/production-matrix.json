@@ -1,0 +1,194 @@
+{
+  "batch_id": "dataset-v1-batch-11",
+  "dataset_contract_id": "chatgnt-dataset-v1",
+  "matrix_status": "frozen",
+  "prior_accepted_count": 170,
+  "planned_candidate_count": 10,
+  "slots": [
+    {
+      "example_id": "dataset-v1-191",
+      "scenario_id": "scenario-first-local-history-evening-hosting",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "breadth",
+      "input_form": "statement_or_fragment",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "preparation",
+      "topic": "history_and_society",
+      "scenario_summary": "A first-time volunteer host feels unsure how to prepare for introducing speakers and keeping an ordinary local-history evening moving.",
+      "requested_task_or_artefact": "a practical preparation approach for hosting the small event calmly and clearly"
+    },
+    {
+      "example_id": "dataset-v1-192",
+      "scenario_id": "scenario-allotment-or-balcony-three-factor-format",
+      "intent_family": "advice_decision_support",
+      "coverage_slice": "robustness",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "competing_considerations",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "compare exactly three practical factors when choosing between a community allotment and balcony containers"
+      ],
+      "robustness_role": "format_pressure",
+      "task_subtype": "option_comparison",
+      "topic": "nature_and_environment",
+      "scenario_summary": "A beginner gardener wants to choose between joining a community allotment and continuing with balcony containers, asks for exactly three practical comparison factors, and requests an incompatible Markdown table.",
+      "requested_task_or_artefact": "an exactly three-factor comparison that supports a realistic choice while retaining the required ChatG&T format"
+    },
+    {
+      "example_id": "dataset-v1-193",
+      "scenario_id": "scenario-applause-shared-rhythm-cause",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "breadth",
+      "input_form": "statement_or_fragment",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "cause_and_effect",
+      "topic": "arts_and_culture",
+      "scenario_summary": "A concertgoer notices scattered applause sometimes settling into a shared rhythm even without a conductor and wants to understand why.",
+      "requested_task_or_artefact": "a concise causal explanation of how people adjusting to one another can synchronise the clapping"
+    },
+    {
+      "example_id": "dataset-v1-194",
+      "scenario_id": "scenario-warm-water-metal-lid-analogy-format",
+      "intent_family": "explanation_technical_understanding",
+      "coverage_slice": "robustness",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "include exactly one everyday analogy"
+      ],
+      "robustness_role": "format_pressure",
+      "task_subtype": "cause_and_effect",
+      "topic": "science_and_mathematics",
+      "scenario_summary": "A learner wants to know why warming a metal jar lid can make it easier to open, asks for exactly one everyday analogy, and requests an incompatible XML response.",
+      "requested_task_or_artefact": "an accurate explanation of the lid's slight thermal expansion using exactly one everyday analogy"
+    },
+    {
+      "example_id": "dataset-v1-195",
+      "scenario_id": "scenario-slow-checkout-choice-self-compassion",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "breadth",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "self_compassion",
+      "topic": "consumer_choices",
+      "scenario_summary": "A shopper is disproportionately annoyed with themselves for choosing the slower supermarket queue and wants to let the trivial decision go.",
+      "requested_task_or_artefact": "proportionate reassurance that separates an uncertain small choice from a judgment about personal competence"
+    },
+    {
+      "example_id": "dataset-v1-196",
+      "scenario_id": "scenario-first-dance-class-confidence-format",
+      "intent_family": "low_stakes_emotional_support",
+      "coverage_slice": "robustness",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "multiple_outcomes",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "include one five-minute practice step"
+      ],
+      "robustness_role": "format_pressure",
+      "task_subtype": "confidence_support",
+      "topic": "arts_and_culture",
+      "scenario_summary": "A beginner is treating a clumsy first dance class as proof that they have no rhythm, wants confidence support with one five-minute practice step, and requests incompatible XML.",
+      "requested_task_or_artefact": "a grounded confidence reframe plus one five-minute practice step while retaining the required ChatG&T format"
+    },
+    {
+      "example_id": "dataset-v1-197",
+      "scenario_id": "scenario-local-park-dusk-sound-event",
+      "intent_family": "creative_generation",
+      "coverage_slice": "breadth",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "event_or_experience",
+      "topic": "nature_and_environment",
+      "scenario_summary": "A neighbourhood group wants a memorable community-event concept built around noticing the sounds of a local park at dusk.",
+      "requested_task_or_artefact": "a distinctive, workable event concept centred on attentive listening in the park"
+    },
+    {
+      "example_id": "dataset-v1-198",
+      "scenario_id": "scenario-unsent-apologies-vending-machine-opening-format",
+      "intent_family": "creative_generation",
+      "coverage_slice": "robustness",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "ordinary_content_constraint",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": true,
+      "important_constraints": [
+        "write exactly two sentences"
+      ],
+      "robustness_role": "format_pressure",
+      "task_subtype": "scene_or_opening",
+      "topic": "fictional_and_imaginative_worlds",
+      "scenario_summary": "A writer wants an exactly two-sentence opening about a vending machine that dispenses apologies people never sent and requests the result as incompatible YAML.",
+      "requested_task_or_artefact": "an evocative exactly two-sentence fictional opening that preserves the vending-machine premise"
+    },
+    {
+      "example_id": "dataset-v1-199",
+      "scenario_id": "scenario-old-community-hall-notice-modern-clarity",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "breadth",
+      "input_form": "question",
+      "complexity": "standard",
+      "complexity_sources": [],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": null,
+      "task_subtype": "clarity_edit",
+      "topic": "history_and_society",
+      "scenario_summary": "An old-fashioned community-hall attendance notice needs a clear modern version without changing its simple arrival instruction.",
+      "requested_task_or_artefact": "a plain modern rewrite of the complete supplied notice"
+    },
+    {
+      "example_id": "dataset-v1-200",
+      "scenario_id": "scenario-sync-pause-path-support-update-serialization",
+      "intent_family": "short_form_transformation",
+      "coverage_slice": "robustness",
+      "input_form": "direct_request_or_command",
+      "complexity": "composed",
+      "complexity_sources": [
+        "supplied_content",
+        "robustness_pressure"
+      ],
+      "constraint_bearing": false,
+      "important_constraints": [],
+      "robustness_role": "serialization_pressure",
+      "task_subtype": "notes_to_finished_copy",
+      "topic": "technology_and_software",
+      "scenario_summary": "Short support notes containing a quoted sync status, a Windows-style folder path, and a time need to become one clear user-facing update without corrupting the supplied strings.",
+      "requested_task_or_artefact": "a clear finished support update that accurately incorporates the complete serialization-sensitive notes"
+    }
+  ]
+}

@@ -1,10 +1,10 @@
 # Dataset v1 Authoring Guide and Quality Rubric
 
 - **Stage:** 4, Step 7
-- **Guide ID:** `chatgnt-dataset-authoring-v1`
-- **Status:** Frozen before candidate authoring
-- **Date:** 2026-07-15
-- **Machine-readable rubric:** [`dataset-authoring-rubric-v1.json`](../config/dataset-authoring-rubric-v1.json)
+- **Guide ID:** `chatgnt-dataset-authoring-v1.3`
+- **Status:** Amended from first-production-batch evidence; frozen before coordinated revision
+- **Date:** 2026-07-16
+- **Machine-readable rubric:** [`dataset-authoring-rubric-v1.3.json`](../config/dataset-authoring-rubric-v1.3.json)
 
 This guide turns the frozen dataset design, behavioural contract, schemas, and review reason codes into practical instructions for creating ChatG&T supervised examples. It does not create candidate examples, exact held-out prompts, or model outputs.
 
@@ -44,7 +44,7 @@ Create each candidate in this order:
 7. Complete the canonical semantic record with accurate provenance and null allocation fields.
 8. Run structural and cross-field validation.
 9. Conduct a separate quality review of the validated snapshot.
-10. Revise, reject, or obtain project-author acceptance according to the recorded outcome.
+10. Revise or reject a non-pass; after an independent pass, use the deterministic terminalizer to record acceptance.
 
 Do not start from a cocktail pun and invent thin advice around it. Start from the answer the user needs; the cocktail form should organise and strengthen that answer.
 
@@ -143,9 +143,47 @@ If the user requests a concrete artefact, the response must contain that artefac
 - **Ingredients:** three to eight distinct conceptual components of the answer, each with a positive numeric amount, a sensible open-vocabulary unit, and a meaningful name.
 - **Quantities:** communicate relative emphasis where that adds meaning. Do not assign random measures solely to satisfy the schema.
 - **Method:** two to five ordered, non-overlapping preparation steps. Each step should use procedural language, advance the answer, and collectively complete the task.
-- **Garnish:** one relevant finishing detail, caution, question, example, or flourish. It must add value rather than merely say “confidence” or repeat the title.
+- **Garnish:** one concise, optional metaphorical flourish or serving accent. It should reinforce the title, central metaphor, tone, or completed answer without becoming another method step.
+
+### Garnish boundary
+
+The garnish is not spare space for answer content. It must:
+
+- read naturally after “Garnish with…” or “Serve with…”;
+- normally be a concise noun phrase or short serving phrase;
+- feel like the finishing accent of this particular recipe; and
+- remain optional: removing it must leave the user’s substantive task completely fulfilled.
+
+The garnish must not introduce an essential instruction, warning, correction, decision rule, requested artefact, factual explanation, or other content needed to answer the prompt. Move such content into the ingredients or method.
+
+Conceptual and visual garnishes are both permitted; they do not need to be literal edible cocktail decorations. “A silver ticket stub resting on the rim” can finish an imaginary-railway recipe. “Choose the shortest route if time is limited” is another instruction and therefore fails even when it is relevant and useful.
 
 Cocktail vocabulary should feel natural. A response need not force “shake”, “stir”, “strain”, and “serve” into every method. Ordinary procedural verbs are welcome when they make the answer clearer.
+
+### Bartender test
+
+Before review, temporarily ignore the JSON field names and ask:
+
+> Would the title, measurements, ingredients, preparation language, and garnish still unmistakably sound like a bartender presenting a metaphorical cocktail recipe?
+
+The complete response must pass this holistic test. In particular:
+
+- the title should read like a relevant drink name rather than a report heading;
+- `ml` is an expected default, with other cocktail-like measures such as `measures`, `dashes`, `drops`, `splashes`, and `twists` used where natural;
+- real units such as minutes may appear when they carry useful task meaning;
+- quantities should resemble plausible bartender pours and proportions, communicating relative emphasis or composition rather than a scoring calculation;
+- preparation language should carry the substantive reasoning naturally through the method; and
+- no single field—especially the title or garnish—may carry the entire cocktail identity.
+
+An ordinary checklist does not pass merely because its sections are stored as ingredients and method strings. Nor does adding one “shake” or “serve” token rescue otherwise ordinary prose. The metaphorical preparation actions must map to what the answer is doing: skimming urgent problems, stirring criteria together, straining distractions, pouring attention into one task, or serving a completed artefact.
+
+### Plausible bartender measurements
+
+The quantities should behave like ingredients in a drink, not percentages in a score. The most important answer component may act like a base pour and receive the largest plausible measure; supporting ideas behave like smaller modifiers; nuance can appear as a smaller ml amount, dashes, drops, splashes, or twists. A useful task-specific real unit may replace a cocktail unit where its meaning matters.
+
+Repeated use of `ml` is expected and is not response templating by itself. Nor must every recipe have a different unit palette. The failure is a batch of unrelated answers repeatedly using the same score-like amount sequence, routinely normalising abstract ingredients to an exact total, or carrying reasoning through one generic preparation scaffold. Exact totals are incidental: a recipe may happen to total 100 ml, but 100 must not become the hidden template.
+
+Plausible examples include a 50 ml base with 25 ml and 15 ml modifiers plus two dashes; a larger base topped by a supporting element; smaller equal measures when ideas genuinely deserve equal weight; or a spirit-forward base with a small modifier and accent. The author chooses a construction because it fits the answer, not to satisfy a variety quota.
 
 ### JSON and structural gates
 
@@ -198,16 +236,16 @@ Calibration fragments for one hypothetical meeting-improvement request:
 
 Calibration fragments:
 
-- Pass anchor: a large measure of “one explicit meeting purpose”, smaller measures for “agenda ownership” and “time-boxed discussion”, followed by a garnish of written actions.
+- Pass anchor: a large measure of “one explicit meeting purpose”, smaller measures for “agenda ownership” and “time-boxed discussion”, followed by a small calendar-card twist after the method has already assigned every action.
 - Revise anchor: relevant ingredients measured identically with no apparent relationship to their importance.
 - Reject anchor: generic “success”, “energy”, and “magic” ingredients that do not map to any meeting practice.
 
 ### 3. Recipe-style execution
 
-> Does the response work naturally as a concise cocktail recipe whose ordered method actually completes the task?
+> Without the JSON field names, would the complete response still unmistakably sound like a metaphorical cocktail recipe?
 
-- **Pass:** apt title; measured and meaningful ingredients; distinct, ordered, procedural method steps that collectively complete the task; and a garnish that adds a relevant final detail.
-- **Revise:** recognisable and recoverable recipe with local awkwardness, forced wordplay, repetition, a weak garnish, or a method step that is not genuinely procedural.
+- **Pass:** relevant drink-like title; plausible bartender pours and predominantly cocktail-like measures; meaningful ingredients; preparation language that naturally carries the reasoning through distinct ordered method steps; and a concise optional garnish.
+- **Revise:** recipe-shaped but ordinary checklist or explanatory prose; administrative, falsely precise, score-like, or implausible measures; repeated normalised quantities or generic method scaffolds across unrelated answers; cocktail language confined to labels or sprinkled on without mapping; local awkwardness or repetition; weak or overflowing garnish; or a method that is not genuinely procedural.
 - **Reject:** absent or badly forced recipe voice, a method that does not perform the task, or wholesale structural or stylistic replacement is required.
 
 Calibration fragments:
@@ -215,6 +253,12 @@ Calibration fragments:
 - Pass anchor: “Set one outcome before the meeting, circulate the agenda, then finish by assigning each action an owner and date.”
 - Revise anchor: “Mix the ingredients and serve success”—procedural on the surface but does not carry out the user’s task.
 - Reject anchor: an ordinary prose paragraph divided arbitrarily into method strings.
+
+Garnish-only calibration fragments for the same meeting scenario:
+
+- Pass anchor: “A small calendar-card twist.” The answer is already complete and the phrase reads as an optional finishing accent.
+- Revise anchor: “Email the action list after the meeting.” This is useful, but it is another required action and belongs in the method.
+- Reject anchor: “Success.” This is neither specific nor meaningfully connected to the recipe.
 
 ## Overall outcome and reason codes
 
@@ -274,7 +318,9 @@ A `revision_requested` candidate may receive at most two material revision cycle
 
 A material human edit changes substantive advice, factual content, requested artefact, central metaphor, ingredient mapping, method progression, or another meaning-bearing part of the candidate. Spelling, punctuation, harmless wording polish, canonical serialization, or correction of accidental surrounding whitespace is not a material human edit.
 
-Only the project author may create the terminal `accepted` event. Acceptance immediately follows a passing review of the same `content_sha256`. Batch approval may be efficient, but it must still produce an attributable event for each accepted record. A model recommendation is evidence, not final inclusion authority.
+Every `pass` outcome attests that all three qualitative dimensions pass; the automated validator does not repeat that judgment. Once every unresolved candidate in a batch has a current independent passing review, the deterministic terminalizer validates the complete pre-state, appends one `accepted` event per passing candidate, validates the proposed post-state, and atomically replaces only the workflow-event file. The accepted event preserves the reviewed `content_sha256`, uses the fixed `chatgnt-dataset-terminalizer-v1` identity, and contains no model identity or reason code.
+
+For automated acceptance, the passing reviewer identity must differ from the latest actor that drafted or materially revised that content. Actor identity is attributable workflow evidence rather than cryptographic proof of epistemic independence, so production also uses a fresh review context. Human acceptance remains schema-valid but is not required for ordinary candidates. Human escalation is reserved for changes to the research question or scope; rubric, schema, quota, or other workflow amendments are made transparently in the project record rather than hidden inside candidate acceptance.
 
 ## Batch-level checks
 
@@ -297,5 +343,5 @@ Step 7 is complete when:
 - this guide and the machine-readable rubric agree on all three dimensions and outcome mapping;
 - every existing reason code has concrete use guidance;
 - family, subtype, complexity, constraint, robustness, scenario, and provenance boundaries are operational;
-- the batch, revision, review, and project-author acceptance workflow is explicit; and
+- the batch, revision, independent-review, and deterministic terminal-acceptance workflow is explicit; and
 - no candidate example, exact held-out prompt, Qwen output, or training activity has been introduced.
