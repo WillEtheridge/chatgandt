@@ -194,7 +194,7 @@ The exact held-out set is balanced, reviewed, demonstrably separate from project
 
 The frozen supervised corpus contains 200 accepted examples. The training split targets 160 examples and is the only split that updates model weights; the validation split targets 40 and measures loss and behaviour without gradient updates. The fixed pilot is a 40-example subset of training rather than an additional split. Scenario isolation takes precedence over the target allocation, so any approved small deviation changes the achieved train and validation counts reported below without changing their roles.
 
-1. Repair the clean-clone adapter test fixture and pass the complete preflight suite before the next formal model run.
+1. **Completed 2026-07-16:** make the existing diagnostic LoRA adapter a tracked, portable fixture; the adapter-loading tests and complete 128-test suite pass without changing the hash-pinned Stage 3 tests.
 2. Exercise the end-to-end LoRA workflow on the fixed 40-example pilot subset, including rendering, tokenisation, masking, optimisation, checkpoint saving, adapter reload, and recorded diagnostics.
 3. Use the pilot only to correct training mechanics and reject clearly unsuitable configurations. Do not rewrite supervised examples around Qwen outputs or inspect held-out responses.
 4. Predeclare the small set of justified candidate training configurations and their selection rule before full training.

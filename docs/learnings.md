@@ -712,3 +712,9 @@ All five complete responses passed every non-compensatory dimension. Revising th
 The purpose of a held-out freeze is not to create the largest possible evidence bundle. It is to make the experimental boundary credible: the test population matches the predeclared design, its exact prompts did not shape the dataset or systems, obvious project reuse has been checked, and the prompt bytes cannot quietly change after training begins.
 
 For ChatG&T, an exact executable quota check, a bounded complete-prompt collision check, one complete-set quality review, and a hash-bound manifest answer those questions. A per-candidate digest chain, multiple review records, and thousands of retrieval dispositions would add process without materially improving the claim. The important stopping rule is to freeze the first complete set that passes the predeclared reasons for replacement and never revise it after seeing model performance.
+
+## 2026-07-16 — What makes a test fixture portable?
+
+A test is not portable merely because its Python code is committed. Every file it opens must also be reproducibly available in a clean checkout or created by the test itself. ChatG&T's adapter-loading test passed locally because a prior diagnostic run had left an ignored LoRA adapter on disk, then failed on a fresh Runpod where that hidden prerequisite did not exist.
+
+Normally the unit test should create a minimal temporary fixture. In this case the test suite itself was already fingerprinted by the frozen evaluation protocol, while the small real diagnostic adapter was also needed for CUDA smoke tests. Tracking that adapter was the narrower fix: it restores clean-clone behaviour without rewriting frozen test evidence. The trade-off is explicit—a roughly 4.2 MB binary enters the repository, and it remains clearly labelled as diagnostic rather than a trained candidate.

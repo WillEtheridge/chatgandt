@@ -35,6 +35,10 @@ const HOUSE_SPECIALS = [
   "Explain why the sky changes colour at sunset.",
 ] as const;
 
+export function getRandomHouseSpecial() {
+  return HOUSE_SPECIALS[Math.floor(Math.random() * HOUSE_SPECIALS.length)];
+}
+
 function chooseSpecials(items: readonly string[]) {
   const shuffled = [...items];
 

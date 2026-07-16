@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useState } from "react";
-import { HouseSpecials } from "@/components/house-specials";
+import { getRandomHouseSpecial } from "@/components/house-specials";
+import { MartiniLoader } from "@/components/martini-loader";
 import { Recipe, type ChatGntRecipe } from "@/components/recipe";
 import { SpiritGuideComposer } from "@/components/spirit-guide-composer";
 
@@ -24,11 +24,12 @@ const MOCK_RECIPE: ChatGntRecipe = {
   title: "The Clear-Surface Collins",
 };
 
-type Phase = "editing" | "idle" | "mixing" | "recipe";
+type Phase = "idle" | "mixing" | "recipe";
 
 export function SpiritGuideExperience() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [order, setOrder] = useState("");
+  const [submittedOrder, setSubmittedOrder] = useState("");
   const isActive = phase !== "idle";
 
   useEffect(() => {
@@ -37,22 +38,17 @@ export function SpiritGuideExperience() {
     return () => window.clearTimeout(finishedMixing);
   }, [phase]);
 
-  function mixOrder(submittedOrder: string) {
-    setOrder(submittedOrder);
+  function mixOrder(submittedValue: string) {
+    setOrder(submittedValue);
+    setSubmittedOrder(submittedValue);
     setPhase("mixing");
-    window.scrollTo(0, 0);
-  }
-
-  function mixAnother() {
-    setOrder("");
-    setPhase("idle");
     window.scrollTo(0, 0);
   }
 
   if (!isActive) {
     return (
       <>
-        <section className="mx-auto max-w-5xl px-4 pb-20 pt-12 sm:px-6 sm:pb-32 sm:pt-20 lg:max-w-7xl">
+        <section className="mx-auto max-w-5xl px-4 pb-64 pt-12 sm:px-6 sm:pt-20 lg:max-w-7xl">
           <h1 className="max-w-5xl text-4xl leading-none tracking-tighter sm:text-7xl lg:text-8xl">
             Useful answers, <br /> <span className="text-signal">mixed differently.</span>
           </h1>
@@ -60,21 +56,29 @@ export function SpiritGuideExperience() {
             <p>An experiment in teaching a small language model to answer questions as cocktail recipes.</p>
             <p className="mt-4">Built for low-stakes questions and fun.</p>
           </div>
-
-          <div className="mt-16 max-w-4xl">
-            <SpiritGuideComposer onSubmit={mixOrder} onValueChange={setOrder} value={order} />
-            <div className="mt-16">
-              <HouseSpecials onSelect={setOrder} orientation="horizontal" />
-            </div>
-          </div>
         </section>
 
-        <aside className="grid border-t border-outline text-xs uppercase sm:grid-cols-2">
-          <p className="border-b border-outline px-4 py-6 sm:border-b-0 sm:border-r sm:px-6">Scope / 01</p>
-          <p className="px-4 py-6 leading-relaxed sm:px-6">
-            English-language / Single-turn / Low-stakes / No live information
-          </p>
-        </aside>
+        <div className="fixed bottom-0 left-0 right-0 z-10 bg-concrete">
+          <div className="mx-auto w-full max-w-5xl px-4 py-4 sm:px-6 lg:max-w-7xl">
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <div className="min-w-0 flex-1">
+                <SpiritGuideComposer
+                  hideLabel
+                  onSubmit={mixOrder}
+                  onValueChange={setOrder}
+                  value={order}
+                />
+              </div>
+              <button
+                className="min-h-14 w-full shrink-0 cursor-pointer whitespace-nowrap border border-signal px-4 py-3 text-left text-xs uppercase hover:bg-steel hover:text-concrete sm:w-fit"
+                onClick={() => mixOrder(getRandomHouseSpecial())}
+                type="button"
+              >
+                Bartender&apos;s Choice
+              </button>
+            </div>
+          </div>
+        </div>
       </>
     );
   }
@@ -85,23 +89,13 @@ export function SpiritGuideExperience() {
         <div className="grid gap-12 lg:grid-cols-4 lg:gap-8">
           <aside className="lg:col-span-1">
             <p className="text-xs uppercase text-signal">Order_01</p>
-            <p className="mt-4 text-xl leading-relaxed sm:text-2xl">{order}</p>
+            <p className="mt-4 text-xl leading-relaxed sm:text-2xl">{submittedOrder}</p>
           </aside>
 
           <div className="lg:col-span-3">
             {phase === "mixing" ? (
-            <div className="border-t border-outline pt-8" aria-live="polite">
-              <p className="text-xs uppercase">Mixing your answer…</p>
-              <Image
-                alt="Text forming a martini glass line by line"
-                className="mt-8 h-auto w-full max-w-3xl motion-reduce:hidden"
-                height={640}
-                priority
-                src="/martini-loader.gif"
-                unoptimized
-                width={1024}
-              />
-              <p className="mt-8 hidden text-lg motion-reduce:block">Your answer is being mixed.</p>
+            <div aria-live="polite">
+              <MartiniLoader />
             </div>
             ) : (
             <div>
@@ -114,14 +108,24 @@ export function SpiritGuideExperience() {
 
       <div className="fixed bottom-0 left-0 right-0 z-10 border-t border-outline bg-concrete">
         <div className="mx-auto w-full max-w-5xl px-4 py-4 sm:px-6 lg:max-w-7xl">
-          <div className="max-w-4xl">
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="min-w-0 flex-1">
             <SpiritGuideComposer
-              disabled={phase !== "editing"}
+              disabled={phase === "mixing"}
               hideLabel
               onSubmit={mixOrder}
               onValueChange={setOrder}
               value={order}
             />
+            </div>
+            <button
+              className="min-h-14 w-full shrink-0 cursor-pointer whitespace-nowrap border border-signal px-4 py-3 text-left text-xs uppercase hover:bg-steel hover:text-concrete disabled:cursor-wait sm:w-fit"
+              disabled={phase === "mixing"}
+              onClick={() => mixOrder(getRandomHouseSpecial())}
+              type="button"
+            >
+              Bartender&apos;s Choice
+            </button>
           </div>
         </div>
       </div>

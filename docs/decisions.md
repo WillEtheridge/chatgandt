@@ -1749,3 +1749,16 @@ Held-out v1 contains exactly 60 schema-valid prompts and no model responses. Eve
 ### Limitation
 
 The overlap check is an inspectable lexical retrieval control, not proof of semantic independence, and the complete-set judgment was performed by the project agent rather than an independent human panel. Those limitations are proportionate to this portfolio experiment and are recorded rather than disguised with a larger ceremonial evidence package.
+
+## D-064 — Track the diagnostic LoRA adapter as the clean-clone fixture
+
+- **Date:** 2026-07-16
+- **Status:** Adopted and verified; Stage 6 preflight step 1 complete
+
+### Decision
+
+Include the existing 4.2 MB diagnostic LoRA adapter in the repository. The adapter-loading unit test already names this artefact, and the same adapter is useful for CUDA smoke testing. Tracking it makes a clean clone portable without changing the hash-pinned Stage 3 test suite or weakening adapter identity checks.
+
+### Result
+
+The three adapter-loading tests and all 128 repository tests pass. The diagnostic weights have SHA-256 `4e274ac2fa442cc688cace097a887e9cc309a78e18f0091b62119e3933bd01cb`. This fixture is diagnostic evidence only; it is not a trained ChatG&T candidate and cannot be used as the Stage 6 selected adapter.

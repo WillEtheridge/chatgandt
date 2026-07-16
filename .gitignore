@@ -17,6 +17,10 @@ frontend/tsconfig.tsbuildinfo
 .cache/
 artifacts/models/
 artifacts/diagnostics/*
+!artifacts/diagnostics/lora-lifecycle-adapter/
+!artifacts/diagnostics/lora-lifecycle-adapter/README.md
+!artifacts/diagnostics/lora-lifecycle-adapter/adapter_config.json
+!artifacts/diagnostics/lora-lifecycle-adapter/adapter_model.safetensors
 
 # Preserve the small, immutable Step 7 CUDA evidence bundles while continuing
 # to ignore model adapters and other disposable diagnostic artefacts.
