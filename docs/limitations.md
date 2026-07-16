@@ -177,6 +177,10 @@ The findings are limited by:
 
 Claims outside the evaluation population are not supported by the experiment.
 
+### Synthetic supervised dataset
+
+The 200 active supervised examples are synthetic and were primarily authored and reviewed by frontier-model agents under project-master supervision. Separate author and reviewer roles, recorded revisions, deterministic acceptance, contamination checks, and a frozen validation split improve traceability, but they do not provide independent human authorship or external quality assurance. Two explicit pre-freeze amendments also mean dataset v1.2 is an active view over retained history rather than an untouched first-pass corpus.
+
 ## Efficiency limitations
 
 ### Tokens and latency measure different things

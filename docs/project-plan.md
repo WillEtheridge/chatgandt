@@ -134,9 +134,9 @@ The complete evaluation protocol is documented, adversarially reviewed, and froz
 | 7. Create the authoring guide and quality rubric | Completed | A frozen guide and machine-readable rubric separate automated hard gates from three non-compensatory `pass`/`revise`/`reject` judgments, anchor every dimension, map all reason codes, and define bounded batch, revision, independent-review, and deterministic terminal-acceptance workflows |
 | 8. Author candidate examples in reviewable batches | Completed | Batches 01–11 provide exactly 200 terminally accepted examples; four bounded production waves used disjoint paths and event blocks with synchronization audits between waves |
 | 9. Validate, review, and revise candidate examples | Completed | All 200 retained examples pass the response schema and recorded independent qualitative review; revisions, replacement reasons, failed replacement evidence, terminal reviews, and deterministic acceptances remain in 784 append-only events |
-| 10. Audit duplication, contamination, and exclusions | Completed | Amendment 001 transparently superseded seven collisions; the unchanged bounded audit then passed the 200-example active v1.1 set with no exact, withheld-domain, substantive-neighbour, or template-collapse failure |
-| 11. Assign splits, select the pilot subset, and freeze dataset v1 | Not started | Scenario-isolated training and validation files, a representative training-only pilot subset, coverage reports, identities, and a versioned dataset manifest are sealed |
-| 12. Conduct the Stage 4 readiness review | Not started | A proportionate review confirms dataset quality, coverage, isolation, provenance, and frozen identities before exact held-out prompt authoring begins |
+| 10. Audit duplication, contamination, and exclusions | Completed | Amendments 001–002 transparently superseded audited collisions and restored ingredient-count diversity; the unchanged bounded audit passed the 200-example active v1.2 set |
+| 11. Assign splits, select the pilot subset, and freeze dataset v1 | Completed | The first deterministic allocation produced exact 160/40 training-validation and 40-example training-only pilot sets, with 32/8/8 per family, full required coverage, canonical projections, and a hash-bound v1.2 manifest |
+| 12. Conduct the Stage 4 readiness review | Completed | Dataset v1.2 passes quality, coverage, isolation, contamination, token-balance, reproducibility, provenance, and identity checks; all five System B worked examples pass v1.3 and remain unchanged |
 
 ### Stage 4 boundaries
 
@@ -245,4 +245,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Continue Stage 4 with Step 11: assign scenario-isolated training and validation splits and select the 40-example training-only pilot from the amendment-aware v1.1 active set, then create the frozen projections and manifest. Do not author exact held-out prompts, query Qwen, or train a model until the Stage 4 readiness review closes. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.
+Begin Stage 5 by authoring exactly 60 held-out prompts to the frozen evaluation blueprint without generating system responses. Preserve the frozen dataset and System B prompt, compare every candidate against the project sources under the held-out contamination procedure, and freeze the prompt set before any training or held-out generation. Fix the non-portable adapter unit-test fixture before the first Stage 6 formal model run.

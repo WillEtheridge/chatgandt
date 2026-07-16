@@ -19,7 +19,7 @@ export default function TastingRoomPage() {
         </h1>
         <div className="mt-8 max-w-2xl text-base leading-relaxed sm:text-lg">
           <p>Two answers. One was prompted with examples. One was fine-tuned.</p>
-          <p className="mt-4">Read both, then guess which is which. Your guess is not recorded.</p>
+          <p className="mt-4">Read both, then guess which is which. </p>
         </div>
 
         <div className="mt-16 max-w-4xl">

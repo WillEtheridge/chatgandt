@@ -1,7 +1,7 @@
 # Dataset v1 Production Summary
 
 - **Stage:** 4, Steps 8–9
-- **Status:** Steps 8–10 complete; amendment 001 and the passing audit define the active v1.1 set
+- **Status:** Stage 4 complete; amendments 001–002 and the passing readiness review define frozen dataset v1.2
 - **Produced:** 200 terminally accepted examples in Batches 01–11
 - **Authoring standard:** `chatgnt-dataset-authoring-v1.3`
 
@@ -69,4 +69,4 @@ An earlier regression invocation was intentionally discarded because two copies 
 
 ## Boundary and next action
 
-Candidate authoring, qualitative review, revision, terminal acceptance, and the proportionate contamination audit are complete. Amendment 001 retains the original evidence while defining a 200-example active v1.1 set in which seven colliding records are superseded by new replacements. The same bounded audit passed that active set. Dataset freeze is not yet complete: split assignment, pilot selection, manifest creation, and the Stage 4 readiness review remain.
+Candidate authoring, qualitative review, revision, terminal acceptance, contamination audit, split assignment, pilot selection, dataset freeze, and readiness review are complete. Amendment 001 replaced seven collisions; amendment 002 preserved the seven- and eight-ingredient diversity slots exposed by the first freeze attempt. The unchanged audit passed the active v1.2 set, and the first deterministic allocation produced exact 160/40 training-validation and 40-example pilot sets. Stage 5 may now author the held-out prompts without generating system responses.

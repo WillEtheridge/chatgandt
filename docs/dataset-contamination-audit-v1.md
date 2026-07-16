@@ -2,9 +2,10 @@
 
 - **Date:** 2026-07-16
 - **Stage:** 4, Step 10
-- **Status:** Complete after amendment 001 and a clean rerun
+- **Status:** Complete after amendments 001–002 and a clean v1.2 rerun
 - **Initial machine findings:** `data/dataset-v1/audit/findings-v1.json`
-- **Passing rerun findings:** `data/dataset-v1/audit/findings-v1.1.json`
+- **Passing v1.1 rerun findings:** `data/dataset-v1/audit/findings-v1.1.json`
+- **Passing v1.2 rerun findings:** `data/dataset-v1/audit/findings-v1.2.json`
 - **Command:** `UV_CACHE_DIR=/tmp/chatgnt-uv-cache HF_HUB_OFFLINE=1 uv run --frozen python scripts/audit_dataset_v1.py`
 
 ## Purpose
@@ -96,4 +97,6 @@ Repeated measurement sequences remain benign cocktail conventions: the largest s
 
 The passing findings SHA-256 is `379ef3fb530a212c32a3b659eb34e3a4323e40cd2e12719339f0cb7196121aa4`. The active candidate and workflow-event collection identities are `45611ddfbfc42a323c61773d081c414026cf53788d3d78fe64d0f070ad3b73cc` and `b3f827e01e682a72cecd5e733fdb3b58578bae9964fe309e11786095e4d7f7a3` respectively.
 
-Stage 4 Step 10 is complete. This result supports project-level fairness; it does not prove independence from unknown pretraining data.
+Before freeze, amendment 002 replaced `dataset-v1-201` and `dataset-v1-202` with content-equivalent `dataset-v1-208` and `dataset-v1-209`, restoring the corpus's required seven- and eight-ingredient examples. The same audit was rerun once more. It produced no exact, withheld-domain, repeated-phrase, worked-response, or substantive-neighbour failure. Its findings SHA-256 is `9d0b3cccc137ce3a96f004218c8b75dee14f8c671c9fa9735e9fb5bcaa2d86f2`.
+
+Stage 4 Step 10 is complete on active v1.2. This result supports project-level fairness; it does not prove independence from unknown pretraining data.

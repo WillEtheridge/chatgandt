@@ -1700,3 +1700,33 @@ Every mapping must preserve intent family, coverage slice, input form, complexit
 ### Rationale
 
 Silently editing accepted records would invalidate their content-bound acceptance events. Adding a general supersession state to the frozen workflow schema would be disproportionate for seven pre-freeze repairs. A narrow, explicit overlay preserves both historical truth and a simple downstream active set.
+
+## D-061 — Preserve ingredient-count diversity and accept the first exact deterministic split
+
+- **Date:** 2026-07-16
+- **Status:** Adopted, applied, and verified
+
+### Decision
+
+Do not weaken the frozen requirement that ingredient counts three through eight are represented. Amendment 002 restores the lost seven- and eight-ingredient slots while leaving the two replacement scenarios and quota-bearing metadata unchanged. Rerun the same bounded audit once, then feed the passing active v1.2 set to the already frozen split algorithm.
+
+Accept the first allocation that passes every existing gate. Require exactly 160 training, 40 validation, and 40 training-only pilot examples; 32/8/8 of each intent family; complete required validation and pilot coverage; scenario isolation; canonical projections; a passing frozen-dataset validator; and a manifest binding the contract, split configuration, both amendments, passing audit, and every output file.
+
+### Result
+
+The allocation was exact and required no exception. A byte-for-byte reproduction in a separate temporary directory matched the frozen bundle.
+
+## D-062 — Pass the Stage 4 readiness review and preserve System B unchanged
+
+- **Date:** 2026-07-16
+- **Status:** Adopted; Stage 4 complete
+
+### Decision
+
+Accept frozen dataset v1.2 for the portfolio experiment. Its 160/40 training-validation split, 40-example training-only pilot, coverage, contamination result, token balance, provenance, identities, and byte-for-byte reproducibility satisfy the Stage 4 exit condition.
+
+Pass all five System B worked examples against the final `chatgnt-dataset-authoring-v1.3` standard. Each substantive answer is complete; each metaphor is coherent; and each response remains unmistakably cocktail-like across title, measures, ingredients, method, and optional garnish. Preserve `five-shot-v3` unchanged because the planned checkpoint found no non-pass dimension and no model result was used to influence the judgment.
+
+### Boundary
+
+This authorises held-out prompt authoring under the frozen Stage 5 protocol. It does not author held-out prompts, train Qwen, select an adapter, or generate evaluation responses.

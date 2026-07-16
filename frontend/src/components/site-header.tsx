@@ -13,7 +13,7 @@ export function SiteHeader({ activePath }: Readonly<{ activePath: SitePath }>) {
   return (
     <header className="relative border-b border-outline">
       <div className="mx-auto flex min-h-16 w-full max-w-5xl items-center justify-between gap-8 px-4 sm:px-6 lg:max-w-7xl">
-        <Link className="text-base" href="/">
+        <Link className="text-lg" href="/">
           ChatG<span className="text-signal">&amp;</span>T
         </Link>
 

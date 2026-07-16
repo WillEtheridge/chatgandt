@@ -694,3 +694,15 @@ For long-running delegated work, a bounded end state is not enough by itself. Th
 An acceptance event is evidence about a particular content snapshot. Editing that snapshot after an audit would leave a green acceptance record attached to words the reviewer never saw. The honest alternatives are to preserve the original and explicitly supersede it, or create a wholly new dataset version.
 
 ChatG&T needed only seven pre-freeze repairs, so it used the smaller option: an amendment maps seven historical IDs to seven new, separately reviewed IDs while an executable check proves the active set still has 200 accepted examples and unchanged quota-bearing metadata. This is enough because the dataset has not yet been split or trained. The lesson is to version the active view, not falsify the past—and to keep the amendment proportional to the actual change.
+
+## 2026-07-16 — Why should replacements preserve more than headline quotas?
+
+Amendment 001 preserved intent family, slice, input form, complexity, constraint, robustness role, and task subtype, yet the first freeze still failed. Two superseded examples had been the only seven- and eight-ingredient responses, so the active corpus no longer represented every permitted recipe size.
+
+The frozen validator did exactly what it was meant to do: it caught a quiet loss of diversity before training. A replacement checklist must include every downstream invariant that the removed record helps satisfy, including seemingly decorative distribution requirements—not only the main experimental quotas. The correct response was a two-record amendment and audit rerun, not weakening the rule or repeatedly trying the allocator.
+
+## 2026-07-16 — Why should a planned checkpoint be allowed to pass?
+
+A checkpoint is a decision gate, not a mandate to produce another revision. The end-of-Stage-4 System B review deliberately challenged older worked examples against the stricter final teaching rubric, especially their garnishes. The relevant test was whether each garnish was optional, concise, reinforcing, and natural after “Garnish with”—not whether a reviewer could imagine an alternative they personally preferred.
+
+All five complete responses passed every non-compensatory dimension. Revising them anyway would have converted a fairness check into unplanned prompt optimisation after the baseline had already been selected. Good governance sometimes means documenting careful scrutiny and changing nothing.

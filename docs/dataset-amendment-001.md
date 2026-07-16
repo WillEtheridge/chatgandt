@@ -3,7 +3,7 @@
 - **Date:** 2026-07-16
 - **Active dataset identity:** `chatgnt-dataset-v1.1`
 - **Manifest:** `data/dataset-v1/amendments/amendment-001/manifest.json`
-- **Status:** Applied, validated, and contamination-audited
+- **Status:** Applied and audited; followed by amendment 002 before freeze
 
 ## Why the amendment exists
 
@@ -26,4 +26,4 @@ The seven replacements were authored and reviewed in separate deliberate passes 
 
 ## Result
 
-The same bounded audit passed on the active v1.1 set. No second replacement cycle was needed. Original records are historical evidence; downstream split assignment and dataset freeze must use the amendment-aware active set.
+The same bounded audit passed on the active v1.1 set. The subsequent frozen-dataset validator revealed that two superseded records had also carried the corpus's only seven- and eight-ingredient responses. Amendment 002 corrected that overlooked diversity invariant without changing their scenarios. Original records and v1.1 remain historical evidence; downstream work uses active v1.2.

@@ -32,8 +32,9 @@ from chatgnt.evaluation_protocol import (  # noqa: E402
 from chatgnt.records import canonical_line, read_strict_json  # noqa: E402
 
 
-OUTPUT_PATH = PROJECT_ROOT / "data" / "dataset-v1" / "audit" / "findings-v1.1.json"
+OUTPUT_PATH = PROJECT_ROOT / "data" / "dataset-v1" / "audit" / "findings-v1.2.json"
 AMENDMENT_PATH = PROJECT_ROOT / "data" / "dataset-v1" / "amendments" / "amendment-001" / "manifest.json"
+AMENDMENT_002_PATH = PROJECT_ROOT / "data" / "dataset-v1" / "amendments" / "amendment-002" / "manifest.json"
 WITHHELD_TERMS = {
     "photography": (
         r"\bphotograph(?:y|er|ers|ic)?\b", r"\bcamera(?:s)?\b", r"\baperture\b",
@@ -141,6 +142,54 @@ def load_sources() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dic
     if len(candidates) != 200 or active_validation["lifecycle"] != {"accepted": 200, "rejected": 0, "unresolved": 0}:
         raise RuntimeError("amended active dataset must contain exactly 200 accepted examples")
 
+    amendment_002, amendment_002_raw = read_strict_json(AMENDMENT_002_PATH)
+    expected_amendment_002_keys = {
+        "schema_version", "amendment_id", "active_dataset_id", "status", "created_at_utc",
+        "base_active_candidates_sha256", "base_active_workflow_events_sha256",
+        "replacement_candidates_path", "replacement_candidates_sha256",
+        "replacement_workflow_events_path", "replacement_workflow_events_sha256",
+        "replacements", "supersession_policy",
+    }
+    if (
+        not isinstance(amendment_002, dict) or set(amendment_002) != expected_amendment_002_keys
+        or amendment_002["schema_version"] != 1
+        or amendment_002["amendment_id"] != "chatgnt-dataset-amendment-002"
+        or amendment_002["active_dataset_id"] != "chatgnt-dataset-v1.2"
+        or amendment_002["status"] != "active"
+        or amendment_002_raw != canonical_line(amendment_002)
+        or amendment_002["base_active_candidates_sha256"] != collection_sha256(candidates)
+        or amendment_002["base_active_workflow_events_sha256"] != collection_sha256(events)
+    ):
+        raise RuntimeError("dataset amendment 002 is invalid or names the wrong v1.1 active set")
+    second_candidate_path = PROJECT_ROOT / amendment_002["replacement_candidates_path"]
+    second_event_path = PROJECT_ROOT / amendment_002["replacement_workflow_events_path"]
+    if sha256(second_candidate_path) != amendment_002["replacement_candidates_sha256"] or sha256(second_event_path) != amendment_002["replacement_workflow_events_sha256"]:
+        raise RuntimeError("dataset amendment 002 file identity mismatch")
+    second_candidates = load_canonical_jsonl(second_candidate_path)
+    second_events = load_canonical_jsonl(second_event_path)
+    second_validation = validate_authoring_dataset(second_candidates, second_events, contract)
+    if len(second_candidates) != 2 or second_validation["lifecycle"] != {"accepted": 2, "rejected": 0, "unresolved": 0}:
+        raise RuntimeError("dataset amendment 002 requires two terminally accepted replacements")
+    current_by_id = {item["example_id"]: item for item in candidates}
+    second_by_id = {item["example_id"]: item for item in second_candidates}
+    second_mappings = amendment_002["replacements"]
+    second_superseded = {item["superseded_example_id"] for item in second_mappings}
+    if len(second_mappings) != 2 or len(second_superseded) != 2 or {item["replacement_example_id"] for item in second_mappings} != set(second_by_id):
+        raise RuntimeError("dataset amendment 002 mappings are incomplete or duplicated")
+    for mapping in second_mappings:
+        old = current_by_id.get(mapping["superseded_example_id"])
+        new = second_by_id.get(mapping["replacement_example_id"])
+        if old is None or new is None:
+            raise RuntimeError("dataset amendment 002 mapping names an absent example")
+        changed = [axis for axis in preserved_axes if old["metadata"][axis] != new["metadata"][axis]]
+        if changed or old["user_prompt"] != new["user_prompt"] or old["scenario_id"] != new["scenario_id"]:
+            raise RuntimeError(f"amendment 002 replacement {new['example_id']} changes more than response ingredient diversity")
+    candidates = sorted([item for item in candidates if item["example_id"] not in second_superseded] + second_candidates, key=lambda item: item["example_id"])
+    events = [item for item in events if item["example_id"] not in second_superseded] + second_events
+    final_validation = validate_authoring_dataset(candidates, events, contract)
+    if len(candidates) != 200 or final_validation["lifecycle"] != {"accepted": 200, "rejected": 0, "unresolved": 0}:
+        raise RuntimeError("v1.2 active dataset must contain exactly 200 accepted examples")
+
     development_path = PROJECT_ROOT / "data" / "development" / "prompts-v1.jsonl"
     development = load_canonical_jsonl(development_path)
     worked_path = PROJECT_ROOT / "data" / "prompt-engineering" / "worked-examples-v1.json"
@@ -160,7 +209,10 @@ def load_sources() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dic
         ],
         "development_prompts": {"path": development_path.relative_to(PROJECT_ROOT).as_posix(), "sha256": sha256(development_path)},
         "worked_examples": {"path": worked_path.relative_to(PROJECT_ROOT).as_posix(), "sha256": sha256(worked_path)},
-        "amendment": {"path": AMENDMENT_PATH.relative_to(PROJECT_ROOT).as_posix(), "sha256": sha256(AMENDMENT_PATH)},
+        "amendments": [
+            {"path": AMENDMENT_PATH.relative_to(PROJECT_ROOT).as_posix(), "sha256": sha256(AMENDMENT_PATH)},
+            {"path": AMENDMENT_002_PATH.relative_to(PROJECT_ROOT).as_posix(), "sha256": sha256(AMENDMENT_002_PATH)},
+        ],
         "active_candidates_sha256": collection_sha256(candidates),
         "active_workflow_events_sha256": collection_sha256(events),
     }
@@ -349,7 +401,7 @@ def main() -> int:
     candidates, development, worked, identities = load_sources()
     semantic, semantic_diagnostics = semantic_findings(candidates, development, worked)
     findings = {
-        "audit_id": "chatgnt-dataset-audit-v1.1-simple",
+        "audit_id": "chatgnt-dataset-audit-v1.2-simple",
         "purpose": "Protect the fairness of the prompt-engineering versus fine-tuning comparison.",
         "scope": {"accepted_examples": 200, "development_prompts": 20, "worked_examples": 5},
         "source_identities": identities,
