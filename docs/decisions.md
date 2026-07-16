@@ -1644,3 +1644,59 @@ Independent batch files make drafting and review genuinely parallelisable, but u
 - Deterministic acceptance occurs only after every unresolved candidate in that batch has an independent pass.
 - A wave-wide audit may alter later scenario choices but not the frozen numerical schedule unless a recorded rejection makes exact completion impossible.
 - Exact held-out prompts, Qwen outputs, training, and split allocation remain unavailable throughout production.
+
+## D-058 — Freeze the Stage 4 duplication, contamination, and exclusions audit before running it
+
+- **Date:** 2026-07-16
+- **Status:** Superseded by D-059 after generation 001 exposed a disproportionate review workload
+
+### Decision
+
+Freeze `chatgnt-dataset-contamination-audit-v1` before inspecting production similarity results. Reuse the Stage 3 normalization, RapidFuzz, pinned MiniLM, top-five retrieval, and three-question semantic-collision rule. The audit covers internal prompt, scenario, response, component, metadata, and structural diversity; worked examples; development prompts and outputs; evaluation calibration text; target-model diagnostic material; provenance; and the three withheld domains.
+
+Automation generates an immutable candidate-pair workload but does not decide semantic equivalence. Every de-duplicated top-five lexical, semantic, and nonzero metadata neighbour, plus all exact, threshold, structural, component, phrase, and withheld-domain flags, receives one attributable complete-text disposition. Thresholds may add review pairs but may not remove the frozen top-five workload.
+
+The machine build and finalization use separate atomic, no-overwrite generations. Human- or agent-authored dispositions and attestations are inputs between them. Exact held-out prompts remain unavailable, and the audit neither assigns splits nor queries Qwen.
+
+### Failure boundary
+
+The audit does not invent an active-set overlay or supersession rule. Any automatic failure, unresolved judgment, or `revise_or_replace` disposition fails Step 10 closed. Candidate replacement requires a separately specified and reviewed dataset-contract amendment that downstream authoring, split, rendering, and freeze validators understand, followed by a new immutable complete audit generation.
+
+### Frozen evidence
+
+- Audit specification SHA-256: `0e87888a02caba963ce37f5d39c8e71929b2f7e89cbab6ef03b85692f1b4f820`
+- Adversarial review SHA-256: `cfe0dbcc49e04da09051e0834a207fde92c7acaa869d6de285ebf91a57ab5eb7`
+
+## D-059 — Replace component-level audit machinery with a bounded record-level audit
+
+- **Date:** 2026-07-16
+- **Status:** Adopted and executed; Step 10 passed after amendment 001
+
+### Decision
+
+Protect the fairness of the prompt-engineering versus fine-tuning comparison with the smallest audit that can change a relevant decision. One local script loads the 200 terminally accepted examples, the 20 spent development prompts, and the five System B worked examples. It performs normalized exact checks, searches for the three withheld domains, reports simple response-template frequencies, and uses the pinned MiniLM encoder only to retrieve:
+
+- the 50 closest internal complete-scenario pairs;
+- the five closest supervised scenarios for each of the 25 prior prompts; and
+- the five closest supervised responses for each of the five worked responses.
+
+Similarity retrieves complete records for review and never decides contamination. The audit does not compare every ingredient, method step, garnish, metadata field, output collection, or synthetic view independently. Its durable outputs are one JSON findings file and one readable Markdown report.
+
+### Result
+
+All exact and withheld-domain checks passed. Review of the initial bounded 200 semantic pairs identified seven supervised examples requiring replacement: `dataset-v1-003`, `dataset-v1-005`, `dataset-v1-014`, `dataset-v1-041`, `dataset-v1-118`, `dataset-v1-158`, and `dataset-v1-161`. Amendment 001 superseded them without rewriting their history. The unchanged audit then passed the 200-example active v1.1 set.
+
+## D-060 — Represent the seven audited replacements as a narrow supersession overlay
+
+- **Date:** 2026-07-16
+- **Status:** Adopted, applied, and verified
+
+### Decision
+
+Retain every original candidate and workflow event unchanged. Store seven new candidates and their own event chains under amendment 001, and use one closed manifest to map each superseded example ID to one replacement ID. Define `chatgnt-dataset-v1.1` as the active 200-example view produced by excluding the seven superseded records and including their seven terminally accepted replacements.
+
+Every mapping must preserve intent family, coverage slice, input form, complexity, constraint status, robustness role, and task subtype. The executable audit verifies the base and replacement identities, mapping completeness, lifecycle validity, preserved quota axes, and the resulting 200-accepted-record population before doing any similarity work.
+
+### Rationale
+
+Silently editing accepted records would invalidate their content-bound acceptance events. Adding a general supersession state to the frozen workflow schema would be disproportionate for seven pre-freeze repairs. A narrow, explicit overlay preserves both historical truth and a simple downstream active set.

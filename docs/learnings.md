@@ -670,3 +670,27 @@ This suggests a reusable orchestration pattern: parallelise planning, authoring,
 Read-only checks are not necessarily isolated checks. During the final audit, two copies of the historical regression suite were accidentally launched together. A provenance test that creates and reads shared generated paths failed in one run even though the same 128-test suite passed when rerun alone.
 
 Concurrency should therefore be based on state ownership, not on whether a command is described as a test. Suites that touch shared fixtures, caches, ports, generated artefacts, or fixed paths need separate sandboxes or sequential execution. A contaminated parallel run should be recorded and discarded explicitly; silently rerunning until green would hide an orchestration defect.
+
+## 2026-07-16 — Why must retrieval rules be calibrated to the audit unit?
+
+A top-five neighbour rule can be proportionate for 60 held-out prompts compared at the record level and wildly disproportionate when copied across 200 records, multiple response components, and many source collections. Dataset audit generation 001 produced 41,957 canonical flags despite zero automatic failures because every ingredient, method, garnish, title, and record view independently demanded nearest-neighbour dispositions.
+
+More evidence is not automatically better evidence. Once the review workload exceeds any plausible careful reading process, bulk dispositions become theatre and can hide important collisions among thousands of generic matches. Workload calibration must therefore use the same unit, views, and source cardinality as production—not merely reuse a retrieval rule that worked elsewhere.
+
+The honest response is to preserve the immutable failed generation and amend the protocol visibly. Silently adding a convenient threshold after seeing results would be outcome-dependent tuning; pretending to review tens of thousands of pairs would be worse.
+
+## 2026-07-16 — How can procedural completeness make us lose the plot?
+
+When a long stage is delegated, an agent can optimise for satisfying plans, specifications, evidence schemas, and adversarial findings while gradually detaching the work from the experiment's actual claim. Each individual addition may look defensible, yet the accumulated process can become larger and less useful than the problem it was meant to control.
+
+That happened in the first contamination-audit design. The real purpose was to protect the fairness of the prompt-versus-fine-tuning comparison: training must not reuse the five prompted examples or prompt-development inputs, reserved topics must remain unseen, and obvious internal duplicates must not overweight a lesson. Instead, the process expanded into tens of thousands of ingredient-, method-, garnish-, source-, and view-level judgments. It became procedurally thorough but scientifically disproportionate.
+
+A useful warning sign is repeated confusion when explaining the work in plain language. If answering “What are we trying to achieve?” produces another description of the procedure rather than the research reason, stop. Restate the claim being protected, identify the smallest evidence needed to protect it, and ask whether every proposed mechanism can change a relevant decision.
+
+For long-running delegated work, a bounded end state is not enough by itself. The master agent must also maintain periodic purpose checkpoints: **Does the current process still serve the original research question at a sensible cost?** If not, pause before building more machinery and bring the project author back into the decision.
+
+## 2026-07-16 — How can accepted data be corrected without rewriting history?
+
+An acceptance event is evidence about a particular content snapshot. Editing that snapshot after an audit would leave a green acceptance record attached to words the reviewer never saw. The honest alternatives are to preserve the original and explicitly supersede it, or create a wholly new dataset version.
+
+ChatG&T needed only seven pre-freeze repairs, so it used the smaller option: an amendment maps seven historical IDs to seven new, separately reviewed IDs while an executable check proves the active set still has 200 accepted examples and unchanged quota-bearing metadata. This is enough because the dataset has not yet been split or trained. The lesson is to version the active view, not falsify the past—and to keep the amendment proportional to the actual change.

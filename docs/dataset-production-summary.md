@@ -1,7 +1,7 @@
 # Dataset v1 Production Summary
 
 - **Stage:** 4, Steps 8–9
-- **Status:** Complete; formal duplication, contamination, and exclusions audit remains Step 10
+- **Status:** Steps 8–10 complete; amendment 001 and the passing audit define the active v1.1 set
 - **Produced:** 200 terminally accepted examples in Batches 01–11
 - **Authoring standard:** `chatgnt-dataset-authoring-v1.3`
 
@@ -69,4 +69,4 @@ An earlier regression invocation was intentionally discarded because two copies 
 
 ## Boundary and next action
 
-This completes candidate authoring, qualitative review, revision, and terminal acceptance. It does not freeze dataset v1. Stage 4 Step 10 must now run the formal duplication, contamination, and exclusions audit against supervised examples, worked baseline examples, development prompts, and withheld domains. Split assignment, pilot selection, manifest creation, and dataset freeze follow only after that audit closes.
+Candidate authoring, qualitative review, revision, terminal acceptance, and the proportionate contamination audit are complete. Amendment 001 retains the original evidence while defining a 200-example active v1.1 set in which seven colliding records are superseded by new replacements. The same bounded audit passed that active set. Dataset freeze is not yet complete: split assignment, pilot selection, manifest creation, and the Stage 4 readiness review remain.

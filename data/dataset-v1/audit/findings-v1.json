@@ -1,0 +1,1270 @@
+{
+  "audit_id": "chatgnt-dataset-audit-v1-simple",
+  "exact": {
+    "internal_prompt_duplicates": [],
+    "internal_response_duplicates": [],
+    "internal_scenario_id_duplicates": [],
+    "prior_prompt_matches": [],
+    "worked_response_matches": []
+  },
+  "interpretation": "Similarity candidates require complete-record review; scores alone do not establish contamination.",
+  "purpose": "Protect the fairness of the prompt-engineering versus fine-tuning comparison.",
+  "repetition": {
+    "duplicate_titles": [],
+    "repeated_eight_word_phrases": [
+      {
+        "count": 2,
+        "example_ids": [
+          "dataset-v1-102",
+          "dataset-v1-161"
+        ],
+        "phrase": "one practical offer if you'd like i can"
+      }
+    ],
+    "repeated_measure_sequences": [
+      {
+        "count": 6,
+        "example_ids": [
+          "dataset-v1-064",
+          "dataset-v1-068",
+          "dataset-v1-157",
+          "dataset-v1-192",
+          "dataset-v1-199",
+          "dataset-v1-200"
+        ],
+        "value": [
+          "45 ml",
+          "25 ml",
+          "15 ml"
+        ]
+      },
+      {
+        "count": 6,
+        "example_ids": [
+          "dataset-v1-039",
+          "dataset-v1-076",
+          "dataset-v1-095",
+          "dataset-v1-099",
+          "dataset-v1-101",
+          "dataset-v1-105"
+        ],
+        "value": [
+          "45 ml",
+          "30 ml",
+          "15 ml",
+          "2 dashes"
+        ]
+      },
+      {
+        "count": 5,
+        "example_ids": [
+          "dataset-v1-031",
+          "dataset-v1-051",
+          "dataset-v1-059",
+          "dataset-v1-158",
+          "dataset-v1-167"
+        ],
+        "value": [
+          "45 ml",
+          "25 ml",
+          "15 ml",
+          "2 dashes"
+        ]
+      },
+      {
+        "count": 4,
+        "example_ids": [
+          "dataset-v1-027",
+          "dataset-v1-098",
+          "dataset-v1-104",
+          "dataset-v1-173"
+        ],
+        "value": [
+          "50 ml",
+          "25 ml",
+          "10 ml"
+        ]
+      },
+      {
+        "count": 3,
+        "example_ids": [
+          "dataset-v1-072",
+          "dataset-v1-154",
+          "dataset-v1-162"
+        ],
+        "value": [
+          "40 ml",
+          "25 ml",
+          "15 ml",
+          "2 dashes"
+        ]
+      },
+      {
+        "count": 3,
+        "example_ids": [
+          "dataset-v1-065",
+          "dataset-v1-097",
+          "dataset-v1-110"
+        ],
+        "value": [
+          "40 ml",
+          "30 ml",
+          "20 ml",
+          "2 dashes"
+        ]
+      },
+      {
+        "count": 3,
+        "example_ids": [
+          "dataset-v1-043",
+          "dataset-v1-044",
+          "dataset-v1-084"
+        ],
+        "value": [
+          "45 ml",
+          "25 ml",
+          "15 ml",
+          "10 ml"
+        ]
+      },
+      {
+        "count": 3,
+        "example_ids": [
+          "dataset-v1-056",
+          "dataset-v1-082",
+          "dataset-v1-091"
+        ],
+        "value": [
+          "45 ml",
+          "30 ml",
+          "20 ml",
+          "2 dashes"
+        ]
+      }
+    ],
+    "repeated_method_openings": []
+  },
+  "scope": {
+    "accepted_examples": 200,
+    "development_prompts": 20,
+    "worked_examples": 5
+  },
+  "semantic_model": {
+    "maximum_pre_truncation_wordpieces": 223,
+    "model_id": "sentence-transformers/all-MiniLM-L6-v2",
+    "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "text_count": 430,
+    "truncated_text_count": 0
+  },
+  "semantic_review_candidates": {
+    "internal_scenario_pairs": [
+      {
+        "left_id": "dataset-v1-004",
+        "right_id": "dataset-v1-158",
+        "score": 0.800784
+      },
+      {
+        "left_id": "dataset-v1-023",
+        "right_id": "dataset-v1-064",
+        "score": 0.726883
+      },
+      {
+        "left_id": "dataset-v1-102",
+        "right_id": "dataset-v1-161",
+        "score": 0.707736
+      },
+      {
+        "left_id": "dataset-v1-044",
+        "right_id": "dataset-v1-145",
+        "score": 0.664013
+      },
+      {
+        "left_id": "dataset-v1-084",
+        "right_id": "dataset-v1-172",
+        "score": 0.649338
+      },
+      {
+        "left_id": "dataset-v1-043",
+        "right_id": "dataset-v1-197",
+        "score": 0.618391
+      },
+      {
+        "left_id": "dataset-v1-163",
+        "right_id": "dataset-v1-183",
+        "score": 0.614722
+      },
+      {
+        "left_id": "dataset-v1-046",
+        "right_id": "dataset-v1-126",
+        "score": 0.611343
+      },
+      {
+        "left_id": "dataset-v1-094",
+        "right_id": "dataset-v1-153",
+        "score": 0.606199
+      },
+      {
+        "left_id": "dataset-v1-024",
+        "right_id": "dataset-v1-163",
+        "score": 0.595266
+      },
+      {
+        "left_id": "dataset-v1-046",
+        "right_id": "dataset-v1-105",
+        "score": 0.584583
+      },
+      {
+        "left_id": "dataset-v1-148",
+        "right_id": "dataset-v1-169",
+        "score": 0.582145
+      },
+      {
+        "left_id": "dataset-v1-014",
+        "right_id": "dataset-v1-170",
+        "score": 0.576052
+      },
+      {
+        "left_id": "dataset-v1-053",
+        "right_id": "dataset-v1-072",
+        "score": 0.56499
+      },
+      {
+        "left_id": "dataset-v1-025",
+        "right_id": "dataset-v1-105",
+        "score": 0.561695
+      },
+      {
+        "left_id": "dataset-v1-152",
+        "right_id": "dataset-v1-172",
+        "score": 0.557876
+      },
+      {
+        "left_id": "dataset-v1-013",
+        "right_id": "dataset-v1-060",
+        "score": 0.556346
+      },
+      {
+        "left_id": "dataset-v1-038",
+        "right_id": "dataset-v1-098",
+        "score": 0.556129
+      },
+      {
+        "left_id": "dataset-v1-172",
+        "right_id": "dataset-v1-191",
+        "score": 0.555803
+      },
+      {
+        "left_id": "dataset-v1-007",
+        "right_id": "dataset-v1-044",
+        "score": 0.554105
+      },
+      {
+        "left_id": "dataset-v1-090",
+        "right_id": "dataset-v1-122",
+        "score": 0.552462
+      },
+      {
+        "left_id": "dataset-v1-021",
+        "right_id": "dataset-v1-061",
+        "score": 0.54853
+      },
+      {
+        "left_id": "dataset-v1-046",
+        "right_id": "dataset-v1-198",
+        "score": 0.546622
+      },
+      {
+        "left_id": "dataset-v1-028",
+        "right_id": "dataset-v1-048",
+        "score": 0.542449
+      },
+      {
+        "left_id": "dataset-v1-018",
+        "right_id": "dataset-v1-058",
+        "score": 0.539503
+      },
+      {
+        "left_id": "dataset-v1-010",
+        "right_id": "dataset-v1-129",
+        "score": 0.538743
+      },
+      {
+        "left_id": "dataset-v1-011",
+        "right_id": "dataset-v1-172",
+        "score": 0.535964
+      },
+      {
+        "left_id": "dataset-v1-031",
+        "right_id": "dataset-v1-053",
+        "score": 0.534806
+      },
+      {
+        "left_id": "dataset-v1-002",
+        "right_id": "dataset-v1-033",
+        "score": 0.531186
+      },
+      {
+        "left_id": "dataset-v1-150",
+        "right_id": "dataset-v1-170",
+        "score": 0.528518
+      },
+      {
+        "left_id": "dataset-v1-011",
+        "right_id": "dataset-v1-152",
+        "score": 0.527514
+      },
+      {
+        "left_id": "dataset-v1-024",
+        "right_id": "dataset-v1-183",
+        "score": 0.524744
+      },
+      {
+        "left_id": "dataset-v1-006",
+        "right_id": "dataset-v1-191",
+        "score": 0.522057
+      },
+      {
+        "left_id": "dataset-v1-008",
+        "right_id": "dataset-v1-165",
+        "score": 0.519641
+      },
+      {
+        "left_id": "dataset-v1-027",
+        "right_id": "dataset-v1-127",
+        "score": 0.518756
+      },
+      {
+        "left_id": "dataset-v1-167",
+        "right_id": "dataset-v1-188",
+        "score": 0.51865
+      },
+      {
+        "left_id": "dataset-v1-025",
+        "right_id": "dataset-v1-046",
+        "score": 0.51834
+      },
+      {
+        "left_id": "dataset-v1-143",
+        "right_id": "dataset-v1-144",
+        "score": 0.518104
+      },
+      {
+        "left_id": "dataset-v1-007",
+        "right_id": "dataset-v1-145",
+        "score": 0.515549
+      },
+      {
+        "left_id": "dataset-v1-069",
+        "right_id": "dataset-v1-199",
+        "score": 0.515191
+      },
+      {
+        "left_id": "dataset-v1-020",
+        "right_id": "dataset-v1-187",
+        "score": 0.51503
+      },
+      {
+        "left_id": "dataset-v1-052",
+        "right_id": "dataset-v1-073",
+        "score": 0.513959
+      },
+      {
+        "left_id": "dataset-v1-090",
+        "right_id": "dataset-v1-170",
+        "score": 0.513859
+      },
+      {
+        "left_id": "dataset-v1-072",
+        "right_id": "dataset-v1-094",
+        "score": 0.509922
+      },
+      {
+        "left_id": "dataset-v1-045",
+        "right_id": "dataset-v1-165",
+        "score": 0.508968
+      },
+      {
+        "left_id": "dataset-v1-048",
+        "right_id": "dataset-v1-067",
+        "score": 0.507612
+      },
+      {
+        "left_id": "dataset-v1-063",
+        "right_id": "dataset-v1-124",
+        "score": 0.50707
+      },
+      {
+        "left_id": "dataset-v1-052",
+        "right_id": "dataset-v1-151",
+        "score": 0.503848
+      },
+      {
+        "left_id": "dataset-v1-024",
+        "right_id": "dataset-v1-126",
+        "score": 0.501112
+      },
+      {
+        "left_id": "dataset-v1-028",
+        "right_id": "dataset-v1-148",
+        "score": 0.500004
+      }
+    ],
+    "prior_prompt_pairs": [
+      {
+        "example_id": "dataset-v1-039",
+        "prior_id": "dev-v1-advice-clean",
+        "score": 0.329968
+      },
+      {
+        "example_id": "dataset-v1-011",
+        "prior_id": "dev-v1-advice-clean",
+        "score": 0.326062
+      },
+      {
+        "example_id": "dataset-v1-191",
+        "prior_id": "dev-v1-advice-clean",
+        "score": 0.290283
+      },
+      {
+        "example_id": "dataset-v1-019",
+        "prior_id": "dev-v1-advice-clean",
+        "score": 0.275786
+      },
+      {
+        "example_id": "dataset-v1-051",
+        "prior_id": "dev-v1-advice-clean",
+        "score": 0.273266
+      },
+      {
+        "example_id": "dataset-v1-099",
+        "prior_id": "dev-v1-advice-naturalistic",
+        "score": 0.435531
+      },
+      {
+        "example_id": "dataset-v1-080",
+        "prior_id": "dev-v1-advice-naturalistic",
+        "score": 0.413554
+      },
+      {
+        "example_id": "dataset-v1-131",
+        "prior_id": "dev-v1-advice-naturalistic",
+        "score": 0.405262
+      },
+      {
+        "example_id": "dataset-v1-012",
+        "prior_id": "dev-v1-advice-naturalistic",
+        "score": 0.340705
+      },
+      {
+        "example_id": "dataset-v1-093",
+        "prior_id": "dev-v1-advice-naturalistic",
+        "score": 0.337838
+      },
+      {
+        "example_id": "dataset-v1-041",
+        "prior_id": "dev-v1-advice-constrained",
+        "score": 0.518566
+      },
+      {
+        "example_id": "dataset-v1-142",
+        "prior_id": "dev-v1-advice-constrained",
+        "score": 0.471356
+      },
+      {
+        "example_id": "dataset-v1-011",
+        "prior_id": "dev-v1-advice-constrained",
+        "score": 0.434471
+      },
+      {
+        "example_id": "dataset-v1-032",
+        "prior_id": "dev-v1-advice-constrained",
+        "score": 0.391836
+      },
+      {
+        "example_id": "dataset-v1-067",
+        "prior_id": "dev-v1-advice-constrained",
+        "score": 0.37885
+      },
+      {
+        "example_id": "dataset-v1-014",
+        "prior_id": "dev-v1-advice-robustness",
+        "score": 0.511212
+      },
+      {
+        "example_id": "dataset-v1-054",
+        "prior_id": "dev-v1-advice-robustness",
+        "score": 0.376576
+      },
+      {
+        "example_id": "dataset-v1-083",
+        "prior_id": "dev-v1-advice-robustness",
+        "score": 0.363983
+      },
+      {
+        "example_id": "dataset-v1-071",
+        "prior_id": "dev-v1-advice-robustness",
+        "score": 0.353171
+      },
+      {
+        "example_id": "dataset-v1-092",
+        "prior_id": "dev-v1-advice-robustness",
+        "score": 0.351156
+      },
+      {
+        "example_id": "dataset-v1-003",
+        "prior_id": "dev-v1-explanation-clean",
+        "score": 0.748229
+      },
+      {
+        "example_id": "dataset-v1-115",
+        "prior_id": "dev-v1-explanation-clean",
+        "score": 0.375844
+      },
+      {
+        "example_id": "dataset-v1-194",
+        "prior_id": "dev-v1-explanation-clean",
+        "score": 0.313727
+      },
+      {
+        "example_id": "dataset-v1-149",
+        "prior_id": "dev-v1-explanation-clean",
+        "score": 0.2076
+      },
+      {
+        "example_id": "dataset-v1-058",
+        "prior_id": "dev-v1-explanation-clean",
+        "score": 0.205838
+      },
+      {
+        "example_id": "dataset-v1-118",
+        "prior_id": "dev-v1-explanation-naturalistic",
+        "score": 0.517102
+      },
+      {
+        "example_id": "dataset-v1-033",
+        "prior_id": "dev-v1-explanation-naturalistic",
+        "score": 0.488743
+      },
+      {
+        "example_id": "dataset-v1-086",
+        "prior_id": "dev-v1-explanation-naturalistic",
+        "score": 0.224339
+      },
+      {
+        "example_id": "dataset-v1-150",
+        "prior_id": "dev-v1-explanation-naturalistic",
+        "score": 0.201618
+      },
+      {
+        "example_id": "dataset-v1-194",
+        "prior_id": "dev-v1-explanation-naturalistic",
+        "score": 0.169126
+      },
+      {
+        "example_id": "dataset-v1-194",
+        "prior_id": "dev-v1-explanation-constrained",
+        "score": 0.296588
+      },
+      {
+        "example_id": "dataset-v1-077",
+        "prior_id": "dev-v1-explanation-constrained",
+        "score": 0.260617
+      },
+      {
+        "example_id": "dataset-v1-116",
+        "prior_id": "dev-v1-explanation-constrained",
+        "score": 0.254389
+      },
+      {
+        "example_id": "dataset-v1-015",
+        "prior_id": "dev-v1-explanation-constrained",
+        "score": 0.249072
+      },
+      {
+        "example_id": "dataset-v1-016",
+        "prior_id": "dev-v1-explanation-constrained",
+        "score": 0.227271
+      },
+      {
+        "example_id": "dataset-v1-128",
+        "prior_id": "dev-v1-explanation-robustness",
+        "score": 0.248767
+      },
+      {
+        "example_id": "dataset-v1-167",
+        "prior_id": "dev-v1-explanation-robustness",
+        "score": 0.236604
+      },
+      {
+        "example_id": "dataset-v1-115",
+        "prior_id": "dev-v1-explanation-robustness",
+        "score": 0.214563
+      },
+      {
+        "example_id": "dataset-v1-058",
+        "prior_id": "dev-v1-explanation-robustness",
+        "score": 0.214227
+      },
+      {
+        "example_id": "dataset-v1-004",
+        "prior_id": "dev-v1-explanation-robustness",
+        "score": 0.213895
+      },
+      {
+        "example_id": "dataset-v1-019",
+        "prior_id": "dev-v1-emotional-clean",
+        "score": 0.57843
+      },
+      {
+        "example_id": "dataset-v1-140",
+        "prior_id": "dev-v1-emotional-clean",
+        "score": 0.524801
+      },
+      {
+        "example_id": "dataset-v1-006",
+        "prior_id": "dev-v1-emotional-clean",
+        "score": 0.480292
+      },
+      {
+        "example_id": "dataset-v1-191",
+        "prior_id": "dev-v1-emotional-clean",
+        "score": 0.397743
+      },
+      {
+        "example_id": "dataset-v1-196",
+        "prior_id": "dev-v1-emotional-clean",
+        "score": 0.387184
+      },
+      {
+        "example_id": "dataset-v1-005",
+        "prior_id": "dev-v1-emotional-naturalistic",
+        "score": 0.5886
+      },
+      {
+        "example_id": "dataset-v1-099",
+        "prior_id": "dev-v1-emotional-naturalistic",
+        "score": 0.382034
+      },
+      {
+        "example_id": "dataset-v1-187",
+        "prior_id": "dev-v1-emotional-naturalistic",
+        "score": 0.352912
+      },
+      {
+        "example_id": "dataset-v1-081",
+        "prior_id": "dev-v1-emotional-naturalistic",
+        "score": 0.350217
+      },
+      {
+        "example_id": "dataset-v1-122",
+        "prior_id": "dev-v1-emotional-naturalistic",
+        "score": 0.348992
+      },
+      {
+        "example_id": "dataset-v1-187",
+        "prior_id": "dev-v1-emotional-constrained",
+        "score": 0.407987
+      },
+      {
+        "example_id": "dataset-v1-009",
+        "prior_id": "dev-v1-emotional-constrained",
+        "score": 0.394281
+      },
+      {
+        "example_id": "dataset-v1-131",
+        "prior_id": "dev-v1-emotional-constrained",
+        "score": 0.391163
+      },
+      {
+        "example_id": "dataset-v1-143",
+        "prior_id": "dev-v1-emotional-constrained",
+        "score": 0.352722
+      },
+      {
+        "example_id": "dataset-v1-062",
+        "prior_id": "dev-v1-emotional-constrained",
+        "score": 0.336133
+      },
+      {
+        "example_id": "dataset-v1-061",
+        "prior_id": "dev-v1-emotional-robustness",
+        "score": 0.453015
+      },
+      {
+        "example_id": "dataset-v1-090",
+        "prior_id": "dev-v1-emotional-robustness",
+        "score": 0.439859
+      },
+      {
+        "example_id": "dataset-v1-021",
+        "prior_id": "dev-v1-emotional-robustness",
+        "score": 0.40083
+      },
+      {
+        "example_id": "dataset-v1-170",
+        "prior_id": "dev-v1-emotional-robustness",
+        "score": 0.361367
+      },
+      {
+        "example_id": "dataset-v1-126",
+        "prior_id": "dev-v1-emotional-robustness",
+        "score": 0.355354
+      },
+      {
+        "example_id": "dataset-v1-197",
+        "prior_id": "dev-v1-creative-clean",
+        "score": 0.537572
+      },
+      {
+        "example_id": "dataset-v1-123",
+        "prior_id": "dev-v1-creative-clean",
+        "score": 0.516801
+      },
+      {
+        "example_id": "dataset-v1-043",
+        "prior_id": "dev-v1-creative-clean",
+        "score": 0.510832
+      },
+      {
+        "example_id": "dataset-v1-007",
+        "prior_id": "dev-v1-creative-clean",
+        "score": 0.510022
+      },
+      {
+        "example_id": "dataset-v1-088",
+        "prior_id": "dev-v1-creative-clean",
+        "score": 0.490431
+      },
+      {
+        "example_id": "dataset-v1-083",
+        "prior_id": "dev-v1-creative-naturalistic",
+        "score": 0.458964
+      },
+      {
+        "example_id": "dataset-v1-043",
+        "prior_id": "dev-v1-creative-naturalistic",
+        "score": 0.38521
+      },
+      {
+        "example_id": "dataset-v1-166",
+        "prior_id": "dev-v1-creative-naturalistic",
+        "score": 0.289018
+      },
+      {
+        "example_id": "dataset-v1-197",
+        "prior_id": "dev-v1-creative-naturalistic",
+        "score": 0.28771
+      },
+      {
+        "example_id": "dataset-v1-126",
+        "prior_id": "dev-v1-creative-naturalistic",
+        "score": 0.286425
+      },
+      {
+        "example_id": "dataset-v1-068",
+        "prior_id": "dev-v1-creative-constrained",
+        "score": 0.446526
+      },
+      {
+        "example_id": "dataset-v1-024",
+        "prior_id": "dev-v1-creative-constrained",
+        "score": 0.428041
+      },
+      {
+        "example_id": "dataset-v1-183",
+        "prior_id": "dev-v1-creative-constrained",
+        "score": 0.421099
+      },
+      {
+        "example_id": "dataset-v1-065",
+        "prior_id": "dev-v1-creative-constrained",
+        "score": 0.41548
+      },
+      {
+        "example_id": "dataset-v1-124",
+        "prior_id": "dev-v1-creative-constrained",
+        "score": 0.368839
+      },
+      {
+        "example_id": "dataset-v1-008",
+        "prior_id": "dev-v1-creative-robustness",
+        "score": 0.380696
+      },
+      {
+        "example_id": "dataset-v1-166",
+        "prior_id": "dev-v1-creative-robustness",
+        "score": 0.348082
+      },
+      {
+        "example_id": "dataset-v1-045",
+        "prior_id": "dev-v1-creative-robustness",
+        "score": 0.323106
+      },
+      {
+        "example_id": "dataset-v1-123",
+        "prior_id": "dev-v1-creative-robustness",
+        "score": 0.288405
+      },
+      {
+        "example_id": "dataset-v1-126",
+        "prior_id": "dev-v1-creative-robustness",
+        "score": 0.281279
+      },
+      {
+        "example_id": "dataset-v1-048",
+        "prior_id": "dev-v1-transformation-clean",
+        "score": 0.350779
+      },
+      {
+        "example_id": "dataset-v1-028",
+        "prior_id": "dev-v1-transformation-clean",
+        "score": 0.331509
+      },
+      {
+        "example_id": "dataset-v1-199",
+        "prior_id": "dev-v1-transformation-clean",
+        "score": 0.281755
+      },
+      {
+        "example_id": "dataset-v1-067",
+        "prior_id": "dev-v1-transformation-clean",
+        "score": 0.279672
+      },
+      {
+        "example_id": "dataset-v1-188",
+        "prior_id": "dev-v1-transformation-clean",
+        "score": 0.271145
+      },
+      {
+        "example_id": "dataset-v1-127",
+        "prior_id": "dev-v1-transformation-naturalistic",
+        "score": 0.468845
+      },
+      {
+        "example_id": "dataset-v1-067",
+        "prior_id": "dev-v1-transformation-naturalistic",
+        "score": 0.332239
+      },
+      {
+        "example_id": "dataset-v1-130",
+        "prior_id": "dev-v1-transformation-naturalistic",
+        "score": 0.29897
+      },
+      {
+        "example_id": "dataset-v1-048",
+        "prior_id": "dev-v1-transformation-naturalistic",
+        "score": 0.295446
+      },
+      {
+        "example_id": "dataset-v1-009",
+        "prior_id": "dev-v1-transformation-naturalistic",
+        "score": 0.282703
+      },
+      {
+        "example_id": "dataset-v1-030",
+        "prior_id": "dev-v1-transformation-constrained",
+        "score": 0.522784
+      },
+      {
+        "example_id": "dataset-v1-048",
+        "prior_id": "dev-v1-transformation-constrained",
+        "score": 0.413316
+      },
+      {
+        "example_id": "dataset-v1-069",
+        "prior_id": "dev-v1-transformation-constrained",
+        "score": 0.412787
+      },
+      {
+        "example_id": "dataset-v1-111",
+        "prior_id": "dev-v1-transformation-constrained",
+        "score": 0.402132
+      },
+      {
+        "example_id": "dataset-v1-187",
+        "prior_id": "dev-v1-transformation-constrained",
+        "score": 0.394821
+      },
+      {
+        "example_id": "dataset-v1-042",
+        "prior_id": "dev-v1-transformation-robustness",
+        "score": 0.523417
+      },
+      {
+        "example_id": "dataset-v1-200",
+        "prior_id": "dev-v1-transformation-robustness",
+        "score": 0.395669
+      },
+      {
+        "example_id": "dataset-v1-109",
+        "prior_id": "dev-v1-transformation-robustness",
+        "score": 0.395009
+      },
+      {
+        "example_id": "dataset-v1-030",
+        "prior_id": "dev-v1-transformation-robustness",
+        "score": 0.320525
+      },
+      {
+        "example_id": "dataset-v1-004",
+        "prior_id": "dev-v1-transformation-robustness",
+        "score": 0.308858
+      },
+      {
+        "example_id": "dataset-v1-122",
+        "prior_id": "five-shot-v1-advice-clean",
+        "score": 0.469038
+      },
+      {
+        "example_id": "dataset-v1-017",
+        "prior_id": "five-shot-v1-advice-clean",
+        "score": 0.420766
+      },
+      {
+        "example_id": "dataset-v1-129",
+        "prior_id": "five-shot-v1-advice-clean",
+        "score": 0.306114
+      },
+      {
+        "example_id": "dataset-v1-099",
+        "prior_id": "five-shot-v1-advice-clean",
+        "score": 0.290003
+      },
+      {
+        "example_id": "dataset-v1-190",
+        "prior_id": "five-shot-v1-advice-clean",
+        "score": 0.287291
+      },
+      {
+        "example_id": "dataset-v1-110",
+        "prior_id": "five-shot-v1-explanation-constrained",
+        "score": 0.519008
+      },
+      {
+        "example_id": "dataset-v1-055",
+        "prior_id": "five-shot-v1-explanation-constrained",
+        "score": 0.386873
+      },
+      {
+        "example_id": "dataset-v1-124",
+        "prior_id": "five-shot-v1-explanation-constrained",
+        "score": 0.384547
+      },
+      {
+        "example_id": "dataset-v1-138",
+        "prior_id": "five-shot-v1-explanation-constrained",
+        "score": 0.300951
+      },
+      {
+        "example_id": "dataset-v1-015",
+        "prior_id": "five-shot-v1-explanation-constrained",
+        "score": 0.297861
+      },
+      {
+        "example_id": "dataset-v1-061",
+        "prior_id": "five-shot-v1-emotional-naturalistic",
+        "score": 0.406794
+      },
+      {
+        "example_id": "dataset-v1-139",
+        "prior_id": "five-shot-v1-emotional-naturalistic",
+        "score": 0.3876
+      },
+      {
+        "example_id": "dataset-v1-160",
+        "prior_id": "five-shot-v1-emotional-naturalistic",
+        "score": 0.329937
+      },
+      {
+        "example_id": "dataset-v1-021",
+        "prior_id": "five-shot-v1-emotional-naturalistic",
+        "score": 0.305903
+      },
+      {
+        "example_id": "dataset-v1-133",
+        "prior_id": "five-shot-v1-emotional-naturalistic",
+        "score": 0.290746
+      },
+      {
+        "example_id": "dataset-v1-044",
+        "prior_id": "five-shot-v1-creative-robustness",
+        "score": 0.549469
+      },
+      {
+        "example_id": "dataset-v1-145",
+        "prior_id": "five-shot-v1-creative-robustness",
+        "score": 0.50175
+      },
+      {
+        "example_id": "dataset-v1-007",
+        "prior_id": "five-shot-v1-creative-robustness",
+        "score": 0.499179
+      },
+      {
+        "example_id": "dataset-v1-123",
+        "prior_id": "five-shot-v1-creative-robustness",
+        "score": 0.414401
+      },
+      {
+        "example_id": "dataset-v1-026",
+        "prior_id": "five-shot-v1-creative-robustness",
+        "score": 0.396776
+      },
+      {
+        "example_id": "dataset-v1-064",
+        "prior_id": "five-shot-v1-transformation-constrained",
+        "score": 0.369488
+      },
+      {
+        "example_id": "dataset-v1-040",
+        "prior_id": "five-shot-v1-transformation-constrained",
+        "score": 0.361238
+      },
+      {
+        "example_id": "dataset-v1-094",
+        "prior_id": "five-shot-v1-transformation-constrained",
+        "score": 0.35026
+      },
+      {
+        "example_id": "dataset-v1-147",
+        "prior_id": "five-shot-v1-transformation-constrained",
+        "score": 0.350229
+      },
+      {
+        "example_id": "dataset-v1-188",
+        "prior_id": "five-shot-v1-transformation-constrained",
+        "score": 0.32562
+      }
+    ],
+    "worked_response_pairs": [
+      {
+        "example_id": "dataset-v1-122",
+        "score": 0.573938,
+        "worked_example_id": "five-shot-v1-advice-clean"
+      },
+      {
+        "example_id": "dataset-v1-142",
+        "score": 0.397591,
+        "worked_example_id": "five-shot-v1-advice-clean"
+      },
+      {
+        "example_id": "dataset-v1-019",
+        "score": 0.394473,
+        "worked_example_id": "five-shot-v1-advice-clean"
+      },
+      {
+        "example_id": "dataset-v1-017",
+        "score": 0.371312,
+        "worked_example_id": "five-shot-v1-advice-clean"
+      },
+      {
+        "example_id": "dataset-v1-062",
+        "score": 0.357577,
+        "worked_example_id": "five-shot-v1-advice-clean"
+      },
+      {
+        "example_id": "dataset-v1-055",
+        "score": 0.428414,
+        "worked_example_id": "five-shot-v1-explanation-constrained"
+      },
+      {
+        "example_id": "dataset-v1-074",
+        "score": 0.36964,
+        "worked_example_id": "five-shot-v1-explanation-constrained"
+      },
+      {
+        "example_id": "dataset-v1-099",
+        "score": 0.362431,
+        "worked_example_id": "five-shot-v1-explanation-constrained"
+      },
+      {
+        "example_id": "dataset-v1-058",
+        "score": 0.315403,
+        "worked_example_id": "five-shot-v1-explanation-constrained"
+      },
+      {
+        "example_id": "dataset-v1-110",
+        "score": 0.292643,
+        "worked_example_id": "five-shot-v1-explanation-constrained"
+      },
+      {
+        "example_id": "dataset-v1-061",
+        "score": 0.558889,
+        "worked_example_id": "five-shot-v1-emotional-naturalistic"
+      },
+      {
+        "example_id": "dataset-v1-162",
+        "score": 0.524877,
+        "worked_example_id": "five-shot-v1-emotional-naturalistic"
+      },
+      {
+        "example_id": "dataset-v1-160",
+        "score": 0.447914,
+        "worked_example_id": "five-shot-v1-emotional-naturalistic"
+      },
+      {
+        "example_id": "dataset-v1-101",
+        "score": 0.439622,
+        "worked_example_id": "five-shot-v1-emotional-naturalistic"
+      },
+      {
+        "example_id": "dataset-v1-182",
+        "score": 0.436938,
+        "worked_example_id": "five-shot-v1-emotional-naturalistic"
+      },
+      {
+        "example_id": "dataset-v1-047",
+        "score": 0.553142,
+        "worked_example_id": "five-shot-v1-creative-robustness"
+      },
+      {
+        "example_id": "dataset-v1-116",
+        "score": 0.507041,
+        "worked_example_id": "five-shot-v1-creative-robustness"
+      },
+      {
+        "example_id": "dataset-v1-051",
+        "score": 0.504936,
+        "worked_example_id": "five-shot-v1-creative-robustness"
+      },
+      {
+        "example_id": "dataset-v1-160",
+        "score": 0.478443,
+        "worked_example_id": "five-shot-v1-creative-robustness"
+      },
+      {
+        "example_id": "dataset-v1-090",
+        "score": 0.453196,
+        "worked_example_id": "five-shot-v1-creative-robustness"
+      },
+      {
+        "example_id": "dataset-v1-083",
+        "score": 0.422741,
+        "worked_example_id": "five-shot-v1-transformation-constrained"
+      },
+      {
+        "example_id": "dataset-v1-092",
+        "score": 0.420701,
+        "worked_example_id": "five-shot-v1-transformation-constrained"
+      },
+      {
+        "example_id": "dataset-v1-023",
+        "score": 0.417987,
+        "worked_example_id": "five-shot-v1-transformation-constrained"
+      },
+      {
+        "example_id": "dataset-v1-020",
+        "score": 0.388917,
+        "worked_example_id": "five-shot-v1-transformation-constrained"
+      },
+      {
+        "example_id": "dataset-v1-188",
+        "score": 0.38197,
+        "worked_example_id": "five-shot-v1-transformation-constrained"
+      }
+    ]
+  },
+  "source_identities": {
+    "candidate_files": [
+      {
+        "path": "data/dataset-v1/authoring/batch-01/candidates.jsonl",
+        "sha256": "5c0fcb7c6a2da43f48371fef00bf630c87881a8673b8581328042c26cb5d5dd3"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-02/candidates.jsonl",
+        "sha256": "1be38573233b170b3646180c63d7aba2b8e87a581258defad8f1d9897c9316d2"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-03/candidates.jsonl",
+        "sha256": "9c7ba19dc0b63cfc2ab1ba74bf77a636b43002dea71d098231f75b9955838697"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-04/candidates.jsonl",
+        "sha256": "3043b4c404c4dccba294ab9a6ddaa3706222f21a99e89aca14ad7ad23475ba16"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-05/candidates.jsonl",
+        "sha256": "025f5a1ca773020d03231de76c515655d2baee0fa28341692c0338380ac004d2"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-06/candidates.jsonl",
+        "sha256": "b829e065135c2c2702d858b8e1008e270efe9d8b697a28daa41f382da18a829f"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-07/candidates.jsonl",
+        "sha256": "bf2473ba4bcd44290ea0b09907ccea9bdc8086677f1a36637d03786079715dbf"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-08/candidates.jsonl",
+        "sha256": "bae82c15b4c98f41cba8c31b8d36db26a3cdda31150a507c3d3be281ccf26ff9"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-09/candidates.jsonl",
+        "sha256": "19a2a220011b29db9d8c187917fecc1fb1ee49b8556ca67af9be53ee842c87e9"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-10/candidates.jsonl",
+        "sha256": "a81bf705ccb1b7e43ee28e023a2a999d7e9e02fc17c24629553aadf70ccae8a1"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-11/candidates.jsonl",
+        "sha256": "478909da8c390c03c050fdd73dd92a3bfe6a3dc863c42392a595526686bc318b"
+      }
+    ],
+    "development_prompts": {
+      "path": "data/development/prompts-v1.jsonl",
+      "sha256": "0f9b594b3e8388ee803a31e69882bf8a6822eb147cfecaf4e16a9bf6fbd96bd1"
+    },
+    "worked_examples": {
+      "path": "data/prompt-engineering/worked-examples-v1.json",
+      "sha256": "0cb6afd2bf88ed1f9a3edf8e5ffc479e22c69b91ea7220988c5b1dee51f429b6"
+    },
+    "workflow_event_files": [
+      {
+        "path": "data/dataset-v1/authoring/batch-01/workflow-events.jsonl",
+        "sha256": "81388100b8ac5762157bffd02fcf21b519ed953b55b7070526b82696d12d30d0"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-02/workflow-events.jsonl",
+        "sha256": "162ef63c0830d5a6c152dc333954acdf32aed063fc5b4e503b9849d188c5c462"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-03/workflow-events.jsonl",
+        "sha256": "6243aae8e811bb9769e3d0402a7a7013b59d5bdafa7684d7adb454d92de20b65"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-04/workflow-events.jsonl",
+        "sha256": "5885b81b02f765aa99c3eca70de7c4291f516b5eacf0eb5d6a37dd680d2c8d2b"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-05/workflow-events.jsonl",
+        "sha256": "2faf63df545529175426f7107d6f4af4c23324818fd4b2bfce1715f16b04809d"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-06/workflow-events.jsonl",
+        "sha256": "e7417d303369e7401c1d799f9dd27f58d61f6a7847211e4c4ff8af43f88febf9"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-07/workflow-events.jsonl",
+        "sha256": "00718c9942a4fa78023013115eca159eb1d99ae362772c2604dcc85f86167a7f"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-08/workflow-events.jsonl",
+        "sha256": "9a5bcf7a5a8545f4fdf531f81eb6ce182c961c38623fa5f81819d661afc6f1b3"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-09/workflow-events.jsonl",
+        "sha256": "20b8bc197161cbf660734466adc74b08d4dd79b90d49e208ba85f1e55547822a"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-10/workflow-events.jsonl",
+        "sha256": "972b92144bc7feb9ebcd20478bf2814569df9bb1bc976b774c5daad08e948a56"
+      },
+      {
+        "path": "data/dataset-v1/authoring/batch-11/workflow-events.jsonl",
+        "sha256": "65fec7ddf25228539caa12c732e0155ed3f31330b7d9dd73fb971100091b648d"
+      }
+    ]
+  },
+  "withheld_domain_matches": []
+}
