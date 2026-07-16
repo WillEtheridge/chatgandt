@@ -1762,3 +1762,18 @@ Include the existing 4.2 MB diagnostic LoRA adapter in the repository. The adapt
 ### Result
 
 The three adapter-loading tests and all 128 repository tests pass. The diagnostic weights have SHA-256 `4e274ac2fa442cc688cace097a887e9cc309a78e18f0091b62119e3933bd01cb`. This fixture is diagnostic evidence only; it is not a trained ChatG&T candidate and cannot be used as the Stage 6 selected adapter.
+
+## D-065 — Freeze one bounded 40-example pilot configuration
+
+- **Date:** 2026-07-16
+- **Status:** Adopted and locally verified; awaiting GPU execution
+
+### Decision
+
+Use one BF16 LoRA pilot rather than a pilot hyperparameter search. Train rank-8, alpha-16 `q_proj`/`v_proj` adapters with dropout 0.05, AdamW at `2e-4`, micro-batches of two, four-way gradient accumulation, and three epochs over the frozen 40-example training-only pilot. This yields an effective batch size of eight and exactly 15 optimiser updates. Use the complete 40-example validation split for loss measurement only, never gradient updates.
+
+The runner masks every prompt and padding token, forbids truncation beyond 512 tokens, saves one adapter checkpoint per epoch, proves the frozen base remains unchanged, and verifies the final adapter through exact clean reload. It records baseline and per-epoch validation loss but does not use a loss threshold as a proxy for response quality.
+
+### Boundary
+
+This run proves mechanics and produces observations used to design the small final candidate comparison. It neither selects a final adapter nor accesses held-out prompts. Any failed identity or runtime gate is repaired locally under a new committed version and run ID; configuration is not edited on the Pod.

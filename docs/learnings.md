@@ -718,3 +718,9 @@ For ChatG&T, an exact executable quota check, a bounded complete-prompt collisio
 A test is not portable merely because its Python code is committed. Every file it opens must also be reproducibly available in a clean checkout or created by the test itself. ChatG&T's adapter-loading test passed locally because a prior diagnostic run had left an ignored LoRA adapter on disk, then failed on a fresh Runpod where that hidden prerequisite did not exist.
 
 Normally the unit test should create a minimal temporary fixture. In this case the test suite itself was already fingerprinted by the frozen evaluation protocol, while the small real diagnostic adapter was also needed for CUDA smoke tests. Tracking that adapter was the narrower fix: it restores clean-clone behaviour without rewriting frozen test evidence. The trade-off is explicit—a roughly 4.2 MB binary enters the repository, and it remains clearly labelled as diagnostic rather than a trained candidate.
+
+## 2026-07-16 — What should a training pilot prove?
+
+A pilot is most useful when it reduces implementation uncertainty rather than acting as a small, noisy model competition. Its questions are mechanical: did the intended tokens reach the model, did only assistant tokens contribute to loss, did only adapter weights update, did validation remain gradient-free, and can a saved checkpoint reproduce the trained state?
+
+For 40 examples, micro-batches of two and four-way accumulation create five optimiser steps per epoch. Three epochs therefore provide 15 observable updates—enough to exercise batching, accumulation, evaluation, checkpointing, provenance, and reload without granting a tiny rehearsal the authority to choose final hyperparameters. Loss curves are recorded for interpretation, but a pipeline pass does not require pretending that a particular short-run loss proves good ChatG&T behaviour.
