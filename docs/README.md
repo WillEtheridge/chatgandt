@@ -17,8 +17,14 @@ This directory records both the experiment and what we learned while building it
 - [Stage 4](stage-4/) — dataset design, production, auditing, amendments, and freeze evidence
 - [Stage 5](stage-5/) — held-out-set readiness
 - [Stage 6](stage-6/) — pilot and full-training preparation
+- [Stage 7](stage-7/) — held-out execution, analysis, judge calibration, and primary results
 - [Operations](operations/) — reusable infrastructure procedures
-- [Product](product/) — public portfolio experience and interface decisions
+- [Product](product/) — public portfolio experience, interface decisions, and deployment evidence
+
+## Live deployment
+
+- [Hugging Face deployment runbook](operations/huggingface-deployment-runbook.md) — reproduce, verify, and operate the private inference path
+- [Hugging Face deployment results](product/huggingface-deployment-results.md) — deployed identities, verified properties, and remaining Vercel handoff
 
 ## Frozen protocol documents
 

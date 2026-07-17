@@ -1,48 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getRandomHouseSpecial } from "@/components/house-specials";
 import { MartiniLoader } from "@/components/martini-loader";
-import { Recipe, type ChatGntRecipe } from "@/components/recipe";
+import { FailureResult, type ModelOutcome } from "@/components/model-outcome";
+import { Recipe } from "@/components/recipe";
 import { SpiritGuideComposer } from "@/components/spirit-guide-composer";
-
-const MOCK_RECIPE: ChatGntRecipe = {
-  garnish: "One clear worktop as visible proof of progress.",
-  ingredients: [
-    { amount: 50, name: "functional impact", unit: "ml" },
-    { amount: 25, name: "visible progress", unit: "ml" },
-    { amount: 15, name: "uninterrupted focus", unit: "minutes" },
-    { amount: 2, name: "hazard awareness", unit: "dashes" },
-    { amount: 1, name: "basket for anything belonging elsewhere", unit: "measure" },
-  ],
-  method: [
-    "Skim off anything urgent—spills, spoiled food, or blocked walkways—before choosing the main pour.",
-    "Stir functional impact together with visible progress, then choose the chore that will restore the most useful space within fifteen minutes.",
-    "Pour your full attention into that one task, straining anything that belongs elsewhere into the basket instead of leaving the room.",
-    "Serve the finished win, then decide whether to stop or mix a second round.",
-  ],
-  title: "The Clear-Surface Collins",
-};
+import { requestSpiritGuide } from "@/lib/chatgnt-api-client";
 
 type Phase = "idle" | "mixing" | "recipe";
 
 export function SpiritGuideExperience() {
+  const [outcome, setOutcome] = useState<ModelOutcome | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
   const [order, setOrder] = useState("");
   const [submittedOrder, setSubmittedOrder] = useState("");
   const isActive = phase !== "idle";
 
-  useEffect(() => {
-    if (phase !== "mixing") return;
-    const finishedMixing = window.setTimeout(() => setPhase("recipe"), 2400);
-    return () => window.clearTimeout(finishedMixing);
-  }, [phase]);
-
-  function mixOrder(submittedValue: string) {
+  async function mixOrder(submittedValue: string) {
     setOrder(submittedValue);
     setSubmittedOrder(submittedValue);
+    setOutcome(null);
     setPhase("mixing");
     window.scrollTo(0, 0);
+    try {
+      setOutcome((await requestSpiritGuide(submittedValue)).outcome);
+    } catch {
+      setOutcome({ status: "failure", failure: "operational" });
+    } finally {
+      setPhase("recipe");
+    }
   }
 
   if (!isActive) {
@@ -58,7 +45,7 @@ export function SpiritGuideExperience() {
           </div>
         </section>
 
-        <div className="fixed bottom-0 left-0 right-0 z-10 bg-concrete">
+        <div className="fixed bottom-0 left-0 right-0 z-10 border-t border-outline bg-concrete">
           <div className="mx-auto w-full max-w-5xl px-4 py-4 sm:px-6 lg:max-w-7xl">
             <div className="flex flex-col gap-2 sm:flex-row">
               <div className="min-w-0 flex-1">
@@ -99,7 +86,7 @@ export function SpiritGuideExperience() {
             </div>
             ) : (
             <div>
-              <Recipe recipe={MOCK_RECIPE} />
+              {outcome?.status === "valid" ? <Recipe recipe={outcome.recipe} /> : <FailureResult failure={outcome?.failure ?? "operational"} />}
             </div>
             )}
           </div>

@@ -2,7 +2,7 @@
 
 **Run:** `heldout-evaluation-v1-20260717-run01`
 
-**Status:** Primary model, LLM-judge, and response-similarity analysis complete; project-author calibration pending
+**Status:** Complete, including sealed project-author calibration
 
 ## What ran
 
@@ -29,7 +29,23 @@ Underlying answer quality remained the bottleneck. It was acceptable end-to-end 
 
 Among the 38 prompts where both B and C were schema-valid, the primary judge preferred C on 24 (63.2%) and B on 14 (36.8%), with no ties. Across all 60 prompts—where the only schema-valid response wins mechanically—C won 38, B won 19, and both failed on 3.
 
-The judge calibration matched only two of six complete anchors exactly, although ten of twelve qualitative dimension decisions agreed at the pass/fail boundary. It also converted the intended calibration tie into a narrow winner. Pairwise and qualitative results are therefore model-based judgments, not objective ground truth. The frozen project-author calibration will measure agreement without replacing them.
+The judge calibration matched only two of six complete anchors exactly, although ten of twelve qualitative dimension decisions agreed at the pass/fail boundary. It also converted the intended calibration tie into a narrow winner. Pairwise and qualitative results are therefore model-based judgments, not objective ground truth.
+
+## Sealed project-author calibration
+
+The project author completed the predetermined blind calibration after the primary results were sealed: 18 single-response assessments (six each from B, C, and D; A had no eligible schema-valid response) and all 15 B-versus-C pairs. The primary scores remain the analysis outcome; the human sample measures evaluator agreement and is reported separately.
+
+| Measure | Agreement with primary LLM judge |
+| --- | ---: |
+| Underlying-answer exact 1–3 score | 2/18 (11.1%) |
+| Underlying-answer acceptable/not acceptable | 9/18 (50.0%) |
+| Metaphor exact 1–3 score | 5/18 (27.8%) |
+| Metaphor acceptable/not acceptable | 14/18 (77.8%) |
+| Recipe-style exact 1–3 score | 9/18 (50.0%) |
+| Recipe-style acceptable/not acceptable | 17/18 (94.4%) |
+| Pairwise A/B/tie choice | 7/15 (46.7%) |
+
+The author was generally more generous than the LLM judge on the qualitative scores, especially for underlying answer quality. In the 15-pair sample, the author chose B ten times, C four times, and tie once; the primary judge chose B eight times and C seven times. This small, single-rater calibration sample does not overturn the all-60 primary results, but it materially lowers confidence in treating the judge-derived quality and preference differences as objective. The strongest conclusion remains the automatic structural result: C produced schema-valid JSON more reliably than B while using far fewer input tokens. Claims that C was broadly preferred or substantively more useful should remain qualified.
 
 ## Efficiency trade-off
 

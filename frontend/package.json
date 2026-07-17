@@ -7,9 +7,11 @@
     "build": "next build",
     "lint": "eslint .",
     "render:martini-loader": "node scripts/render-martini-loader.mjs",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@gradio/client": "^2.3.1",
     "next": "16.2.10",
     "react": "19.2.7",
     "react-dom": "19.2.7",
@@ -23,6 +25,12 @@
     "eslint": "9.39.5",
     "eslint-config-next": "16.2.10",
     "tailwindcss": "4.3.2",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "next@16.2.10": {
+      "postcss": "8.5.10"
+    }
   }
 }

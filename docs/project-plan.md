@@ -232,10 +232,10 @@ Candidate 3 means the epoch-3 adapter from `full-candidate-3-v1-20260717-run01`,
 4. **Completed 2026-07-17:** prepare and verify the executable Stage 7 package, binding every frozen input, identity, hardware guard, budget ceiling, evidence path, and teardown rule.
 5. **Completed 2026-07-17:** generate exactly one untouched first response for all 240 system-prompt pairs on one matched RTX 4090. The run completed without missing, duplicate, malformed, or corrupt records; no output was repaired or regenerated.
 6. **Completed 2026-07-17:** run deterministic structural and efficiency analysis with all 60 attempts retained per system.
-7. **Primary LLM scoring completed 2026-07-17; human calibration pending:** score all 143 schema-valid responses in distinct blinded judge contexts. No judgment required a second `unable_to_assess` round. The deterministic project-author sample contains 18 eligible responses rather than the nominal 24 because the frozen no-cross-system-fill rule preserves six unavailable strata, plus all 15 planned pairs.
+7. **Completed 2026-07-17:** score all 143 schema-valid responses in distinct blinded judge contexts, then seal the deterministic project-author calibration: 18 eligible single responses (rather than the nominal 24 because the frozen no-cross-system-fill rule preserves six unavailable strata) and all 15 planned pairs. No primary judgment required a second `unable_to_assess` round.
 8. **Completed 2026-07-17:** conduct all 38 conditionally eligible blind B-versus-C comparisons and derive the end-to-end outcome over all 60 prompts.
 9. **Completed 2026-07-17:** compare every response with the frozen worked-example and training references and inspect within-system repetition through the complete 5,468-pair blinded retrieval-union review. No exact response copy was found; 10 non-exact review flags are retained with exposure attribution and without claims about Qwen's unknown pretraining corpus.
-10. **Primary analysis completed; final calibration agreement pending:** retain all-60 rates, Wilson intervals, paired bootstrap intervals, matched quality and efficiency differences, diagnostic subgroup results, judge limitations, failures, and trade-offs. Add project-author agreement without replacing primary scores, then freeze the final research conclusion. C and D remain explicitly non-viable diagnostic systems.
+10. **Completed 2026-07-17:** retain all-60 rates, Wilson intervals, paired bootstrap intervals, matched quality and efficiency differences, diagnostic subgroup results, judge limitations, failures, and trade-offs. The sealed project-author calibration showed high recipe-style acceptability agreement (17/18), lower metaphor agreement (14/18), and weak underlying-answer agreement (9/18); pairwise choice agreement was 7/15. These results qualify judge-derived quality claims without replacing primary scores. C and D remain explicitly non-viable diagnostic systems.
 
 Stage 7 will not change any held-out prompt, supervised example, system prompt, model checkpoint, adapter, generation setting, scoring rule, or analysis rule after a held-out response is visible. It will not use the held-out set as another development or adapter-selection population. Any later 3B comparison or product-oriented model work is a separately versioned follow-up experiment and cannot replace this primary result.
 
@@ -252,20 +252,31 @@ Stage 7 will not change any held-out prompt, supervised example, system prompt, 
 
 ### Stage 7 exit condition
 
-The research question can be answered from one complete, reproducible held-out evaluation with the no-winner context and diagnostic status of Candidate 3 kept explicit. Negative, mixed, or inconclusive findings are valid outcomes; held-out evidence does not reopen Stage 6.
+The research question can be answered from one complete, reproducible held-out evaluation with sealed human calibration, the no-winner context, and diagnostic status of Candidate 3 kept explicit. Negative, mixed, or inconclusive findings are valid outcomes; held-out evidence does not reopen Stage 6. **Completed 2026-07-17.**
 
 ## Stage 8 — Build the public experience
 
-- Build the Spirit Guide interaction.
-- Build the randomised, blind Tasting Room comparison.
-- Build the Lab explanation.
-- Build the Results presentation.
-- Capture votes without revealing model identity before selection.
-- Deploy the model adapter and application.
+Stage 8 turns the measured experiment into a portfolio experience without presenting Candidate 3 as a product-quality model. Public interactions demonstrate the systems; they do not extend the controlled evidence, alter the frozen result, or persist visitor judgments.
+
+| Step | Status | Evidence or decision |
+| --- | --- | --- |
+| 1. Set the product boundary from the evidence | Completed | Spirit Guide is a low-stakes, single-turn demonstration; Candidate 3 remains explicitly diagnostic, and public interactions are not research evidence |
+| 2. Build the shared visual and interaction system | Completed | The responsive concrete-and-steel Next.js interface, navigation, recipe renderer, waiting states, and accessible failure states are implemented |
+| 3. Build the explanatory pages | Completed | The Lab and Results present the method, frozen findings, limitations, and no-winner decision separately from the interactive experience |
+| 4. Build Spirit Guide | Completed locally | The composer calls a typed same-origin API and renders either a validated recipe or an honest JSON/schema/provider failure |
+| 5. Build Tasting Room | Completed locally | Prompted-base and fine-tuned responses are generated with a matched seed, randomly ordered, identity-concealed until the visitor's unrecorded guess, and withheld together on pair failure |
+| 6. Define the deployment and security boundary | Completed | The browser talks only to Next.js route handlers; the private upstream token remains server-side, inputs are bounded, responses are uncached, and production origin checking is mandatory |
+| 7. Publish the adapter | Completed | A portable, provenance-linked adapter package is public at `wetheridge/chatgnt-qwen2.5-1.5b-lora` and its re-downloaded weights match exactly |
+| 8. Deploy model inference | Completed | A private Gradio Space at `wetheridge/chatgnt-api` is RUNNING on ZeroGPU and serves health, Spirit Guide, and Tasting Room endpoints without persistence, repair, or generation retries |
+| 9. Verify the integrated application | Completed locally | Unit, contract, type, lint, build, security, live-service, and local Next-to-private-Space checks pass |
+| 10. Deploy the frontend | Pending operator action | Import `frontend/` into Vercel, configure a fine-grained read token and exact origin, and apply the predeclared route-specific rate limits |
+| 11. Validate the public origin | Pending | Repeat functional, mobile, cold-start, failure, secret-exposure, and rate-limit checks against the canonical deployed URL |
+
+The initial public release deliberately excludes Free Pour and persisted voting. Those features add serving, abuse, and interpretation work without being necessary to communicate the completed experiment; they can be considered as a later product slice.
 
 ### Stage 8 exit condition
 
-Visitors can use ChatG&T, take part in a fair blind comparison, and understand the experiment and its results.
+Visitors can use ChatG&T through the public Vercel origin, take part in the identity-concealed demonstration without their choice being stored, and understand the experiment and its measured limitations. The private inference credential is never exposed and public launch checks pass.
 
 ## Stage 9 — Publish the case study
 
@@ -280,4 +291,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Hand the deterministic 18-response and 15-pair blind calibration sample to the project author. Seal those independent scores, compute human–LLM agreement, and finish the Stage 7 research conclusion without changing any primary output or judgment.
+Complete the Stage 8 Vercel handoff and public-origin verification using `docs/operations/huggingface-deployment-runbook.md`. The adapter, private ZeroGPU inference service, and local integrated frontend are ready.

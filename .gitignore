@@ -6,6 +6,7 @@ __pycache__/
 tests/.generated-evaluation-harness/
 .env
 .env.*
+!frontend/.env.example
 
 # Next.js frontend build and dependency artefacts.
 frontend/node_modules/
@@ -18,6 +19,7 @@ frontend/tsconfig.tsbuildinfo
 .cache/
 artifacts/models/
 artifacts/stage-7/
+artifacts/deployment/
 experiments/training/
 artifacts/diagnostics/*
 !artifacts/diagnostics/lora-lifecycle-adapter/

@@ -14,7 +14,7 @@ uv run --frozen python scripts/stage7_human_calibration.py collect \
   --output experiments/evaluations/heldout-evaluation-v1-20260717-run01/judging/human-calibration-raw.jsonl
 ```
 
-For a qualitative response, enter one 1–3 score for each frozen dimension and one short reason. For a pair, enter `a`, `b`, or `tie` and one short reason. The packet does not reveal either system identity.
+For a qualitative response, enter one 1–3 score for each frozen dimension. For a pair, enter `a`, `b`, or `tie`. You may add an optional short note. The packet does not reveal either system identity.
 
 The command appends and flushes each answer immediately. If interrupted, run the same command again; it resumes after the completed packet IDs and never rewrites them.
 

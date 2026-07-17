@@ -3,6 +3,7 @@
 import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { LiaCocktailSolid } from "react-icons/lia";
+import { MAX_PROMPT_CHARACTERS } from "@/lib/chatgnt-contract";
 
 export function SpiritGuideComposer({
   actionLabel = "Mix it",
@@ -63,6 +64,7 @@ export function SpiritGuideComposer({
         <textarea
           className="max-h-48 min-h-10 flex-1 self-center resize-none overflow-y-auto bg-transparent px-2 py-2 text-base leading-relaxed outline-none placeholder:text-steel sm:text-lg"
           id="order"
+          maxLength={MAX_PROMPT_CHARACTERS}
           name="order"
           onChange={updateOrder}
           onInput={resizeOrder}

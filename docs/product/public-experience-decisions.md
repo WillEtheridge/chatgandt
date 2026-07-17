@@ -202,3 +202,27 @@ Keeping model inference in Python preserves the existing project boundary. A sta
 - The frontend does not initially use Next.js route handlers, server actions, or other features incompatible with static export.
 - A Next.js server and reverse proxy may be added only for a demonstrated server-side requirement.
 - Real inference endpoints, request limits, retries, concurrency, cold-start behaviour, and deployment privacy remain later implementation decisions.
+
+## PX-009 — Deploy through server-side Next.js routes and a private ZeroGPU Space
+
+- **Date:** 2026-07-17
+- **Status:** Implemented locally; supersedes PX-008's static-export and single-public-Space deployment assumptions
+
+### Decision
+
+Keep the Next.js application as a server-rendered Vercel application and expose two same-origin route handlers: `/api/spirit-guide` and `/api/tasting-room`. These handlers call a private Hugging Face Gradio Space using a server-only read token. The adapter itself remains public and inspectable.
+
+The initial live slice includes Spirit Guide, Tasting Room, the Lab, and Results. It does not persist guesses or other visitor data, and Free Pour is deferred. The service returns model JSON and schema failures without repairing or regenerating them.
+
+### Rationale
+
+Private inference requires a trusted server boundary; a static export cannot hold the credential safely. Keeping the model host separate from the presentation host lets ZeroGPU handle Python inference while Vercel handles the web application, origin policy, and rate limiting. Deferring Free Pour avoids exposing an unrestricted instruction surface before the smaller product boundary is stable.
+
+### Implications
+
+- `HF_TOKEN` is never a `NEXT_PUBLIC_*` variable and never enters browser code.
+- Production refuses requests without an exact configured origin.
+- Tasting Room uses matched generation seeds and random identity ordering.
+- The frontend can use a deterministic mock provider without changing component contracts.
+- Public judgments remain ephemeral and cannot be presented as evaluation evidence.
+- Vercel deployment and public-origin verification remain operator actions.

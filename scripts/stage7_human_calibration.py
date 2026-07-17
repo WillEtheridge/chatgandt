@@ -21,33 +21,125 @@ def _choice(prompt: str, allowed: set[str]) -> str:
         print(f"Enter one of: {', '.join(sorted(allowed))}")
 
 
+RULE = "─" * 78
+
+
+def _amount(value: object) -> str:
+    """Render JSON numbers naturally without changing the recorded response."""
+    return f"{value:g}" if isinstance(value, float) else str(value)
+
+
+def _render_response(response: dict[str, object]) -> str:
+    ingredients = response["ingredients"]
+    method = response["method"]
+    assert isinstance(ingredients, list)
+    assert isinstance(method, list)
+
+    lines = [str(response["title"]), "", "Ingredients"]
+    for ingredient in ingredients:
+        assert isinstance(ingredient, dict)
+        lines.append(
+            f"  • {_amount(ingredient['amount'])} {ingredient['unit']} {ingredient['name']}"
+        )
+    lines.extend(["", "Method"])
+    for step, instruction in enumerate(method, 1):
+        lines.append(f"  {step}. {instruction}")
+    lines.extend(["", f"Garnish\n  {response['garnish']}"])
+    return "\n".join(lines)
+
+
+def _load_display_packets(packets_path: Path, selected: list[dict[str, object]]) -> dict[str, dict[str, object]]:
+    """Load the structured counterparts and prove they are the selected blind packets."""
+    derived = packets_path.parent
+    qualitative = {
+        item["packet_id"]: item for item in read_jsonl(derived / "qualitative-packets.jsonl")
+    }
+    pairwise = {
+        item["packet_id"]: item for item in read_jsonl(derived / "pairwise-packets.jsonl")
+    }
+    display_packets: dict[str, dict[str, object]] = {}
+    for selected_packet in selected:
+        source = (qualitative if selected_packet["kind"] == "qualitative" else pairwise).get(
+            selected_packet["packet_id"]
+        )
+        if source is None:
+            raise ContractError("calibration packet is missing its structured display record")
+        if any(source[key] != selected_packet[key] for key in ("packet_id", "packet_sha256", "packet_text")):
+            raise ContractError("structured display record does not match the selected blind packet")
+        display_packet = dict(source)
+        display_packet["kind"] = selected_packet["kind"]
+        display_packets[str(selected_packet["packet_id"])] = display_packet
+    return display_packets
+
+
+def _render_packet(packet: dict[str, object], number: int, total: int) -> str:
+    """Present a blind evaluation packet as a readable recipe card, not raw JSON."""
+    header = f"CALIBRATION {number}/{total} · " + (
+        "ONE CANDIDATE RESPONSE" if packet["kind"] == "qualitative" else "A OR B COMPARISON"
+    )
+    lines = ["", RULE, header, RULE, "", "User prompt", str(packet["user_prompt"]), ""]
+    if packet["kind"] == "qualitative":
+        response = packet["response"]
+        assert isinstance(response, dict)
+        lines.extend(["Candidate response", _render_response(response), "", RULE])
+        lines.extend(
+            [
+                "Score each dimension: 1 = fails, 2 = usable but imperfect, 3 = strong.",
+                "• Answer quality — useful, accurate answer to the prompt",
+                "• Metaphor — recipe elements meaningfully express that answer",
+                "• Recipe style — natural cocktail voice and a method that progresses it",
+            ]
+        )
+    else:
+        response_a = packet["response_a"]
+        response_b = packet["response_b"]
+        assert isinstance(response_a, dict)
+        assert isinstance(response_b, dict)
+        lines.extend(
+            [
+                "Response A",
+                _render_response(response_a),
+                "",
+                RULE,
+                "Response B",
+                _render_response(response_b),
+                "",
+                RULE,
+                "Choose the response that better answers the prompt as a coherent cocktail recipe.",
+                "Choose tie only when neither is meaningfully better.",
+            ]
+        )
+    return "\n".join(lines)
+
+
 def collect(packets_path: Path, output: Path) -> None:
     packets = read_jsonl(packets_path)
+    display_packets = _load_display_packets(packets_path, packets)
     existing = read_jsonl(output) if output.exists() else []
     completed = {item["packet_id"] for item in existing}
     mode = "ab" if output.exists() else "xb"
     with output.open(mode) as handle:
         for number, packet in enumerate(packets, 1):
             if packet["packet_id"] in completed: continue
-            print("\n" + "=" * 78)
-            print(f"CALIBRATION {number}/{len(packets)} — {packet['kind']}")
-            print("=" * 78 + "\n" + packet["packet_text"])
+            display_packet = display_packets[packet["packet_id"]]
+            print(_render_packet(display_packet, number, len(packets)))
             if packet["kind"] == "qualitative":
                 scores = {
-                    "underlying_answer_quality": int(_choice("Underlying answer quality [1/2/3]: ", {"1", "2", "3"})),
-                    "metaphorical_coherence": int(_choice("Metaphorical coherence [1/2/3]: ", {"1", "2", "3"})),
-                    "recipe_style_execution": int(_choice("Recipe style execution [1/2/3]: ", {"1", "2", "3"})),
+                    "underlying_answer_quality": int(_choice("Answer quality [1/2/3]: ", {"1", "2", "3"})),
+                    "metaphorical_coherence": int(_choice("Metaphor [1/2/3]: ", {"1", "2", "3"})),
+                    "recipe_style_execution": int(_choice("Recipe style [1/2/3]: ", {"1", "2", "3"})),
                 }
-                rationale = input("Brief reason: ").strip() or "Project-author assessment."
+                rationale = input("Optional note (Enter to skip): ").strip() or "Project-author assessment."
                 decision = {"packet_id": packet["packet_id"], "kind": "qualitative", "scores": scores,
                             "rationale": rationale, "recorded_at_utc": datetime.now(timezone.utc).isoformat(timespec="microseconds")}
             else:
-                choice = _choice("Better response [a/b/tie]: ", {"a", "b", "tie"})
-                rationale = input("Brief reason: ").strip() or "Project-author assessment."
+                choice = _choice("Preferred response [a/b/tie]: ", {"a", "b", "tie"})
+                rationale = input("Optional note (Enter to skip): ").strip() or "Project-author assessment."
                 decision = {"packet_id": packet["packet_id"], "kind": "pairwise",
                             "choice": {"a": "response_a", "b": "response_b", "tie": "tie"}[choice],
                             "rationale": rationale, "recorded_at_utc": datetime.now(timezone.utc).isoformat(timespec="microseconds")}
             handle.write(canonical_line(decision)); handle.flush()
+            print(f"Saved {number}/{len(packets)} decisions.")
     print(f"Complete: {len(read_jsonl(output))}/{len(packets)} decisions in {output}")
 
 

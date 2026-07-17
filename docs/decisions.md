@@ -1997,3 +1997,33 @@ Mechanical provisioning failures may be retried only before any held-out output 
 The seed matches the already-frozen Stage 3 analysis and pair-order seed and the Stage 6 behavioural work, while remaining chosen before held-out generation. Its purpose is reproducibility and paired pseudorandom streams, not a claim that one sample captures within-prompt variation.
 
 The infrastructure rules separate scientific immutability from mechanical recovery. They let an agent recover from an unavailable or non-booting host without turning poor model output into a reason to rerun the experiment. The cost and deletion guards bound delegated infrastructure work independently of the scientific result. Exact machine identity remains recorded so latency is interpreted as evidence from that device rather than as a universal deployment benchmark.
+
+## D-077 — Publish the adapter but keep live inference private
+
+- **Date:** 2026-07-17
+- **Status:** Adopted and implemented
+
+### Decision
+
+Publish a machine-portable, provenance-linked copy of Candidate 3's LoRA adapter in the public Hugging Face model repository `wetheridge/chatgnt-qwen2.5-1.5b-lora`. Serve the base model plus adapter through the private ZeroGPU Space `wetheridge/chatgnt-api`.
+
+The public model card must retain the Stage 6 no-winner result, Stage 7 measurements, and limitations. Publication does not relabel Candidate 3 as a selected product model. The Space may package a ZeroGPU-compatible PyTorch version and startup-safe PEFT loading path, but it may not change model weights, adapter weights, prompts, generation settings, or schema validation.
+
+### Rationale
+
+A public adapter makes the portfolio artifact inspectable and reusable without exposing private infrastructure. A private Space prevents anonymous callers from consuming the project's limited ZeroGPU quota directly and permits the application server to enforce its own contract and rate limits. Separate source and publication adapter digests make the unavoidable machine-path normalisation auditable while an exact weight hash proves that the learned parameters did not change.
+
+## D-078 — Use the Next.js server as the public security boundary
+
+- **Date:** 2026-07-17
+- **Status:** Adopted and implemented locally; Vercel handoff pending
+
+### Decision
+
+Use same-origin Next.js route handlers for Spirit Guide and Tasting Room. The handlers validate a single bounded prompt, call the private Space with a server-only fine-grained Hugging Face read token, and return the typed product contract. They do not persist prompts, responses, or visitor choices.
+
+In production, require the exact canonical origin and apply Vercel limits of six Spirit Guide requests and three Tasting Room requests per ten minutes per IP. Treat model JSON/schema failures as explicit outcomes rather than transport failures. Do not repair or silently retry generations. The first public slice omits Free Pour and persisted votes.
+
+### Rationale
+
+Calling a private Space directly from the browser would expose its credential. The same-origin proxy keeps the token and upstream details server-side, gives the browser a stable typed contract, and creates the correct point for abuse controls. Tasting Room receives the lower request allowance because each request consumes two generations. Deferring non-essential features keeps the public launch aligned with the portfolio goal and the measured experiment.

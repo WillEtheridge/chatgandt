@@ -870,3 +870,49 @@ Retrieval answers “which known response should a reviewer inspect?”, not “
 Exposure attribution makes those cases interpretable. Worked-example reuse by B or D can arise directly from inference-time demonstrations; training-example similarity by C can be consistent with adapter memorisation or with a genuinely reusable pattern; within-system repetition by A shows generic collapse without any project-data exposure. The right output is a flag with the complete texts and rationale, not a causal verdict manufactured from a similarity score.
 
 The operational lesson was equally simple: large structured-output requests can fail by omitting required keys even when the substantive task is routine. Saving only complete envelopes, retaining completed keys, and shrinking the remaining batch size to a reliable boundary turned a fragile all-or-nothing review into a resumable coverage process. The final validator—not the number of attempted contexts—proved that all 5,468 required pairs had exactly one retained decision.
+
+## 2026-07-17 — What did the sealed human calibration add?
+
+Human calibration does not decide which evaluator is “right.” Its purpose is to show how dependent a qualitative conclusion is on the chosen judge. In ChatG&T's predetermined blind sample, the project author and the primary LLM judge agreed at the acceptable-versus-fail boundary on 17/18 recipe-style decisions and 14/18 metaphor decisions, but only 9/18 underlying-answer decisions. They made the same A/B/tie choice on 7/15 B-versus-C pairs.
+
+That pattern is informative rather than embarrassing. It supports the structural and recipe-style findings more strongly than a claim about substantive usefulness or broad preference. The author was blind to system identity, but remained a single rater and generally scored more generously than the LLM judge. The correct response is not to average the scores into a fictional ground truth or rerun judging until agreement improves. Keep the primary results and calibration separate, disclose the disagreement, and narrow the final claim to the outcomes that are both directly measured and robust to evaluator choice.
+
+## 2026-07-17 — What does a human evaluator need before scoring?
+
+Giving a rater dimension names and numerical anchors is not the same as preparing them to apply the rubric consistently. In ChatG&T's project-author calibration, the rater understood the broad task but did not have a sufficiently operational standard for underlying-answer quality: a response can sound plausible and look polished while missing a concrete constraint, solving a nearby problem, or making a factual error.
+
+The completed sample therefore measures a blinded first-pass author judgment, not the judgment of a calibrated expert rater. This may contribute to its disagreement with the LLM judge, alongside genuine differences in taste and standards. The scores must not be revised after reviewing the results, because that would replace the sealed blind assessment with one informed by the other evaluator.
+
+For a future study, prepare evaluators with a small, separate set of practice packets and discussed examples before the sealed sample. The guidance should explicitly require checking that the response answers the exact task, satisfies stated constraints, and avoids material factual errors. More than one independent human rater would distinguish individual taste from a broader human assessment, but remains optional for a portfolio-scale experiment.
+
+## 2026-07-17 — What is the difference between a hard failure and a soft preference?
+
+Not every evaluation signal has the same operational meaning. JSON and schema validity are hard interface properties: either the unmodified response can be parsed into the contract the application expects, or it cannot. A schema failure prevents the normal product experience from rendering and forces an explicit failure path. This makes structural reliability especially important for ChatG&T as an engineered system.
+
+Qualitative judgments and pairwise preferences are softer measurements. Usefulness, metaphor, recipe execution, and which of two acceptable responses feels better depend on rubric interpretation and evaluator standards. They remain important—a perfectly structured bad answer is not a successful answer—but small differences should not be treated with the same certainty as deterministic contract checks.
+
+For deployment decisions, apply the hard contract gate first and compare softer quality evidence among responses that pass it. This does not retroactively change the frozen Stage 7 joint-pass definition or erase substantive failures. It explains why the fine-tuned system's 52/60 schema-valid result versus the prompted baseline's 43/60 is a stronger and more operationally important finding than a small, evaluator-sensitive preference sample.
+
+## 2026-07-17 — How should an experimental adapter become a portable artifact?
+
+Training provenance can legitimately contain a machine-local base-model snapshot path, but that path makes a published PEFT adapter unusable elsewhere. Deployment packaging should normalise only the portability metadata, preserve the learned weights byte-for-byte, and record both identities instead of pretending the published package is identical at every byte.
+
+ChatG&T therefore has a source experiment adapter digest and a distinct publication adapter digest. The safetensors weight SHA is unchanged, and `publication-provenance.json` links the two. This is a useful general pattern: distinguish a reproducible experimental artifact from its distribution package, then prove exactly which transformations occurred.
+
+## 2026-07-17 — What did ZeroGPU change about deployment?
+
+Managed GPU platforms have their own lifecycle, not merely a different GPU. ZeroGPU constrained the supported PyTorch version and initially starts the application without a physical CUDA allocation. PEFT's default safetensors path attempted direct device loading too early, so the deployment bundle needed to load the adapter through CPU, freeze it explicitly, and move the complete model only inside the GPU-decorated request.
+
+This serving-specific compatibility layer did not justify editing the frozen experimental inference implementation. Keeping deployment tests outside the cryptographically frozen `tests/test_*.py` namespace also preserved the identity of the completed experiment. The wider lesson is to isolate platform adapters at the deployment boundary and avoid invalidating historical verification evidence for the sake of hosting compatibility.
+
+## 2026-07-17 — Where should a private model-service credential live?
+
+A private inference endpoint cannot be called safely from browser code: any credential shipped to the browser is public. The browser should call a same-origin application route, and that trusted server route should hold the narrowly scoped upstream token, validate input, apply timeouts and rate limits, and normalise provider errors.
+
+This boundary also clarifies failure semantics. A valid transport response containing invalid model JSON is evidence that the service worked and the model failed its hard contract; it should not be disguised as an outage or repaired invisibly. Security, infrastructure health, and model quality are separate layers and should remain separately observable.
+
+## 2026-07-17 — How should deployment debugging stay bounded?
+
+The first Space builds failed for four concrete reasons: an unsupported PyTorch version, adapter loading before GPU allocation, adapter parameters remaining trainable, and integer JSON-object keys rejected by Gradio. Each was fixed at the narrowest layer and followed by a clean rebuild and live request.
+
+This is the deployment version of the anti-spiral lesson: identify the current failing boundary, make one proportionate correction, and rerun the smallest decisive check. A failed build is not evidence that the architecture needs redesign, just as one invalid model response is not evidence that the service is unavailable.
