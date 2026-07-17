@@ -1,0 +1,5 @@
+result=pass
+execution_commit=481c914ee2dd2ba524daf9fa7531a2aba0119564
+recorded_behaviour_digest=a0ab38a39f15d204142df24baa5bb0564c38adf51ffbfb530a3a8b501f766944
+check=Every implementation.behaviour_files path and sha256 recorded in the manifest was compared with git show EXECUTION_COMMIT:PATH; all hashes matched.
+interpretation=git_dirty was caused by the pre-created untracked session-log directory, not by differing recorded behaviour code.

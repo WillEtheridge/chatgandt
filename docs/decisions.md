@@ -1899,3 +1899,20 @@ One training core minimises the chance that pilot and full runs differ for accid
 ### Result
 
 All three frozen candidates completed on 2026-07-17 at execution commit `b9fe5a894e4905e87c123cd38203dca542c71419`. Every mechanical gate passed, and the lowest-validation-loss rule selected Candidate 1 epoch 3, Candidate 2 epoch 6, and Candidate 3 epoch 3 for behavioural inspection. The complete provider session cost `$0.12`, all evidence was retrieved and independently verified locally, and Runpod was returned to zero active resources and `$0/hour` spend. Detailed evidence is recorded in `docs/stage-6/full-training-results.md`.
+
+## D-072 — Select no first-round adapter and preserve the second-round boundary
+
+- **Date:** 2026-07-17
+- **Status:** Adopted; first round complete
+
+### Decision
+
+Select no adapter from Candidates 1–3. The frozen ten-prompt inspection produced 7, 9, and 10 schema-valid responses and 3, 4, and 6 full joint passes respectively. Candidate 3 represented every intent family but missed the non-compensatory 7/10 joint-pass threshold. Candidate 1 and Candidate 2 also failed family coverage.
+
+Do not promote Candidate 3 merely because it ranked highest. Do not relax the gate, add a prompt at inference, revise the scoring, or inspect held-out responses. The permitted next action is a discussion of whether the first-round diagnosis warrants at most two predeclared second-round configurations.
+
+### Rationale
+
+Candidate 3 passed metaphorical coherence and recipe-style execution on all ten responses, while its four failures were substantive: an invented shift end, a poor schedule decision, a violated slogan constraint, and an incorrect backup conclusion. Doubling exposure did not resolve the recurring decision, creative, and transformation failures, whereas broader attention targeting improved every aggregate behavioural measure.
+
+This supports a target-surface or content-selection hypothesis more strongly than another duration increase, but it does not uniquely determine a second-round recipe. Freezing that recipe is a new scientific decision and should occur before further GPU work. The evidence, diagnosis, costs, and exact no-winner result are recorded in `docs/stage-6/full-training-candidate-selection-results.md`.

@@ -778,3 +778,33 @@ The workflow still had two distinct planes. `runpodctl` managed provider state�
 Detached remote execution also separated the lifetime of the training job from the conversational session. An interrupted Codex turn did not interrupt the Pod workload, and polling could resume from logs and exit files. That makes agent operation robust only when the remote process, immutable run IDs, and evidence paths are explicit; keeping a fragile foreground SSH process would merely move manual babysitting into the agent.
 
 Finally, cleanup needed positive verification rather than an assumed delete. The CLI exposed stopped Pods and unattached network volumes left by earlier manual sessions, then allowed each resource class and the account spend rate to be checked after deletion. The spend field briefly lagged behind the empty resource lists, so teardown evidence should include both: no Pods, volumes, or endpoints remain, and the provider eventually reports zero active spend.
+
+## 2026-07-17 — Why must a minimum gate survive a relative winner?
+
+A model comparison will almost always produce a best candidate, even when every candidate is unsuitable. Without an absolute viability gate, “best of three” quietly becomes “good enough” after the outputs are visible.
+
+ChatG&T's first round demonstrates the value of separating ranking from acceptance. Candidate 3 was unambiguously strongest—10/10 structural validity, complete family coverage, and 6/10 joint passes—but the frozen minimum was 7/10. Selecting none preserves the meaning of the experiment and turns the one-response shortfall into a useful diagnosis rather than an excuse to move the goalposts.
+
+## 2026-07-17 — What can improve independently during fine-tuning?
+
+Structured behaviour is not one indivisible skill. Candidate 3 produced valid JSON, coherent metaphors, and recognisable cocktail execution on every prompt, yet failed four underlying tasks through invented facts, a poor decision, a violated word-count constraint, and a misleading technical conclusion.
+
+This shows why structural validity, style, metaphor, and usefulness need separate measurements. The adapter had successfully learned the distinctive representation while substantive content selection and precise instruction-following lagged behind. A single aggregate preference or validation loss would have hidden that engineering diagnosis.
+
+## 2026-07-17 — What did the first three full candidates teach us about training levers?
+
+More of the same exposure and broader adaptation did not move behaviour equally. Candidate 2 doubled Candidate 1's epochs and improved structural validity from 7/10 to 9/10, but still failed the same three intent families and reached only 4/10 joint passes. Candidate 3 kept three epochs but extended LoRA across all attention projections; it reached 10/10 structure, represented every family, and achieved 6/10 joint passes.
+
+Ten prompts are a bounded diagnostic population rather than a statistical proof, so this does not establish a universal causal law. It does provide the experiment-specific direction required by the stopping policy: another duration increase is weakly motivated, while a carefully bounded target-surface or content-selection hypothesis is worth discussing before any second round.
+
+## 2026-07-17 — Why distinguish transfer tooling from experiment tooling?
+
+Direct SCP of a small adapter archive to the selected Runpod host progressed unusually slowly, while `runpodctl send` and `receive` transferred the same bytes in seconds. Changing the transport did not change model, data, adapter, seed, or evidence identity; the matching SHA-256 proved byte equivalence.
+
+Operational recovery should preserve the scientific contract while choosing the simplest reliable mechanism. Provider-native transfer tooling can be a useful fallback for distant or poorly routed SSH hosts, but checksums—not confidence in the transport—are what establish that the experimental input stayed unchanged.
+
+## 2026-07-17 — What is the difference between a dirty flag and unknown code?
+
+The candidate-selection manifests recorded a dirty worktree because the orchestration command created an untracked log directory before invoking the harness. That is undesirable provenance metadata, but it is not automatically evidence that unknown Python ran. Each manifest separately records hashes for every behaviour file, `pyproject.toml`, and `uv.lock`; comparing those behaviour-file bytes with the named commit proved an exact match.
+
+The right response depends on uncertainty, not cosmetic cleanliness. A source mismatch would invalidate the run. Here, rerunning after seeing all outputs would create a worse research problem merely to obtain a prettier flag. The honest course was to retain the first immutable outputs, verify the complete executable code identity, document the operational cause, and improve the orchestration order next time: create external logs only after the harness captures source state, or place them under an already ignored operational path.

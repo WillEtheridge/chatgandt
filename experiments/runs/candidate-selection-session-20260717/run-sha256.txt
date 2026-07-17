@@ -1,0 +1,9 @@
+f38cfd9f3de6a974f495a3885d82c49a39a89ce811753e370ffc8518a70321b1  experiments/runs/full-candidate-1-behaviour-v1-20260717-run01/manifest.json
+9c6ef5591b155c86653dc969b624b0a0524e8d2a124620d5d0e15b30b21b4952  experiments/runs/full-candidate-2-behaviour-v1-20260717-run01/manifest.json
+5084ad449fd9d397e4d94a1f127c88aa0e13230331a261f68d03d5c000ccdf1a  experiments/runs/full-candidate-3-behaviour-v1-20260717-run01/manifest.json
+0b3acdeb84a13acfee45905e6d40cd4c5bf2e26f546299bbd5ab2fec44826cba  experiments/runs/full-candidate-1-behaviour-v1-20260717-run01/prompts.jsonl
+0b3acdeb84a13acfee45905e6d40cd4c5bf2e26f546299bbd5ab2fec44826cba  experiments/runs/full-candidate-2-behaviour-v1-20260717-run01/prompts.jsonl
+0b3acdeb84a13acfee45905e6d40cd4c5bf2e26f546299bbd5ab2fec44826cba  experiments/runs/full-candidate-3-behaviour-v1-20260717-run01/prompts.jsonl
+e2065d2c21ca74d21788f52aa7f6018acf99479f72040fb2d8a16cfcb2085c27  experiments/runs/full-candidate-1-behaviour-v1-20260717-run01/responses.jsonl
+e3cb7d4b5353112b5d804ca0c83e4a707728dac0775f29a7f6b9df01d06f6644  experiments/runs/full-candidate-2-behaviour-v1-20260717-run01/responses.jsonl
+0a070aed068a079759e5ef1acd7af71cec1a3721ef0d9e31667021aa7c84afbd  experiments/runs/full-candidate-3-behaviour-v1-20260717-run01/responses.jsonl

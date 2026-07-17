@@ -35,9 +35,15 @@ def main() -> None:
     if not args.source or args.output_dir is None or args.scoring_dir is not None:
         parser.error("packet preparation requires --source and --output-dir")
     sources = [(label, Path(run), Path(evaluation)) for label, run, evaluation in args.source]
-    print(canonical_json(prepare_blind_packets(
+    result = prepare_blind_packets(
         sources, args.output_dir, args.judge_seed, system_id=args.system_id
-    )))
+    )
+    # The packet builder predates the final rubric wording. The frozen config
+    # asset is authoritative for formal scoring, so publish those exact bytes.
+    (args.output_dir / "rubric.json").write_bytes(
+        (PROJECT_ROOT / "config" / "evaluation-rubric-v1.json").read_bytes()
+    )
+    print(canonical_json(result))
 
 
 if __name__ == "__main__":

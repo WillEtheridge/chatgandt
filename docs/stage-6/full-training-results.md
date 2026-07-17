@@ -4,7 +4,7 @@
 - **Execution commit:** `b9fe5a894e4905e87c123cd38203dca542c71419`
 - **Result:** All three frozen candidates passed their mechanical training gates
 - **Selected checkpoints:** Candidate 1 epoch 3; Candidate 2 epoch 6; Candidate 3 epoch 3
-- **Candidate selection:** Pending the frozen ten-prompt behavioural inspection
+- **Candidate selection:** First round completed; no candidate met the complete viability gate
 
 ## Purpose and boundary
 
@@ -79,4 +79,4 @@ Three initial direct-image allocations never progressed beyond `uptimeSeconds: 0
 
 ## Next decision
 
-Run the three selected checkpoints on the same frozen ten-prompt spent-development population. Apply the existing structural gate and blinded qualitative rubric, then select a candidate only under the frozen viability and ranking rules.
+The frozen behavioural inspection selected no first-round adapter. Candidate 3 was strongest at 10/10 schema-valid and 6/10 joint passes, but the minimum was 7/10. The complete result and bounded diagnosis are recorded in `docs/stage-6/full-training-candidate-selection-results.md`.
