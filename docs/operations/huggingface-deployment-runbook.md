@@ -84,11 +84,13 @@ A `valid`, `invalid-json`, or `invalid-schema` Spirit result all prove that the 
 For normal local development, run against the private live Space:
 
 ```bash
+cp frontend/.env.example frontend/.env.local
+# Set HF_TOKEN in frontend/.env.local once, using a fine-grained read token.
 cd frontend
 npm run dev
 ```
 
-The command reads the existing Hugging Face CLI login without copying a token into `.env.local`. For deliberate UI-only work with deterministic fake responses, opt into the mock provider explicitly:
+Next.js reads the same four server-side environment variables from `.env.local` that Vercel supplies in production. The ignored local file is never committed or sent to the browser. For deliberate UI-only work with deterministic fake responses, opt into the mock provider explicitly:
 
 ```bash
 npm run dev:mock
@@ -104,7 +106,7 @@ The frontend is ready for the operator to import `frontend/` as a Vercel project
 | --- | --- |
 | `CHATGNT_BACKEND` | `huggingface` |
 | `HF_SPACE_ID` | `wetheridge/chatgnt-api` |
-| `HF_TOKEN` | A new fine-grained read token limited to the private Space |
+| `HF_TOKEN` | The same kind of fine-grained read token used locally, limited to the private Space |
 | `CHATGNT_ALLOWED_ORIGIN` | The exact canonical HTTPS frontend origin |
 
 Do not reuse the broad CLI token. Apply Vercel rate limits before announcing the site: 6 requests per 10 minutes per IP for `/api/spirit-guide`, and 3 per 10 minutes per IP for `/api/tasting-room`. The lower Tasting Room limit reflects its two generations per request. Keep the Space private and do not enable prepaid ZeroGPU credits without a new cost decision.

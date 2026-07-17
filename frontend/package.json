@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "uv run --project .. --frozen python ../scripts/run_frontend_with_hf.py",
+    "dev": "next dev",
     "dev:mock": "CHATGNT_BACKEND=mock next dev",
-    "dev:next": "next dev",
     "build": "next build",
     "lint": "eslint .",
     "render:martini-loader": "node scripts/render-martini-loader.mjs",
