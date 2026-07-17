@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "systems": [
+    {
+      "adapter_enabled": false,
+      "prompt_asset_path": "../prompts/minimal-v1.json",
+      "system_id": "A"
+    },
+    {
+      "adapter_enabled": true,
+      "prompt_asset_path": "../prompts/minimal-v1.json",
+      "system_id": "C"
+    }
+  ]
+}

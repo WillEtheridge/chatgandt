@@ -259,7 +259,7 @@ ChatG&T will use a hybrid compute strategy:
 
 Deployment will first be attempted on a free Hugging Face CPU Space. Hugging Face ZeroGPU and scale-to-zero inference are measured fallback options rather than preselected requirements. Cold starts and shared-infrastructure queues are acceptable for the portfolio demonstration; permanent warm availability is not required.
 
-The full audit is recorded in [Environment and deployment constraints](environment-constraints.md).
+The full audit is recorded in [Environment and deployment constraints](stage-2/model/environment-constraints.md).
 
 ### Rationale
 
@@ -284,7 +284,7 @@ Candidate models will first be screened using hard eligibility gates and then co
 
 An eligible model must have suitable fine-tuning, adapter-distribution, public-deployment, and commercial-use rights; form a credible prompted JSON baseline; support a standard Transformers and PEFT LoRA workflow; provide at least 8,192 tokens of context; and have credible training and serving paths within the agreed budgets.
 
-The full criteria are recorded in [Model-selection criteria](model-selection-criteria.md).
+The full criteria are recorded in [Model-selection criteria](stage-2/model/model-selection-criteria.md).
 
 ### Rationale
 
@@ -313,7 +313,7 @@ Advance these models to Stage 2 feasibility testing, in initial priority order:
 
 This is a testing shortlist, not the final base-model selection. `Qwen/Qwen3.5-2B` remains on a watchlist because its current multimodal architecture and bleeding-edge library requirements introduce unnecessary uncertainty for a text-only LoRA experiment.
 
-The full research comparison is recorded in [Candidate model shortlist](model-shortlist.md).
+The full research comparison is recorded in [Candidate model shortlist](stage-2/model/model-shortlist.md).
 
 ### Rationale
 
@@ -399,7 +399,7 @@ Omitting it gives “no ChatG&T prompt” a precise meaning and makes the recurr
 
 ChatG&T will use uv to manage a project-local virtual environment and cross-platform lockfile. The environment is pinned to CPython 3.12.13 and initially uses PyTorch 2.12.1, Transformers 5.12.1, PEFT 0.19.1, TRL 1.7.1, Accelerate 1.14.0, Datasets 5.0.0, and psutil 7.2.2.
 
-The complete setup and verification procedure is recorded in [Reproducible Python environment](reproducible-environment.md).
+The complete setup and verification procedure is recorded in [Reproducible Python environment](stage-2/model/reproducible-environment.md).
 
 ### Rationale
 
@@ -471,13 +471,13 @@ The RTX 4090 provides the agreed VRAM class and strong BF16 training throughput.
 - GPU and storage charges, runtime metadata, and actual session cost will be captured.
 - Critical outputs will be copied off the Pod before deletion.
 - Stopped or persistent storage will not be left running unintentionally.
-- The prepared workflow is recorded in [Runpod GPU readiness](runpod-readiness.md).
+- The prepared workflow is recorded in [Runpod GPU readiness](stage-2/model/runpod-readiness.md).
 
 ### Outcome
 
 The preferred RTX 4090 and a CUDA 13-compatible L4 were unavailable when the check ran. A 24 GB RTX 3090 with driver 580.159.03 was used instead, preserving the BF16, CUDA 13, and physical 24 GB constraints. The displayed rate was $0.46/hour for compute plus $0.004/hour for container storage, and the final Runpod charge was $0.14.
 
-The full result, including the rejected R570-driver L4 and measured memory, is recorded in [Rented-GPU feasibility check](gpu-feasibility-check.md).
+The full result, including the rejected R570-driver L4 and measured memory, is recorded in [Rented-GPU feasibility check](stage-2/model/gpu-feasibility-check.md).
 
 A later Step 7 acceptance session used an available 24 GB NVIDIA L4 with driver 580.126.20. The locked CUDA 13 environment completed real BF16 computation and the two-runtime inference diagnostic for a final charge of $0.10. Total recorded Runpod expenditure across the feasibility and acceptance sessions is therefore $0.24.
 
@@ -715,7 +715,7 @@ Sharing the inference engine keeps evaluation and deployment behaviour aligned w
 
 ### Decision
 
-Version 1.2 of [Step 7 inference and capture harness specification](inference-harness-specification.md) is the implementation contract for the shared inference engine, offline evaluation runner, and verification suite.
+Version 1.2 of [Step 7 inference and capture harness specification](stage-2/inference/inference-harness-specification.md) is the implementation contract for the shared inference engine, offline evaluation runner, and verification suite.
 
 The specification was subjected to four independent adversarial reviews. The first three blocked implementation and their material findings were resolved; the fourth passed it without a remaining experimental or schema decision.
 
@@ -765,7 +765,7 @@ JSON Schema is portable to later Python and web consumers, while an explicit str
 - Future constrained decoding, retry, or repair would be a separately labelled intervention, not part of the primary comparison.
 - Step 8 requires no model or GPU and is complete only when the frozen acceptance suite passes.
 
-The implementation, 33 focused acceptance tests, and complete 73-test regression suite pass as recorded in [Schema validation implementation check](schema-validation-check.md).
+The implementation, 33 focused acceptance tests, and complete 73-test regression suite pass as recorded in [Schema validation implementation check](stage-2/inference/schema-validation-check.md).
 
 ## D-025 — Use a fixed 20-prompt development workbench
 
@@ -778,9 +778,9 @@ ChatG&T prompt development will use exactly 20 user prompts: four prompts in eac
 
 The set is an inspectable engineering workbench for developing the five-shot system prompt and comparing Systems A and B. It contains user prompts and metadata rather than ideal responses, and its outputs are development evidence rather than headline experimental results.
 
-The complete scenario blueprint and authoring rules are recorded in [Prompt-development set plan](prompt-development-set-plan.md).
+The complete scenario blueprint and authoring rules are recorded in [Prompt-development set plan](stage-2/prompt-development/prompt-development-set-plan.md).
 
-The exact version 1 artefact is [`data/development/prompts-v1.jsonl`](../data/development/prompts-v1.jsonl), frozen at SHA-256 `0f9b594b3e8388ee803a31e69882bf8a6822eb147cfecaf4e16a9bf6fbd96bd1`. It passed the closed composition, metadata, serialization, and identity contract before any model output was generated, as recorded in [Prompt-development set check](prompt-development-set-check.md).
+The exact version 1 artefact is [`data/development/prompts-v1.jsonl`](../data/development/prompts-v1.jsonl), frozen at SHA-256 `0f9b594b3e8388ee803a31e69882bf8a6822eb147cfecaf4e16a9bf6fbd96bd1`. It passed the closed composition, metadata, serialization, and identity contract before any model output was generated, as recorded in [Prompt-development set check](stage-2/prompt-development/prompt-development-set-check.md).
 
 ### Rationale
 
@@ -877,7 +877,7 @@ A suitable Runpod Pod may be reused across nearby prompt-development or training
 
 The Pod is stopped when another authorised run is reasonably expected soon enough to justify retaining its billable storage. It is terminated when no next run is prepared, the development cycle has ended, the environment is no longer confidently verifiable, or storage retention is no longer economical. A daily reminder guards against forgotten stopped-storage charges.
 
-Restarting the same Pod does not waive preflight. Each session rechecks the GPU and BF16 path, checks out an exact authorised commit, reproduces the frozen dependency state, verifies the pinned model and run inputs, uses a new run ID, and preserves a separate manifest and billing record. The complete procedure is recorded in [Reusable Runpod development workflow](reusable-runpod-workflow.md).
+Restarting the same Pod does not waive preflight. Each session rechecks the GPU and BF16 path, checks out an exact authorised commit, reproduces the frozen dependency state, verifies the pinned model and run inputs, uses a new run ID, and preserves a separate manifest and billing record. The complete procedure is recorded in [Reusable Runpod development workflow](operations/reusable-runpod-workflow.md).
 
 ### Rationale
 
@@ -902,7 +902,7 @@ Stopping rather than leaving the Pod running separates cheap persistence from ex
 
 Run `development-ab-v1-20260715` is accepted as complete development evidence for the System A versus initial System B comparison. Its three immutable files passed local integrity inspection, their hashes matched the Pod copies, all 40 scheduled attempts produced one successful record, and the final Runpod charge was `$0.15`.
 
-The acceptance explicitly retains three limitations: the harness's own lock file caused its Git dirty flag, the pinned Torch API could not collect the CUDA driver version, and several provider-administration details were not retained. The exact evidence and assessment are recorded in [Development System A/B v1 run acceptance](development-ab-v1-run-acceptance.md).
+The acceptance explicitly retains three limitations: the harness's own lock file caused its Git dirty flag, the pinned Torch API could not collect the CUDA driver version, and several provider-administration details were not retained. The exact evidence and assessment are recorded in [Development System A/B v1 run acceptance](stage-2/prompt-development/development-ab-v1-run-acceptance.md).
 
 ### Rationale
 
@@ -927,7 +927,7 @@ Rejecting a complete development run because of non-behavioral administrative ga
 
 System B prompt development will use the installed local Q4_K_M Qwen2.5-1.5B Ollama artefact as a fast diagnostic workbench. Every candidate version, including v1, runs on the same frozen 20-prompt development population with fixed local settings and stable per-prompt seeds. The selected prompt text is then rerun unchanged through the pinned Hugging Face BF16 harness for formal confirmation.
 
-Any prompt whose generated development outputs are inspected becomes an immutable numbered version. The existing ceiling of four total versions still applies. A revision requires the same prompt-addressable failure in at least two responses, and versions are selected by the predeclared full-pass, schema, qualitative-acceptability, and prompt-cost ordering in [Prompt-development procedure](prompt-development-procedure.md).
+Any prompt whose generated development outputs are inspected becomes an immutable numbered version. The existing ceiling of four total versions still applies. A revision requires the same prompt-addressable failure in at least two responses, and versions are selected by the predeclared full-pass, schema, qualitative-acceptability, and prompt-cost ordering in [Prompt-development procedure](stage-2/prompt-development/prompt-development-procedure.md).
 
 ### Rationale
 
@@ -1024,7 +1024,7 @@ The confirmation has still done its job: it showed which local behaviour transfe
 
 Stage 2 passes its readiness review and is complete. ChatG&T will proceed to Stage 3 using Qwen2.5-1.5B-Instruct, `five-shot-v3`, the pinned generation profile, and the accepted harness and validation tooling as its technical baseline.
 
-The full assessment is recorded in [Stage 2 readiness review](stage-2-readiness-review.md).
+The full assessment is recorded in [Stage 2 readiness review](stage-2/stage-2-readiness-review.md).
 
 ### Rationale
 
@@ -1766,7 +1766,7 @@ The three adapter-loading tests and all 128 repository tests pass. The diagnosti
 ## D-065 — Freeze one bounded 40-example pilot configuration
 
 - **Date:** 2026-07-16
-- **Status:** Adopted and locally verified; awaiting GPU execution
+- **Status:** Adopted, executed, and verified
 
 ### Decision
 
@@ -1777,3 +1777,26 @@ The runner masks every prompt and padding token, forbids truncation beyond 512 t
 ### Boundary
 
 This run proves mechanics and produces observations used to design the small final candidate comparison. It neither selects a final adapter nor accesses held-out prompts. Any failed identity or runtime gate is repaired locally under a new committed version and run ID; configuration is not edited on the Pod.
+
+### Result
+
+Run `pilot-training-v1-20260717-run01` passed every frozen gate on an NVIDIA GeForce RTX 3090. Baseline validation loss was 3.0364 and then fell monotonically to 2.9436, 2.8331, and 2.7339 after epochs one through three. Mean training loss also fell from 2.9995 to 2.7596. The 15 updates had finite losses and gradient norms, the frozen base remained unchanged, the three checkpoints were saved, and the final provenance-bound adapter reloaded with an exact logit match. Peak reserved VRAM was 42.1%.
+
+The result establishes a working pipeline and an encouraging early learning signal, not acceptable ChatG&T behaviour or a selected final configuration. Those questions remain subject to permitted behavioural inspection and later candidate comparison. The complete evidence and interpretation are recorded in `docs/stage-6/pilot-training-results.md`.
+
+## D-066 — Use one bounded A-versus-C pilot behavioural inspection
+
+- **Date:** 2026-07-17
+- **Status:** Adopted and prepared; awaiting GPU execution
+
+### Decision
+
+Compare the untouched base model and final three-epoch pilot adapter in one paired harness run. Both systems use the empty minimal prompt and the frozen generation profile. The population contains ten validation prompts: one ordinary and one challenging prompt from each intent family. The shared run seed `20260715` produces paired per-prompt generation seeds and exactly 20 responses.
+
+Apply the existing hard structural validator, then blind system identity while scoring every schema-valid response on underlying-answer quality, metaphorical coherence, and recipe-style execution. Reveal identities only for the diagnostic comparison and failure-pattern summary.
+
+### Rationale and boundary
+
+This is the smallest inspection that can test whether the pilot's improving validation loss corresponds to visible ChatG&T behaviour across every intent family. Epoch-one and epoch-two adapters are excluded initially because the loss curve already records their progression and only the final adapter has complete formal provenance. They may be revisited only if the final outputs create a specific regression question.
+
+The inspection uses no held-out prompt and cannot establish final performance or select the final system. Its outputs may inform the predeclared full-training candidate configurations, but they will not be used to rewrite supervised examples, System B, or the frozen evaluation rules. The population and operational procedure are recorded in `docs/stage-6/pilot-behavioural-inspection.md`.

@@ -74,7 +74,7 @@ Stage 2 will not:
 
 The selected base model runs reproducibly in the available environment; raw generations and operational measurements are captured; schema validation works; and Systems A and B have documented development baselines produced without using the held-out test set.
 
-**Exit decision:** Passed on 2026-07-15. See [Stage 2 readiness review](stage-2-readiness-review.md).
+**Exit decision:** Passed on 2026-07-15. See [Stage 2 readiness review](stage-2/stage-2-readiness-review.md).
 
 ## Stage 3 — Design and freeze the evaluation protocol
 
@@ -195,8 +195,8 @@ The exact held-out set is balanced, reviewed, demonstrably separate from project
 The frozen supervised corpus contains 200 accepted examples. The training split targets 160 examples and is the only split that updates model weights; the validation split targets 40 and measures loss and behaviour without gradient updates. The fixed pilot is a 40-example subset of training rather than an additional split. Scenario isolation takes precedence over the target allocation, so any approved small deviation changes the achieved train and validation counts reported below without changing their roles.
 
 1. **Completed 2026-07-16:** make the existing diagnostic LoRA adapter a tracked, portable fixture; the adapter-loading tests and complete 128-test suite pass without changing the hash-pinned Stage 3 tests.
-2. **Prepared; awaiting GPU execution:** exercise the end-to-end LoRA workflow on the fixed 40-example pilot subset using frozen `chatgnt-pilot-training-v1`, including rendering, tokenisation, masking, 15 optimiser steps, validation loss, checkpoint saving, adapter reload, and recorded diagnostics.
-3. Use the pilot only to correct training mechanics and reject clearly unsuitable configurations. Do not rewrite supervised examples around Qwen outputs or inspect held-out responses.
+2. **Completed 2026-07-17:** the frozen `chatgnt-pilot-training-v1` run passed all mechanical gates on the 40-example pilot and complete validation split. Validation loss fell from 3.0364 to 2.7339 across 15 optimiser updates; three checkpoints and a provenance-bound final adapter reloaded exactly, while peak reserved VRAM was 42.1%.
+3. **Prepared; awaiting GPU execution:** compare the untouched base with the final pilot adapter on ten frozen validation prompts using paired seeds, then apply structural validation and blinded qualitative scoring. Do not rewrite supervised examples around Qwen outputs or inspect held-out responses.
 4. Predeclare the small set of justified candidate training configurations and their selection rule before full training.
 5. Train every candidate configuration on the complete frozen training split, targeting 160 examples. Compute validation loss and permitted validation diagnostics on the complete separate validation split, targeting 40 examples, without updating weights from them.
 6. Use the predeclared validation evidence and already-spent development set to select one candidate adapter. Do not use held-out prompts or responses for selection.
