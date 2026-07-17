@@ -730,3 +730,17 @@ For 40 examples, micro-batches of two and four-way accumulation create five opti
 Validation loss asks whether the trained model became better at predicting target response tokens from examples that did not update its weights. When both training and validation loss improve, the learning signal is not confined to recalling the training examples. In the ChatG&T pilot, validation loss fell after every epoch, from 3.0364 before training to 2.7339 after epoch three, providing encouraging early evidence of transfer without a loss-based sign of overfitting in that short run.
 
 Loss does not directly score the properties a person experiences. A model can become better at predicting common JSON and recipe tokens while still producing invalid JSON, weak advice, strained metaphors, or unconvincing cocktail language during generation. Mechanical success, loss-based learning evidence, and behavioural quality are therefore three separate claims. The pilot establishes the first, supports further investigation of the second, and leaves the third to a bounded behavioural inspection.
+
+## 2026-07-17 — Why can validation loss improve while free generation appears unchanged?
+
+Causal-language-model validation normally uses teacher forcing: when predicting each target token, the model receives the correct earlier target tokens. It can therefore become better at continuing a JSON cocktail response once placed inside that pattern without yet becoming likely enough to choose the opening JSON token and sustain the complete behaviour from its own generated history.
+
+Free generation exposes that threshold. In the pilot inspection, validation loss had improved by about 10%, the adapter was active, and nine of ten paired outputs changed, yet neither system produced one schema-valid ChatG&T object. The learning signal was real but behaviourally insufficient. Loss, adapter influence, and task success should be reported separately rather than treating any one as a proxy for the others.
+
+## 2026-07-17 — How should a behaviourally unsuccessful pilot be interpreted?
+
+A training run can succeed at several nested levels without succeeding at the next one. The pipeline can update and reload exactly; validation loss can show target-token learning; an adapter can measurably alter free generation; and the generated behaviour can still fail every task-level gate. ChatG&T's pilot reached the first three levels but not the fourth.
+
+That does not make the earlier evidence false or the pilot wasted. It narrows the diagnosis: the implementation works and the adapter learned something, but the bounded exposure and configuration did not overcome the base model's ordinary-prose behaviour under a minimal prompt. The pilot therefore rejects this adapter as a viable candidate without establishing that supervised fine-tuning, the frozen dataset, or full-corpus training will fail.
+
+The evaluation rules should remain fixed when this happens. Adding an unplanned prompt, stripping prose or fences, relaxing the schema, or qualitatively scoring structurally ineligible outputs would turn a useful negative result into a different experiment. The appropriate response is to preserve the result and use it to choose a small, predeclared set of stronger full-training configurations.

@@ -1787,7 +1787,7 @@ The result establishes a working pipeline and an encouraging early learning sign
 ## D-066 — Use one bounded A-versus-C pilot behavioural inspection
 
 - **Date:** 2026-07-17
-- **Status:** Adopted and prepared; awaiting GPU execution
+- **Status:** Adopted, executed, and verified
 
 ### Decision
 
@@ -1800,3 +1800,81 @@ Apply the existing hard structural validator, then blind system identity while s
 This is the smallest inspection that can test whether the pilot's improving validation loss corresponds to visible ChatG&T behaviour across every intent family. Epoch-one and epoch-two adapters are excluded initially because the loss curve already records their progression and only the final adapter has complete formal provenance. They may be revisited only if the final outputs create a specific regression question.
 
 The inspection uses no held-out prompt and cannot establish final performance or select the final system. Its outputs may inform the predeclared full-training candidate configurations, but they will not be used to rewrite supervised examples, System B, or the frozen evaluation rules. The population and operational procedure are recorded in `docs/stage-6/pilot-behavioural-inspection.md`.
+
+### Result
+
+The run returned all 20 expected records with intact identities. Systems A and C each produced zero schema-valid responses: nine ordinary-text JSON-syntax failures and one JSON string instead of an object. No output began with a Markdown fence, and only one response per system reached the token ceiling. The active adapter changed nine of ten paired raw outputs but did not induce the required JSON cocktail behaviour.
+
+Because schema validity is a non-compensatory eligibility gate, no output received a formal qualitative score. Both systems' diagnostic full-response pass rate is 0%. The complete Runpod session cost `$0.15`. The evidence and interpretation are recorded in `docs/stage-6/pilot-behavioural-inspection-results.md`.
+
+## D-067 — Use the unchanged pilot recipe as the full-corpus anchor
+
+- **Date:** 2026-07-17
+- **Status:** Adopted; Candidate 1 frozen
+
+### Decision
+
+Candidate 1 will train on all 160 frozen training examples for three epochs while preserving the pilot's remaining configuration: BF16 rank-8, alpha-16 LoRA on `q_proj` and `v_proj`; dropout 0.05; AdamW at `2e-4`; weight decay 0.01; maximum gradient norm 1.0; micro-batches of two; four-way gradient accumulation; effective batch size eight; maximum sequence length 512; assistant-only loss; and seed `20260715`.
+
+The full training split produces 20 optimiser updates per epoch and exactly 60 across the run. The complete 40-example validation split is measured before training and after every epoch without gradient updates. One provenance-bound adapter checkpoint is saved after every epoch.
+
+### Rationale
+
+This anchor changes only the amount and breadth of supervised exposure relative to the 40-example pilot. It tests whether four times the unique data and four times the optimiser updates are sufficient without attributing any improvement to a simultaneous learning-rate, capacity, batch, or regularisation change.
+
+The first round remains limited to this anchor, one exposure challenger, and one capacity challenger. If none is viable, at most two hypothesis-driven second-round configurations may be frozen and run together after one diagnosis. Otherwise training stops after selection. The complete evolving plan is recorded in `docs/stage-6/full-training-candidate-plan.md`.
+
+## D-068 — Double training duration for the exposure challenger
+
+- **Date:** 2026-07-17
+- **Status:** Adopted; Candidate 2 frozen
+
+### Decision
+
+Candidate 2 will preserve Candidate 1's complete configuration but train for six rather than three epochs. With 160 training examples and an effective batch size of eight, it performs 20 optimiser updates per epoch and exactly 120 updates in total. Validation loss is measured and a reloadable adapter checkpoint is saved after every epoch.
+
+### Rationale
+
+Six epochs provide a clean doubling of exposure over the anchor. Keeping the data, LoRA rank and targets, learning rate, batch shape, optimiser, regularisation, precision, sequence limit, loss mask, and seed fixed makes duration the only conceptual difference.
+
+The per-epoch evidence must preserve any point at which additional exposure stops helping. Lower training loss alone does not make Candidate 2 preferable: rising validation loss, reduced behavioural viability, or increased memorisation evidence would count against the longer recipe.
+
+## D-069 — Use attention-wide rank-8 LoRA for the capacity challenger
+
+- **Date:** 2026-07-17
+- **Status:** Adopted; Candidate 3 frozen
+
+### Decision
+
+Candidate 3 will preserve Candidate 1's three epochs, rank 8, alpha 16, full training and validation splits, learning rate, batch shape, optimiser, regularisation, precision, sequence limit, assistant-only loss, and seed. It broadens the LoRA target modules from `q_proj` and `v_proj` to `q_proj`, `k_proj`, `v_proj`, and `o_proj`.
+
+This approximately doubles the trainable adapter parameters from 1.09 million to 2.18 million while retaining the same per-module rank and alpha-to-rank scaling. Validation loss is measured and a reloadable adapter checkpoint is saved after every epoch.
+
+### Rationale
+
+The capacity challenger tests whether the pilot's adapter placement was too narrow to control complete free-generation behaviour. Extending across all attention projections creates a materially different but still restrained intervention; feed-forward projections remain outside the first round.
+
+Increasing rank within `q_proj` and `v_proj` would provide a similar parameter count but more capacity in the same locations. Attention-wide rank 8 was chosen because the pilot adapter was already behaviourally active yet failed categorically to enter the required response mode. If the first round later supports a specific location-versus-rank diagnosis, rank expansion or feed-forward targeting may be considered only under the bounded second-round policy.
+
+## D-070 — Select checkpoints by validation loss and candidates by generated behaviour
+
+- **Date:** 2026-07-17
+- **Status:** Adopted; first-round candidate plan frozen
+
+### Decision
+
+Represent each training configuration with its mechanically valid checkpoint having the lowest complete-validation loss, choosing the earlier epoch only when losses are exactly equal. Validation loss selects within one trajectory and does not rank candidates against one another.
+
+Run the three selected checkpoints on the frozen ten-prompt pilot-behaviour population with the minimal prompt and paired generation settings. Apply structural validation first, then blind candidate identity while scoring schema-valid responses on the three frozen qualitative dimensions.
+
+A candidate is viable only with at least 8/10 schema-valid responses, at least 7/10 full joint passes, and at least one full joint pass in every intent family. These thresholds are a diagnostic engineering gate rather than a statistical performance claim.
+
+If several candidates are viable, rank them lexicographically by full joint-pass count, schema-valid count, total qualitative score across resolved eligible responses, average inference latency, average generated-token count, and finally simplicity in the order Candidate 1, Candidate 2, Candidate 3. Validation loss is not an across-candidate ranking criterion.
+
+If none passes the complete gate, select no adapter. Diagnose the common failure once before considering the already bounded second round; do not promote the least-bad candidate or alter the evaluation rule after seeing outputs.
+
+### Rationale
+
+Loss is useful for detecting overfitting and selecting a point along one fixed trajectory, but the pilot proved that lower teacher-forced loss does not guarantee viable free generation. Generated joint behaviour must therefore decide between candidate configurations, while a fixed minimum bar prevents an unusable model from winning by relative comparison alone.
+
+The full configuration, checkpoint, viability, ranking, and stopping procedure is frozen in `docs/stage-6/full-training-candidate-plan.md` before implementation or full-corpus training.
