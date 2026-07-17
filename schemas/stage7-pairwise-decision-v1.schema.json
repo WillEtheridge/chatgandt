@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["choice", "rationale"],
+  "properties": {
+    "choice": {"enum": ["response_a", "response_b", "tie", "unable_to_assess"]},
+    "rationale": {"type": "string", "minLength": 1}
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scores", "rationales"],
+  "properties": {
+    "scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["underlying_answer_quality", "metaphorical_coherence", "recipe_style_execution"],
+      "properties": {
+        "underlying_answer_quality": {"enum": [1, 2, 3, "unable_to_assess"]},
+        "metaphorical_coherence": {"enum": [1, 2, 3, "unable_to_assess"]},
+        "recipe_style_execution": {"enum": [1, 2, 3, "unable_to_assess"]}
+      }
+    },
+    "rationales": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["underlying_answer_quality", "metaphorical_coherence", "recipe_style_execution"],
+      "properties": {
+        "underlying_answer_quality": {"type": "string", "minLength": 1},
+        "metaphorical_coherence": {"type": "string", "minLength": 1},
+        "recipe_style_execution": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}
