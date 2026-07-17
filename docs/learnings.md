@@ -814,3 +814,35 @@ Operational recovery should preserve the scientific contract while choosing the 
 The candidate-selection manifests recorded a dirty worktree because the orchestration command created an untracked log directory before invoking the harness. That is undesirable provenance metadata, but it is not automatically evidence that unknown Python ran. Each manifest separately records hashes for every behaviour file, `pyproject.toml`, and `uv.lock`; comparing those behaviour-file bytes with the named commit proved an exact match.
 
 The right response depends on uncertainty, not cosmetic cleanliness. A source mismatch would invalidate the run. Here, rerunning after seeing all outputs would create a worse research problem merely to obtain a prettier flag. The honest course was to retain the first immutable outputs, verify the complete executable code identity, document the operational cause, and improve the orchestration order next time: create external logs only after the harness captures source state, or place them under an already ignored operational path.
+
+The same logging-path mistake recurred during the second-round behavioural batch even though the execution plan described the correct policy. That recurrence is itself an engineering lesson: a documented convention is weaker than an executable guard. A future orchestrator should either place controller logs outside the repository by construction, verify the chosen log path with `git check-ignore` before launch, or let the harness capture repository identity before creating any run-adjacent operational files.
+
+## 2026-07-17 — Why did broader LoRA capacity not produce a better behavioural model?
+
+Candidate 4 adapted every attention and MLP projection and reduced standard validation loss from Candidate 3's `1.966936` to `1.900072`. Yet both achieved 6/10 joint passes on the same generated-behaviour population, while Candidate 4 slipped from 10/10 to 9/10 structure and lost short-form-transformation family coverage.
+
+More trainable parameters and lower teacher-forced loss are not monotonic measures of user-facing quality. The extra target reach made the validation targets easier to predict but did not reliably improve decisions, factual restraint, or exact constraint adherence during sampled free generation. On ten diagnostic prompts this is not a universal verdict on MLP LoRA; it is enough to reject the narrower claim that target reach was the missing lever in this experiment.
+
+## 2026-07-17 — Why is content-token weighting not the same as teaching better content?
+
+Candidate 5 doubled the loss weight of ingredient-name and method-string tokens because those locations carry most of the answer. Its standard validation loss still reached `1.968187`, close to Candidate 3, but generated behaviour fell to 4/10 joint passes.
+
+Token weighting tells the optimiser where prediction errors matter more; it does not tell it which decision is sensible, which fact is unsupported, or which constraint was violated. A syntactically located “content token” can encode either an excellent answer or a confident mistake. Improving substantive quality would require a stronger correctness signal—better or more targeted examples, preference data, constraint-specific training, a stronger base model, or inference-time verification—not merely larger gradients on every token inside content fields.
+
+## 2026-07-17 — What did the complete bounded search establish?
+
+Across the pilot and five full candidates, ChatG&T moved from no valid structured outputs to consistently valid, metaphorically coherent cocktail recipes. That is genuine evidence that small-model LoRA learned the distinctive representation and generalised it to unseen development prompts. The project did not establish an adapter that also met its minimum usefulness and instruction-following bar.
+
+The negative selection result is therefore specific rather than total: fine-tuning successfully taught format and style, while the bounded configurations did not preserve substantive quality reliably enough under a minimal prompt. Keeping the predeclared stop after five candidates prevents the development population from becoming an informal training set and preserves this as an interpretable engineering result.
+
+## 2026-07-17 — Why should CUDA capability be constrained during provisioning?
+
+An official PyTorch template can be scheduled onto hosts with different NVIDIA driver generations. The first second-round RTX 4090 exposed CUDA 12.8 driver capability, so the frozen CUDA 13 PyTorch build installed successfully but could not initialise the GPU. The environment preflight caught this before model updates and the Pod was deleted as a non-evidential mechanical failure.
+
+The unchanged retry added Runpod's `--min-cuda-version 13.0` scheduling constraint and received driver `580.159.04`; real BF16 matrix work then passed. Image tags describe container software, while `nvidia-smi`'s CUDA value describes the host driver's maximum supported runtime. Reproducible GPU work needs both sides of that compatibility boundary.
+
+## 2026-07-17 — What dominated the second-round infrastructure cost?
+
+The two training runners completed in about 85 seconds and attributed roughly `$0.016` of compute. The full training and behavioural workflow cost about `$0.45` after delayed provider billing settled because locked CUDA packages, a 2.9 GB model, hashing, network-mounted loading, adapter transfer, verification, and one rejected host dominated elapsed time.
+
+Separate fresh inference processes protected adapter isolation but required the base model to be read again for each candidate. Direct SCP of the 45 MB selected adapters was also far slower than their size suggested, reinforcing the earlier finding that provider-native transfer is the better fallback on poorly routed SSH links. For small LoRA experiments, environment reuse and data locality can matter more to cost and latency than reducing the optimisation loop itself—provided scientific isolation and exact identities remain intact.

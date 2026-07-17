@@ -1,6 +1,6 @@
 # Stage 6 Second-Round Execution Plan
 
-- **Status:** Prepared; paid execution requires explicit approval
+- **Status:** Completed 2026-07-17; all paid resources removed
 - **Candidate count:** Two
 - **Maximum training budget:** Existing `$20` project budget
 
@@ -36,3 +36,7 @@ Select the lowest-standard-validation-loss checkpoint within each trajectory. Tr
 Structurally validate first, create one identity-blinded packet for all eligible Candidate 4/5 responses, complete frozen-rubric scoring before reveal, and apply the unchanged viability gate. Candidate 3's recorded first-round result is a fixed contextual reference and is not regenerated or rescored.
 
 If neither new candidate is viable, stop Stage 6 training. If one or both are viable, rank viable new candidates under the existing ordering, with Candidate 4 simpler than Candidate 5 only at the final tie-break.
+
+## Execution result
+
+Both frozen training and behavioural runs completed with intact locally verified evidence. Neither candidate was viable, so no adapter was selected and the stopping rule ended further training. Runpod was returned to zero active resources and `$0/hour`; exact results and costs are recorded in `docs/stage-6/second-round-results.md`.

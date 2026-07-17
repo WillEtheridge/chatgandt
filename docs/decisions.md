@@ -1935,3 +1935,22 @@ Both candidates use the same 160 training examples, 40 validation examples, thre
 Candidate 2 weakened the case for still more repeated exposure. Candidate 3 strengthened the case that target breadth matters and isolated the remaining failure to underlying content and constraints rather than JSON, metaphor, or recipe voice. Candidate 4 asks whether the adapter needs access to MLP representations; Candidate 5 asks whether the same attention-wide capacity needs a less structure-dominated learning signal.
 
 These are distinct, interpretable interventions tied directly to observed evidence. If neither meets the unchanged viability gate, Stage 6 training stops with no sixth candidate. The exact hypotheses, weighting algorithm, selection rule, and execution boundary are recorded in `docs/stage-6/second-round-candidate-plan.md`.
+
+## D-074 — End Stage 6 with no viable adapter
+
+- **Date:** 2026-07-17
+- **Status:** Adopted; bounded training search complete
+
+### Decision
+
+Select neither Candidate 4 nor Candidate 5. Both achieved 9/10 structural validity, but Candidate 4 reached only 6/10 full joint passes across four intent families and Candidate 5 reached 4/10 across three families. Both therefore failed the unchanged requirements of at least 7/10 joint passes and representation in every family.
+
+The complete Candidates 1–5 allowance is exhausted. Do not add Candidate 6, relax the gate, change the prompt, rescore an output to manufacture a winner, or inspect held-out responses as a new selection set. Stage 6 ends with no adapter frozen as a viable product system.
+
+Before Stage 7, explicitly freeze whether a fixed diagnostic adapter will be included only to answer the research comparison. Such inclusion would not retroactively select that adapter or permit further tuning from held-out evidence.
+
+### Rationale
+
+Candidate 4 lowered standard validation loss below Candidate 3 but matched its 6/10 behavioural result while losing perfect structure and complete family coverage. Candidate 5's content-weighted objective produced weaker generated behaviour. Neither predeclared hypothesis fixed the substantive decision and constraint-following bottleneck.
+
+The stopping rule exists precisely for this outcome. Preserving a negative result is more informative than extending a small validation-driven search until chance produces a passing ten-prompt score. Complete evidence and interpretation are recorded in `docs/stage-6/second-round-results.md`.

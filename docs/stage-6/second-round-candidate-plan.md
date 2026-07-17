@@ -2,7 +2,7 @@
 
 - **Purpose:** Test the two specific causes supported by the first-round behavioural diagnosis
 - **Candidate limit:** Two; no further training candidates are permitted under the current Stage 6 plan
-- **Status:** Frozen before GPU execution
+- **Status:** Frozen and executed; neither candidate met the viability gate
 - **Date:** 2026-07-17
 
 ## Evidence behind the round
@@ -67,3 +67,7 @@ If neither Candidate 4 nor Candidate 5 is viable, stop training. Report that the
 ## Execution boundary
 
 Configuration, implementation, local verification, and an execution plan may be prepared now. Provisioning paid infrastructure and starting either training run require a separate explicit instruction. Both candidate definitions must remain byte-frozen before either GPU run begins.
+
+## Result
+
+Both byte-frozen candidates ran once. Candidate 4 achieved 9/10 structural validity and 6/10 joint passes across four families; Candidate 5 achieved 9/10 and 4/10 across three. Neither passed the unchanged viability gate, so the no-sixth-candidate rule ended Stage 6 training. Complete evidence is recorded in `docs/stage-6/second-round-results.md`.

@@ -201,15 +201,15 @@ The frozen supervised corpus contains 200 accepted examples. The training split 
 5. **Completed 2026-07-17:** all three frozen candidates trained on the complete 160-example training split and measured all 40 validation examples without gradient updates. Every run passed its mechanical gates; the frozen lowest-loss rule selected Candidate 1 epoch 3, Candidate 2 epoch 6, and Candidate 3 epoch 3.
 6. **Completed 2026-07-17:** run the three selected checkpoints on the identical ten-prompt spent-development population, structurally validate all outputs, and score all 26 eligible responses blind. No held-out prompt or response was used. Candidate 1 achieved 7/10 structural and 3/10 joint passes; Candidate 2 achieved 9/10 and 4/10; Candidate 3 achieved 10/10 and 6/10. None met the complete frozen viability gate, so no adapter was selected.
 7. **Completed 2026-07-17:** use the complete bounded second-round allowance. Candidate 4 tests whether all-linear rank-8 LoRA provides the target reach needed for better content selection. Candidate 5 tests whether doubling training weight only on ingredient-name and method-string tokens directs Candidate 3's existing capacity toward substantive answers. Both configurations, their unchanged validation rule, the no-sixth-candidate stopping rule, implementation, verifier, and agent-operated execution plan are frozen before GPU execution.
-8. **Current action:** after a separate explicit start instruction, train Candidates 4 and 5 once, select each trajectory's lowest-standard-validation-loss checkpoint, and apply the unchanged ten-prompt structural and blinded qualitative gate. Candidate 3 remains a fixed contextual reference and is not retrained or rescored.
-9. Verify, identify, and freeze a selected adapter before generating any held-out response. This remains blocked unless a bounded second round produces a viable candidate.
-10. Record configurations, dataset and renderer identities, checkpoints, training and validation losses, permitted diagnostics, costs, failures, and decisions.
+8. **Completed 2026-07-17:** Candidates 4 and 5 trained once and passed every mechanical gate. Epoch 3 had the lowest standard validation loss for both. Their unchanged ten-prompt inspection produced 9/10 structural validity each and 6/10 versus 4/10 joint passes; neither represented every intent family or reached the 7/10 joint threshold.
+9. **Completed 2026-07-17 with no selection:** apply the predeclared no-winner rule. No adapter from Candidates 1–5 met the complete viability gate, so no adapter is frozen as a viable ChatG&T system and no sixth training candidate is permitted.
+10. **Completed 2026-07-17:** record exact configurations, model and data identities, all checkpoints, training and validation losses, structural and blinded qualitative evidence, operational metrics, archive identities, costs, failures, and the final no-selection decision.
 
 Stage 6 does not perform a final refit on all 200 accepted examples. Once the validation records have influenced configuration or checkpoint selection, training on them would remove the clean validation boundary and create a different final fitting procedure. The selected adapter is therefore one trained on the complete achieved training split.
 
 ### Stage 6 exit condition
 
-A documented adapter trained on the complete frozen training split has been selected using only predeclared validation and spent development evidence, then frozen without using held-out prompts or responses to alter the model, dataset, prompt, or training procedure.
+Stage 6 ends when either a documented adapter is selected through the predeclared validation and spent-development procedure or the bounded candidate allowance is exhausted and the no-winner result is preserved. No held-out prompt or response may alter the model, dataset, prompt, training procedure, gate, or no-selection decision. **Completed 2026-07-17 with no viable adapter selected.**
 
 ## Stage 7 — Conduct the held-out evaluation
 
@@ -249,4 +249,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Run the three selected checkpoints through the frozen ten-prompt spent-development inspection, apply the non-compensatory viability gate and ranking rule, and select no adapter if none qualifies.
+Before generating any held-out response, freeze a Stage 7 reporting plan for the no-winner outcome. If a fixed diagnostic adapter is included to answer the research question, label it as an experimental comparison rather than a viable selected product adapter, and do not use held-out evidence to resume model selection.

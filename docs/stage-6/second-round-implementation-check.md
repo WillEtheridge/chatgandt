@@ -1,7 +1,7 @@
 # Stage 6 Second-Round Implementation Check
 
 - **Date:** 2026-07-17
-- **Status:** Local verification passed; GPU execution not started
+- **Status:** Local verification and subsequent GPU execution passed
 - **Candidates:** 4 and 5
 
 ## What was verified
@@ -38,4 +38,4 @@ uv run --frozen python scripts/verify_second_round_training.py --model-capacity
 uv run --frozen python -m unittest discover -s tests
 ```
 
-These checks prove configuration, input, masking, weighting, capacity, and regression compatibility. They do not prove CUDA optimisation, VRAM headroom, saved-checkpoint reload, or improved generated behaviour; those remain execution evidence.
+These checks proved configuration, input, masking, weighting, capacity, and regression compatibility before paid work began. The later formal execution separately established CUDA optimisation, VRAM headroom, saved-checkpoint reload, and generated behaviour. Both runs passed their mechanical gates, but neither met the behavioural viability gate; see `docs/stage-6/second-round-results.md`.
