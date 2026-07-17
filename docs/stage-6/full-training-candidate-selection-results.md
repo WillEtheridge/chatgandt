@@ -56,7 +56,7 @@ This diagnosis is specific enough to justify discussing a bounded second-round c
 
 The preferred Community Cloud RTX 4090 had no deployable capacity. The already-approved fallback used one Secure Cloud NVIDIA L4 with 24 GB VRAM from Runpod's official PyTorch 2.8.0 template at `$0.39/hour`. The host exposed driver `580.126.20` and CUDA 13.0 compatibility. A two-hour automatic termination deadline guarded the session.
 
-All evidence was retrieved and verified before deletion. The account balance moved from `$8.0117290235` to `$7.9656029911`, a session cost of `$0.0461260324`, rounded to `$0.05`. Runpod then reported no Pods and `$0/hour` active spend.
+All evidence was retrieved and verified before deletion. After the provider's delayed billing entry settled, the account balance had moved from `$8.0117290235` to `$7.9425150717`, a session cost of `$0.0692139518`, rounded to `$0.07`. Runpod then reported no Pods and `$0/hour` active spend.
 
 ## Evidence locations
 
