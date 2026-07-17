@@ -1954,3 +1954,46 @@ Before Stage 7, explicitly freeze whether a fixed diagnostic adapter will be inc
 Candidate 4 lowered standard validation loss below Candidate 3 but matched its 6/10 behavioural result while losing perfect structure and complete family coverage. Candidate 5's content-weighted objective produced weaker generated behaviour. Neither predeclared hypothesis fixed the substantive decision and constraint-following bottleneck.
 
 The stopping rule exists precisely for this outcome. Preserving a negative result is more informative than extending a small validation-driven search until chance produces a passing ten-prompt score. Complete evidence and interpretation are recorded in `docs/stage-6/second-round-results.md`.
+
+## D-075 — Use Candidate 3 only as the fixed Stage 7 diagnostic adapter
+
+- **Date:** 2026-07-17
+- **Status:** Adopted before held-out generation
+
+### Decision
+
+Run the frozen Stage 7 two-by-two evaluation with Candidate 3 as the sole adapted treatment:
+
+- System A: untuned base model with `minimal-v1`;
+- System B: untuned base model with `five-shot-v3`;
+- System C: Candidate 3 with `minimal-v1`; and
+- System D: Candidate 3 with `five-shot-v3`.
+
+Candidate 3 is the epoch-3/final adapter from `full-candidate-3-v1-20260717-run01`, adapter digest `0eef1d5da017a18f571a5e37cc152d1351bfbda9f0d343c3f376a1f68a2d4249`, stored under `experiments/training/full-training-v1/full-candidate-3-v1-20260717-run01/adapter/`. It remains a non-viable diagnostic adapter: its spent-development result was 10/10 schema-valid, 6/10 joint passes, and joint-pass representation in all five intent families, below the frozen minimum of 7/10 joint passes.
+
+Held-out results may characterise the effects and interaction of the prompt and fine-tuning treatments. They may not retroactively select Candidate 3 as a viable product adapter, substitute another checkpoint, trigger further tuning, relax the Stage 6 gate, or rescue an unfavourable result. The final report must state both the Stage 6 no-winner outcome and Candidate 3's diagnostic status.
+
+### Rationale
+
+Omitting an adapted treatment would abandon the experiment's original causal two-by-two comparison just before the genuine generalisation test. Candidate 3 is the most informative fixed treatment available: it had perfect structural validity, complete intent-family coverage, and the joint-best 6/10 joint-pass result; Candidate 4 tied its joint-pass count with weaker structure and family coverage while using substantially more trainable parameters, and Candidate 5 regressed.
+
+Product acceptance and experimental characterisation answer different questions. The Stage 6 gate asks whether an adapter is good enough to deploy as the selected ChatG&T model. Stage 7 asks what the bounded fine-tuning treatment changed relative to a strong prompt baseline on unseen prompts. Binding Candidate 3 now, before any held-out generation, permits the second question to be studied without rewriting the answer to the first.
+
+## D-076 — Freeze the Stage 7 run seed and operating guardrails
+
+- **Date:** 2026-07-17
+- **Status:** Adopted before held-out generation
+
+### Decision
+
+Use master generation seed `20260715` for the single primary held-out run. Schedule one response for every A–D system and each of the 60 frozen prompts, producing exactly 240 first attempts under run ID `heldout-evaluation-v1-20260717-run01`.
+
+Run the complete population on one matched BF16-capable NVIDIA GPU with at least 24 GiB advertised VRAM and host support for the frozen CUDA-13 environment. Prefer a Secure Cloud RTX 4090 through Runpod's official PyTorch template. Apply a four-hour automatic deletion guard and a hard `$5.00` total Stage 7 provider-cost ceiling.
+
+Mechanical provisioning failures may be retried only before any held-out output exists. After generation begins, preserve every response and failure without repair, replacement, or quality-driven retry. Stop on an identity mismatch, evidence corruption, fatal CUDA error, or projected budget breach. Retrieve and verify all evidence before deletion, then verify no paid resource or active hourly spend remains.
+
+### Rationale
+
+The seed matches the already-frozen Stage 3 analysis and pair-order seed and the Stage 6 behavioural work, while remaining chosen before held-out generation. Its purpose is reproducibility and paired pseudorandom streams, not a claim that one sample captures within-prompt variation.
+
+The infrastructure rules separate scientific immutability from mechanical recovery. They let an agent recover from an unavailable or non-booting host without turning poor model output into a reason to rerun the experiment. The cost and deletion guards bound delegated infrastructure work independently of the scientific result. Exact machine identity remains recorded so latency is interpreted as evidence from that device rather than as a universal deployment benchmark.

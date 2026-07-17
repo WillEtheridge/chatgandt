@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .ruff_cache/
+tests/.generated-evaluation-harness/
 .env
 .env.*
 
@@ -16,6 +17,7 @@ frontend/tsconfig.tsbuildinfo
 # Local model and experiment caches must not be committed accidentally.
 .cache/
 artifacts/models/
+artifacts/stage-7/
 experiments/training/
 artifacts/diagnostics/*
 !artifacts/diagnostics/lora-lifecycle-adapter/

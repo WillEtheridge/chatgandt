@@ -75,6 +75,6 @@ All evidence was checksummed, retrieved, and independently verified locally befo
 - Blind evidence: `experiments/evaluations/full-training-second-round-v1-20260717-blind-scoring/`
 - Mechanical selection: `experiments/evaluations/full-training-second-round-v1-20260717-selection.json`
 
-## Next decision
+## Stage 7 disposition
 
-Stage 6 is complete with no adapter meeting the development gate. Before any held-out response is generated, freeze how Stage 7 will report this no-winner outcome. Options such as evaluating a fixed diagnostic adapter for research comparison must be explicitly distinguished from selecting it as a viable product adapter; the held-out set may not be used to resume model selection.
+D-075 freezes Candidate 3 as the sole adapted treatment in the original Stage 7 two-by-two evaluation. This is a diagnostic use, not a reversal of the Stage 6 no-winner decision: Candidate 3 remains below the product viability gate, and held-out evidence cannot select a replacement, restart tuning, or rescue it. The final analysis must report both facts together.

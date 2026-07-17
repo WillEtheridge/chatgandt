@@ -846,3 +846,9 @@ The unchanged retry added Runpod's `--min-cuda-version 13.0` scheduling constrai
 The two training runners completed in about 85 seconds and attributed roughly `$0.016` of compute. The full training and behavioural workflow cost about `$0.45` after delayed provider billing settled because locked CUDA packages, a 2.9 GB model, hashing, network-mounted loading, adapter transfer, verification, and one rejected host dominated elapsed time.
 
 Separate fresh inference processes protected adapter isolation but required the base model to be read again for each candidate. Direct SCP of the 45 MB selected adapters was also far slower than their size suggested, reinforcing the earlier finding that provider-native transfer is the better fallback on poorly routed SSH links. For small LoRA experiments, environment reuse and data locality can matter more to cost and latency than reducing the optimisation loop itself—provided scientific isolation and exact identities remain intact.
+
+## 2026-07-17 — Can a model that failed the product gate still belong in the final experiment?
+
+Yes, provided selection and characterisation remain visibly separate. Stage 6 asked whether an adapter met the minimum bar to become the selected product model; Candidate 3 did not. Stage 7 asks what the bounded fine-tuning treatment changed relative to no treatment and to a strong five-shot prompt. A fixed non-viable adapter can still answer that research question.
+
+The safeguards are simple: choose and identify the diagnostic checkpoint before seeing held-out outputs, retain the original failed-gate result, label the adapter diagnostic everywhere, and prohibit held-out evidence from changing the checkpoint, restarting tuning, or relaxing the gate. This preserves a useful causal comparison without turning the test set into a second development set or quietly converting “best available” into “good enough.”

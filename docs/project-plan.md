@@ -213,15 +213,46 @@ Stage 6 ends when either a documented adapter is selected through the predeclare
 
 ## Stage 7 — Conduct the held-out evaluation
 
-- Run every agreed system using controlled inference settings.
-- Calculate structural and operational metrics.
-- Conduct blinded qualitative scoring and pairwise comparisons.
-- Check for memorisation and suspicious similarity.
-- Analyse failures, trade-offs, and uncertainty.
+Stage 7 answers the frozen research question; it does not reopen model development. Because Stage 6 produced no viable product adapter, Candidate 3 is included only as a fixed diagnostic treatment. It is the strongest and simplest adapted treatment observed in the bounded search, but it remains below the product-selection gate.
+
+The four treatments remain the frozen two-by-two design:
+
+| System | Model treatment | Prompt treatment | Interpretation |
+| --- | --- | --- | --- |
+| A | Untuned base model | Minimal prompt | Untreated reference |
+| B | Untuned base model | Frozen five-shot prompt | Prompt-engineering treatment |
+| C | Candidate 3 adapter | Minimal prompt | Fine-tuning diagnostic |
+| D | Candidate 3 adapter | Frozen five-shot prompt | Combined diagnostic |
+
+Candidate 3 means the epoch-3 adapter from `full-candidate-3-v1-20260717-run01`, adapter digest `0eef1d5da017a18f571a5e37cc152d1351bfbda9f0d343c3f376a1f68a2d4249`. Its inclusion characterises what the bounded fine-tune changed; it does not make the adapter a viable selected ChatG&T product model.
+
+1. **Completed 2026-07-15:** freeze evaluation protocol `chatgnt-evaluation-v1`, including the 60-prompt population, exact A/B/C/D treatment design, strict first-attempt structural rules, three-dimension qualitative rubric, primary blinded B-versus-C comparison, uncertainty procedure, and response-similarity procedure.
+2. **Completed 2026-07-16:** author, audit, and freeze the exact 60-prompt held-out population without inspecting model responses. Each system therefore has 60 scheduled attempts and the complete run has 240.
+3. **Completed 2026-07-17:** preserve the Stage 6 no-winner result and bind Candidate 3 as the sole fixed adapted treatment for Systems C and D. No held-out result may select a replacement adapter, change this checkpoint, restart tuning, or relax the earlier viability gate.
+4. **Next:** prepare and verify one executable Stage 7 run package before generation. It must bind the frozen prompt set, Systems A–D, Candidate 3 path and digest, pinned model/runtime/generation assets, master seed, output location, clean repository identity, hardware policy, budget ceiling, completeness checks, evidence retrieval, and teardown.
+5. **Pending:** generate exactly one untouched first response for every system-prompt pair under matched hardware and frozen inference settings. Preserve raw outputs, failures, token counts, synchronized `model.generate()` latency, manifest identities, and the complete 240-attempt inspection; do not extract, repair, retry, or constrain invalid JSON for the primary result.
+6. **Pending:** run deterministic structural analysis. Report completion, JSON validity, schema validity, failure labels, input/generated/visible token counts, raw response length, and latency for every system with missing or failed attempts retained in the denominator.
+7. **Pending:** score every schema-valid response blind on underlying-answer quality, metaphorical coherence, and recipe-style execution using the frozen 1–3 rubric. Keep system identity and aggregate results hidden, handle `unable_to_assess` through the one permitted fresh judgment, and complete the preselected human calibration sample without overwriting the primary scores.
+8. **Pending:** conduct the frozen blind System B versus System C comparison. Preserve the deterministic balanced A/B display order and report both conditional preference when both outputs are schema-valid and the end-to-end outcome across all 60 prompts.
+9. **Pending:** compare responses with exposure-appropriate five-shot and training references, review suspicious overlap blind, and separately inspect within-system repetition for generic collapse. Do not claim access to or absence from Qwen's unknown pretraining corpus.
+10. **Pending:** produce the final analysis with all-60 headline rates, Wilson intervals, paired prompt-ID bootstrap intervals, matched B-versus-C quality and efficiency differences, diagnostic intent-family and reporting-slice breakdowns, calibration agreement, example failures, limitations, and observed trade-offs. State clearly that C and D evaluate a non-viable diagnostic adapter.
+
+Stage 7 will not change any held-out prompt, supervised example, system prompt, model checkpoint, adapter, generation setting, scoring rule, or analysis rule after a held-out response is visible. It will not use the held-out set as another development or adapter-selection population. Any later 3B comparison or product-oriented model work is a separately versioned follow-up experiment and cannot replace this primary result.
+
+### Expected Stage 7 records
+
+- Frozen execution configuration and preflight evidence
+- Immutable 240-attempt generation run and integrity report
+- Structural and efficiency results
+- Blinded qualitative judgments and calibration results
+- Blinded B-versus-C pairwise judgments
+- Response-similarity and generic-collapse evidence
+- Aggregate metrics, uncertainty intervals, failure analysis, and research conclusion
+- Provider cost, retrieved archive identities, and verified infrastructure teardown
 
 ### Stage 7 exit condition
 
-The research question can be answered using recorded evidence, including negative or inconclusive results.
+The research question can be answered from one complete, reproducible held-out evaluation with the no-winner context and diagnostic status of Candidate 3 kept explicit. Negative, mixed, or inconclusive findings are valid outcomes; held-out evidence does not reopen Stage 6.
 
 ## Stage 8 — Build the public experience
 
@@ -249,4 +280,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Before generating any held-out response, freeze a Stage 7 reporting plan for the no-winner outcome. If a fixed diagnostic adapter is included to answer the research question, label it as an experimental comparison rather than a viable selected product adapter, and do not use held-out evidence to resume model selection.
+Prepare the exact executable Stage 7 run package and preflight it without generating a held-out response. This is an implementation-and-identity step: it turns the already-frozen protocol and Candidate 3 diagnostic decision into one auditable 240-attempt run configuration.

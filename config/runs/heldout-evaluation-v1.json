@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "run_plan_id": "heldout-evaluation-v1",
+  "run_id": "heldout-evaluation-v1-20260717-run01",
+  "heldout_records_path": "data/evaluation/heldout-v1/prompts.jsonl",
+  "heldout_records_sha256": "1a4ce978e056866d0c5fc6f2a9ee5cd4bf7f49caf9bc13cfcee3edd4394382d4",
+  "harness_prompts_path": "artifacts/stage-7/heldout-evaluation-v1-prompts.jsonl",
+  "system_set_path": "config/systems/evaluation-abcd-v1.json",
+  "system_set_sha256": "1112114f6b7d92556baea225f82907212f1e5c85a351b571387dfb247bb626df",
+  "adapter_path": "experiments/training/full-training-v1/full-candidate-3-v1-20260717-run01/adapter",
+  "adapter_sha256": "0eef1d5da017a18f571a5e37cc152d1351bfbda9f0d343c3f376a1f68a2d4249",
+  "run_seed": 20260715,
+  "device": "cuda:0",
+  "scheduled_attempt_count": 240,
+  "provider": "Runpod",
+  "gpu_policy": {
+    "preferred_gpu": "NVIDIA GeForce RTX 4090",
+    "minimum_vram_gib": 24,
+    "minimum_cuda_version": "13.0",
+    "require_bfloat16": true,
+    "require_single_matched_gpu_for_complete_run": true,
+    "official_template_required": true
+  },
+  "maximum_provider_cost_usd": 5.0,
+  "automatic_termination_hours": 4
+}
