@@ -852,3 +852,21 @@ Separate fresh inference processes protected adapter isolation but required the 
 Yes, provided selection and characterisation remain visibly separate. Stage 6 asked whether an adapter met the minimum bar to become the selected product model; Candidate 3 did not. Stage 7 asks what the bounded fine-tuning treatment changed relative to no treatment and to a strong five-shot prompt. A fixed non-viable adapter can still answer that research question.
 
 The safeguards are simple: choose and identify the diagnostic checkpoint before seeing held-out outputs, retain the original failed-gate result, label the adapter diagnostic everywhere, and prohibit held-out evidence from changing the checkpoint, restarting tuning, or relaxing the gate. This preserves a useful causal comparison without turning the test set into a second development set or quietly converting “best available” into “good enough.”
+
+## 2026-07-17 — What did the held-out evaluation reveal about quality and efficiency?
+
+Fine-tuning did more than imitate the five-shot prompt on the frozen population. The adapted minimal-prompt system reached 52/60 schema-valid outputs and 26/60 full passes, compared with 43/60 and 16/60 for the prompted base model. Its paired schema-validity improvement excluded zero in the frozen bootstrap, while the wider full-pass interval touched zero. The honest conclusion is therefore stronger for structural reliability than for overall response quality.
+
+The efficiency result was not one-dimensional. Removing the five worked examples cut a fixed 2,544 input tokens per request and the adapted system generated about 24 fewer tokens, yet timed generation was about 1.78 seconds slower on the matched RTX 4090. Fewer prompt tokens can reduce context cost without reducing generation latency: output length, adapter execution, token-by-token dynamics, and the deliberately narrow timed region all matter. Quality, token use, and latency need separate reporting rather than one invented exchange rate.
+
+The combined system also underperformed the adapted minimal system on full passes, 21/60 versus 26/60. Behavioural treatments are not guaranteed to add linearly. Once an adapter has learned a representation, a long demonstration prompt can be redundant or can steer brevity, content selection, and instruction following in a different direction.
+
+Finally, the primary judge is part of the measurement system, not an oracle. Its pre-run calibration was conservative on some strong answers and turned a planned tie into a narrow preference. Keeping automatic structure separate, retaining calibration discrepancies, and adding an independently scored project-author sample prevents a neat headline from hiding evaluator uncertainty.
+
+## 2026-07-17 — Why is a similarity flag not the same as proof of memorisation?
+
+Retrieval answers “which known response should a reviewer inspect?”, not “why did the model produce this?” Stage 7 found no exact project-response copy, but it found several meaningful non-exact cases: the prompted base model reproduced most of a worked example almost verbatim, two adapted outputs echoed training scenarios, and the untouched minimal-prompt model reused generic long-form advice templates across its own outputs.
+
+Exposure attribution makes those cases interpretable. Worked-example reuse by B or D can arise directly from inference-time demonstrations; training-example similarity by C can be consistent with adapter memorisation or with a genuinely reusable pattern; within-system repetition by A shows generic collapse without any project-data exposure. The right output is a flag with the complete texts and rationale, not a causal verdict manufactured from a similarity score.
+
+The operational lesson was equally simple: large structured-output requests can fail by omitting required keys even when the substantive task is routine. Saving only complete envelopes, retaining completed keys, and shrinking the remaining batch size to a reliable boundary turned a fragile all-or-nothing review into a resumable coverage process. The final validator—not the number of attempted contexts—proved that all 5,468 required pairs had exactly one retained decision.
