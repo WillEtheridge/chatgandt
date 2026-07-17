@@ -25,16 +25,19 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--scoring-dir", type=Path)
     parser.add_argument("--judge-seed", type=int, default=20260715)
+    parser.add_argument("--system-id", choices=("A", "B", "C", "D"), default="B")
     args = parser.parse_args()
     if args.reveal:
-        if args.scoring_dir is None or args.source or args.output_dir is not None:
+        if args.scoring_dir is None or args.source or args.output_dir is not None or args.system_id != "B":
             parser.error("--reveal requires only --scoring-dir")
         print(canonical_json(reveal_and_summarize_scores(args.scoring_dir)))
         return
     if not args.source or args.output_dir is None or args.scoring_dir is not None:
         parser.error("packet preparation requires --source and --output-dir")
     sources = [(label, Path(run), Path(evaluation)) for label, run, evaluation in args.source]
-    print(canonical_json(prepare_blind_packets(sources, args.output_dir, args.judge_seed)))
+    print(canonical_json(prepare_blind_packets(
+        sources, args.output_dir, args.judge_seed, system_id=args.system_id
+    )))
 
 
 if __name__ == "__main__":

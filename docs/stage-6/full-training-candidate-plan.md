@@ -112,6 +112,8 @@ Validation loss chooses within one fixed training trajectory; it does not rank t
 
 Run the selected checkpoint from each candidate on the same frozen ten-prompt pilot-behaviour population with the minimal prompt, frozen generation settings, and paired per-prompt seeds. This produces 30 immutable responses.
 
+Execute this as three separate adapted-only system-C harness runs in one GPU session. Each run uses the same prompt bytes, system-set bytes, and run seed (`20260715`), while its manifest binds the distinct selected adapter checkpoint. Because the system identity and run seed are identical, every candidate receives the same per-prompt generation seed. Separate runs avoid adding multi-adapter behaviour to the already verified inference harness.
+
 Apply the frozen structural validator first. Blind candidate identity while scoring every schema-valid response on underlying-answer quality, metaphorical coherence, and recipe-style execution. Invalid responses receive no qualitative score and cannot pass jointly.
 
 ## Viability gate
@@ -136,5 +138,7 @@ If exactly one candidate is viable, select it. If several are viable, rank them 
 6. simpler configuration in the fixed order Candidate 1, Candidate 2, Candidate 3.
 
 Validation loss is not an across-candidate ranking criterion because the user-facing objective is generated behaviour. Simplicity is used only after the behavioural and operational evidence ties.
+
+Latency and generated-token tie-break summaries use all generation-completed responses for that candidate. They are operational tie-breakers only; failed or structurally invalid outputs remain failures under the preceding gates and cannot be hidden by these averages.
 
 If no candidate passes the complete viability gate, select none. Record the common failure, loss trajectories, and relative movement before deciding whether the bounded second round has a specific hypothesis to test.
