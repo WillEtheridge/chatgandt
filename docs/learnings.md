@@ -756,3 +756,15 @@ The proportionate solution was to leave the complete 128-test regression suite u
 Automation removes repeated copying, SSH setup, monitoring, retrieval, and teardown from the project author's workload; it does not remove the operational contract. The agent still needs an exact commit, a spending ceiling, a hardware policy, immutable run IDs, stop conditions, evidence checks, and a teardown requirement.
 
 The useful simplification is to document decisions and boundaries rather than every keystroke a human would type. Codex can handle mechanical recovery and live monitoring, while scientific changes, budget expansion, or evidence-bearing failures remain explicit decision points. This makes the procedure easier to operate without making it less reproducible.
+
+## 2026-07-17 — Why prefer an official cloud template even when the image is known?
+
+A container image names the filesystem and software layers, but a working Pod also depends on provider-side startup configuration, ports, and runtime defaults. Three ChatG&T allocations created directly from the correct PyTorch image remained at zero uptime. Creating from Runpod's official template for that same image produced SSH and CUDA access normally.
+
+This was a mechanical recovery rather than an experimental change: the GPU requirements, image, project commit, model, data, and candidate configurations remained fixed. The learning is operational—when a provider maintains a template for the intended image, treat the template as part of the known-good deployment path rather than assuming the image reference alone captures everything required to boot.
+
+## 2026-07-17 — Why can setup cost more than the training loop?
+
+The three full candidate runners consumed only 113 seconds and attributed about one cent of compute to training and their internal checks. The complete session cost about twelve cents because provisioning attempts, dependency installation, model download, regression preflight, evidence auditing, transfer, and teardown dominated elapsed rental time.
+
+For small-model LoRA experiments, optimisation may not be the expensive operational phase. Reusing a verified environment can accelerate iteration, but formal runs still benefit from clean-commit setup and complete evidence capture. Report runner-attributed cost and whole-session provider cost separately so neither model efficiency nor real engineering overhead is obscured.

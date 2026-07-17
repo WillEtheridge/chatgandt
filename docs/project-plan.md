@@ -198,7 +198,7 @@ The frozen supervised corpus contains 200 accepted examples. The training split 
 2. **Completed 2026-07-17:** the frozen `chatgnt-pilot-training-v1` run passed all mechanical gates on the 40-example pilot and complete validation split. Validation loss fell from 3.0364 to 2.7339 across 15 optimiser updates; three checkpoints and a provenance-bound final adapter reloaded exactly, while peak reserved VRAM was 42.1%.
 3. **Completed 2026-07-17:** the paired ten-prompt inspection completed with intact evidence. Both A and C produced 0/10 schema-valid responses, so none qualified for formal qualitative scoring; the active adapter changed nine paired outputs but did not establish ChatG&T behaviour. No supervised example or frozen baseline was revised.
 4. **Completed 2026-07-17:** three first-round configurations, the three-plus-two stopping boundary, lowest-validation-loss checkpoint rule, ten-prompt blinded inspection, 8/10 schema and 7/10 joint viability thresholds with every family represented, lexicographic ranking, simplicity tie-break, and no-winner outcome are frozen before implementation or training.
-5. **Prepared 2026-07-17; GPU execution pending:** the shared runner, three hash-bound configurations, stage-specific verifier, and agent-operated Runpod execution plan pass local contract, input, capacity, pilot-compatibility, and regression checks. Run every candidate on the complete 160-example training split and measure the complete separate 40-example validation split without updating weights from it.
+5. **Completed 2026-07-17:** all three frozen candidates trained on the complete 160-example training split and measured all 40 validation examples without gradient updates. Every run passed its mechanical gates; the frozen lowest-loss rule selected Candidate 1 epoch 3, Candidate 2 epoch 6, and Candidate 3 epoch 3.
 6. Use the predeclared validation evidence and already-spent development set to select one candidate adapter. Do not use held-out prompts or responses for selection.
 7. Verify, identify, and freeze the selected adapter before generating any held-out response.
 8. Record configurations, dataset and renderer identities, checkpoints, training and validation losses, permitted diagnostics, costs, failures, and decisions.
@@ -247,4 +247,4 @@ The project tells a clear, evidence-backed story about what was built, what was 
 
 ## Next step
 
-Commit and push the locally verified full-training implementation, then execute the three frozen candidates through the bounded automated Runpod plan. After retrieval, select each candidate's lowest-validation-loss checkpoint before the ten-prompt behavioural inspection.
+Run the three selected checkpoints through the frozen ten-prompt spent-development inspection, apply the non-compensatory viability gate and ranking rule, and select no adapter if none qualifies.

@@ -1,7 +1,7 @@
 # Stage 6 Full-Training Implementation Check
 
 - **Date:** 2026-07-17
-- **Status:** Passed locally; GPU execution remains pending
+- **Status:** Passed locally before GPU execution; formal runs completed 2026-07-17
 - **Scope:** The three frozen first-round configurations and their shared training runner
 
 ## Outcome
@@ -55,6 +55,6 @@ The checks established:
 - the unchanged 40-example pilot entry point still resolves to 15 updates; and
 - the complete historical 128-test regression suite still passes.
 
-## Remaining boundary
+## GPU boundary
 
-These are CPU-side contract and compatibility checks. The formal CUDA runs must still prove finite optimisation, frozen base weights, VRAM headroom, per-epoch validation, material adapter effect, exact final reload, and complete output evidence on the rented GPU.
+These CPU-side contract and compatibility checks did not themselves prove successful training. The later formal CUDA batch established finite optimisation, frozen base weights, VRAM headroom, per-epoch validation, material adapter effect, exact final reload, and complete output evidence. Its separate results are recorded in `docs/stage-6/full-training-results.md`.

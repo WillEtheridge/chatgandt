@@ -1,7 +1,7 @@
 # Stage 6 Automated Full-Training Execution Plan
 
 - **Operator:** Codex through the authenticated Runpod CLI
-- **Status:** Ready; paid provisioning requires an explicit start instruction
+- **Status:** Completed 2026-07-17
 - **Budget ceiling:** `$20` for training
 - **Scientific scope:** The three already-frozen first-round candidates only
 

@@ -1895,3 +1895,7 @@ Codex will operate the formal batch through the authenticated Runpod CLI under t
 ### Rationale
 
 One training core minimises the chance that pilot and full runs differ for accidental implementation reasons. A separate verifier preserves historical evidence while making the new contract executable. Agent-operated infrastructure removes repetitive manual work, but the budget, scientific boundary, evidence, and teardown controls remain visible and auditable in `docs/stage-6/full-training-execution-plan.md`.
+
+### Result
+
+All three frozen candidates completed on 2026-07-17 at execution commit `b9fe5a894e4905e87c123cd38203dca542c71419`. Every mechanical gate passed, and the lowest-validation-loss rule selected Candidate 1 epoch 3, Candidate 2 epoch 6, and Candidate 3 epoch 3 for behavioural inspection. The complete provider session cost `$0.12`, all evidence was retrieved and independently verified locally, and Runpod was returned to zero active resources and `$0/hour` spend. Detailed evidence is recorded in `docs/stage-6/full-training-results.md`.
