@@ -53,14 +53,16 @@ export function MartiniLoader() {
   const [visibleLineCount, setVisibleLineCount] = useState(0);
 
   useEffect(() => {
+    let direction = 1;
     const revealLine = window.setInterval(() => {
       setVisibleLineCount((currentCount) => {
         if (currentCount >= LARGE_HEIGHT) {
-          window.clearInterval(revealLine);
-          return currentCount;
+          direction = -1;
+        } else if (currentCount <= 0) {
+          direction = 1;
         }
 
-        return currentCount + 1;
+        return currentCount + direction;
       });
     }, 40);
 
