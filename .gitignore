@@ -16,6 +16,7 @@ frontend/tsconfig.tsbuildinfo
 # Local model and experiment caches must not be committed accidentally.
 .cache/
 artifacts/models/
+experiments/training/
 artifacts/diagnostics/*
 !artifacts/diagnostics/lora-lifecycle-adapter/
 !artifacts/diagnostics/lora-lifecycle-adapter/README.md

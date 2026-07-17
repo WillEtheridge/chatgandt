@@ -1,0 +1,49 @@
+# Frozen Stage 6 attention-wide capacity challenger. It differs from Candidate
+# 1 only by targeting all four attention projections.
+
+[run]
+config_id = "chatgnt-full-candidate-3-v1"
+adapter_id = "chatgnt-full-candidate-3-v1"
+training_role = "train"
+seed = 20260715
+require_clean_git = true
+
+[data]
+training_path = "data/dataset-v1/frozen-v1.2/train.jsonl"
+validation_path = "data/dataset-v1/frozen-v1.2/validation.jsonl"
+workflow_events_path = "data/dataset-v1/frozen-v1.2/workflow-events.jsonl"
+dataset_manifest_path = "data/dataset-v1/frozen-v1.2/dataset-manifest.json"
+expected_dataset_id = "chatgnt-dataset-v1.2"
+expected_training_count = 160
+expected_validation_count = 40
+max_sequence_length = 512
+
+[adapter]
+target_modules = ["q_proj", "k_proj", "v_proj", "o_proj"]
+rank = 8
+alpha = 16
+dropout = 0.05
+bias = "none"
+task_type = "CAUSAL_LM"
+
+[optimization]
+epochs = 3
+micro_batch_size = 2
+gradient_accumulation_steps = 4
+learning_rate = 0.0002
+weight_decay = 0.01
+max_gradient_norm = 1.0
+gradient_checkpointing = false
+
+[acceptance]
+require_cuda = true
+require_bfloat16 = true
+maximum_reserved_vram_fraction = 0.80
+require_finite_losses = true
+require_adapter_logit_change = true
+require_exact_reload = true
+expected_optimizer_steps = 60
+expected_trainable_parameter_count = 2179072
+
+[output]
+runs_root = "experiments/training/full-training-v1"

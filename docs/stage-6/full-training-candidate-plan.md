@@ -3,7 +3,7 @@
 - **Purpose:** Predeclare a small, interpretable adapter comparison before full-corpus GPU training
 - **First-round limit:** Three configurations
 - **Conditional second-round limit:** At most two additional configurations
-- **Status:** Frozen before implementation and GPU execution
+- **Status:** Frozen; implementation verified locally before GPU execution
 - **Date:** 2026-07-17
 
 ## Design rule

@@ -1,4 +1,4 @@
-"""Run the frozen 40-example Stage 6 LoRA pipeline rehearsal."""
+"""Run the verified Stage 6 LoRA workflow; the historical pilot is the default."""
 
 from __future__ import annotations
 
@@ -158,7 +158,7 @@ def epoch_batches(items: list[dict[str, Any]], batch_size: int, seed: int, epoch
     indices = list(range(len(items)))
     random.Random(seed + epoch).shuffle(indices)
     if len(indices) % batch_size:
-        raise ValueError("pilot size must divide exactly by micro-batch size")
+        raise ValueError("training size must divide exactly by micro-batch size")
     return [[items[index] for index in indices[start : start + batch_size]] for start in range(0, len(indices), batch_size)]
 
 
@@ -198,6 +198,15 @@ def load_base(snapshot: Path, device: torch.device, gradient_checkpointing: bool
     return model
 
 
+def training_collection(config: dict[str, Any]) -> tuple[str, str, str]:
+    role = config["run"].get("training_role", "pilot")
+    if role == "pilot":
+        return role, "pilot_path", "expected_pilot_count"
+    if role == "train":
+        return role, "training_path", "expected_training_count"
+    raise ValueError(f"unsupported training role: {role}")
+
+
 def prepare_inputs(config: dict[str, Any]) -> tuple[dict[str, Any], Any, list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     project = load_project_configuration()
     selected = project.model.values["base_model"]
@@ -212,53 +221,68 @@ def prepare_inputs(config: dict[str, Any]) -> tuple[dict[str, Any], Any, list[di
         raise ValueError("tokenizer must define a pad token")
 
     data = config["data"]
-    paths = {key: ROOT / data[key] for key in ("pilot_path", "validation_path", "workflow_events_path", "dataset_manifest_path")}
-    manifest, _ = read_strict_json(paths["dataset_manifest_path"])
+    role, training_path_key, expected_count_key = training_collection(config)
+    paths = {
+        "training": ROOT / data[training_path_key],
+        "validation": ROOT / data["validation_path"],
+        "workflow_events": ROOT / data["workflow_events_path"],
+        "dataset_manifest": ROOT / data["dataset_manifest_path"],
+    }
+    manifest, _ = read_strict_json(paths["dataset_manifest"])
     if manifest["dataset_id"] != data["expected_dataset_id"] or manifest["status"] != "frozen":
         raise ValueError("unexpected or unfrozen dataset manifest")
     expected_files = {item["path"]: item["sha256"] for item in manifest["files"]}
-    for name in ("pilot", "validation"):
-        path = paths[f"{name}_path"]
+    for name in ("training", "validation"):
+        path = paths[name]
         if sha256_file(path) != expected_files[path.name]:
             raise ValueError(f"{name} file identity does not match the frozen manifest")
 
-    pilot_records = load_canonical_jsonl(paths["pilot_path"])
-    validation_records = load_canonical_jsonl(paths["validation_path"])
-    events = group_events(load_canonical_jsonl(paths["workflow_events_path"]))
-    if len(pilot_records) != data["expected_pilot_count"] or any(item["split"] != "train" or not item["pilot_member"] for item in pilot_records):
-        raise ValueError("pilot collection does not match its frozen role")
+    training_records = load_canonical_jsonl(paths["training"])
+    validation_records = load_canonical_jsonl(paths["validation"])
+    events = group_events(load_canonical_jsonl(paths["workflow_events"]))
+    if len(training_records) != data[expected_count_key] or any(item["split"] != "train" for item in training_records):
+        raise ValueError("training collection does not match its frozen role")
+    if role == "pilot" and any(not item["pilot_member"] for item in training_records):
+        raise ValueError("pilot collection contains a non-pilot training record")
+    if role == "train" and {item["example_id"] for item in training_records} != {
+        item["example_id"] for item in load_canonical_jsonl(ROOT / "data/dataset-v1/frozen-v1.2/train.jsonl")
+    }:
+        raise ValueError("full training collection is not the complete frozen training split")
     if len(validation_records) != data["expected_validation_count"] or any(item["split"] != "validation" or item["pilot_member"] for item in validation_records):
         raise ValueError("validation collection does not match its frozen role")
-    if {item["scenario_id"] for item in pilot_records} & {item["scenario_id"] for item in validation_records}:
-        raise ValueError("pilot and validation scenarios overlap")
+    if {item["scenario_id"] for item in training_records} & {item["scenario_id"] for item in validation_records}:
+        raise ValueError("training and validation scenarios overlap")
 
     contract = load_dataset_contract()
     maximum = data["max_sequence_length"]
-    pilot = [tokenize_record(item, events[item["example_id"]], contract, tokenizer, maximum) for item in pilot_records]
+    training = [tokenize_record(item, events[item["example_id"]], contract, tokenizer, maximum) for item in training_records]
     validation = [tokenize_record(item, events[item["example_id"]], contract, tokenizer, maximum) for item in validation_records]
     evidence = {
         "dataset_id": manifest["dataset_id"],
-        "manifest": file_record(paths["dataset_manifest_path"]),
-        "pilot": file_record(paths["pilot_path"]),
-        "validation": file_record(paths["validation_path"]),
-        "workflow_events": file_record(paths["workflow_events_path"]),
-        "pilot_count": len(pilot),
+        "training_role": role,
+        "manifest": file_record(paths["dataset_manifest"]),
+        "training": file_record(paths["training"]),
+        "validation": file_record(paths["validation"]),
+        "workflow_events": file_record(paths["workflow_events"]),
+        "training_count": len(training),
         "validation_count": len(validation),
-        "pilot_token_range": [min(item["total_tokens"] for item in pilot), max(item["total_tokens"] for item in pilot)],
+        "training_token_range": [min(item["total_tokens"] for item in training), max(item["total_tokens"] for item in training)],
         "validation_token_range": [min(item["total_tokens"] for item in validation), max(item["total_tokens"] for item in validation)],
-        "pilot_supervised_token_range": [min(item["supervised_tokens"] for item in pilot), max(item["supervised_tokens"] for item in pilot)],
+        "training_supervised_token_range": [min(item["supervised_tokens"] for item in training), max(item["supervised_tokens"] for item in training)],
         "validation_supervised_token_range": [min(item["supervised_tokens"] for item in validation), max(item["supervised_tokens"] for item in validation)],
         "truncated_examples": 0,
     }
-    return project.model.values, tokenizer, pilot, validation, evidence
+    return project.model.values, tokenizer, training, validation, evidence
 
 
 def validate_config(config: dict[str, Any]) -> dict[str, int]:
     optimization = config["optimization"]
     data = config["data"]
-    micro_batches = data["expected_pilot_count"] // optimization["micro_batch_size"]
-    if data["expected_pilot_count"] % optimization["micro_batch_size"]:
-        raise ValueError("pilot count must divide by micro-batch size")
+    _, _, expected_count_key = training_collection(config)
+    training_count = data[expected_count_key]
+    micro_batches = training_count // optimization["micro_batch_size"]
+    if training_count % optimization["micro_batch_size"]:
+        raise ValueError("training count must divide by micro-batch size")
     if micro_batches % optimization["gradient_accumulation_steps"]:
         raise ValueError("micro-batches per epoch must divide by gradient accumulation")
     steps_per_epoch = micro_batches // optimization["gradient_accumulation_steps"]
@@ -268,12 +292,43 @@ def validate_config(config: dict[str, Any]) -> dict[str, int]:
     return {"micro_batches_per_epoch": micro_batches, "optimizer_steps_per_epoch": steps_per_epoch, "total_optimizer_steps": total, "effective_batch_size": optimization["micro_batch_size"] * optimization["gradient_accumulation_steps"]}
 
 
-def main() -> None:
-    args = parse_args()
-    config = load_toml(CONFIG_PATH)
+def write_adapter_provenance(
+    adapter_path: Path,
+    *,
+    adapter_id: str,
+    adapter_version: str,
+    training_run_id: str,
+    model_config: dict[str, Any],
+    data_evidence: dict[str, Any],
+) -> dict[str, Any]:
+    unprovenanced = adapter_identity(adapter_path, allow_unprovenanced_diagnostic_adapter=True)
+    provenance = {
+        "schema_version": 1,
+        "adapter_id": adapter_id,
+        "adapter_version": adapter_version,
+        "adapter_digest": unprovenanced["adapter_digest"],
+        "base_model_id": model_config["base_model"]["id"],
+        "base_model_revision": model_config["base_model"]["revision"],
+        "base_weights_sha256": model_config["base_model"]["weights_sha256"],
+        "training_run_id": training_run_id,
+        "training_dataset_id": data_evidence["dataset_id"] + ":" + data_evidence["training_role"],
+        "training_dataset_sha256": data_evidence["training"]["sha256"],
+        "peft_version": peft.__version__,
+    }
+    (adapter_path / "adapter-provenance.json").write_bytes(canonical_bytes(provenance))
+    return adapter_identity(adapter_path)
+
+
+def execute(args: argparse.Namespace, config_path: Path, run_kind: str) -> None:
+    config_path = config_path.resolve()
+    try:
+        config_path.relative_to(ROOT / "config")
+    except ValueError as exc:
+        raise ValueError("training configuration must be contained in config/") from exc
+    config = load_toml(config_path)
     shape = validate_config(config)
-    model_config, tokenizer, pilot, validation, data_evidence = prepare_inputs(config)
-    config_evidence = file_record(CONFIG_PATH)
+    model_config, tokenizer, training, validation, data_evidence = prepare_inputs(config)
+    config_evidence = file_record(config_path)
     input_report = {"result": "inputs_ready", "config": config_evidence, "shape": shape, "data": data_evidence}
     if args.check_inputs:
         print(json.dumps(input_report, indent=2))
@@ -282,12 +337,12 @@ def main() -> None:
     if not args.run_id or not re_fullmatch_run_id(args.run_id):
         raise ValueError("--run-id is required and must contain only lowercase letters, digits, and hyphens")
     if not torch.cuda.is_available():
-        raise RuntimeError("CUDA is required for the pilot run")
+        raise RuntimeError(f"CUDA is required for the {run_kind} run")
     if config["acceptance"]["require_bfloat16"] and not torch.cuda.is_bf16_supported():
         raise RuntimeError("GPU does not support bfloat16")
     repository = git_record()
     if config["run"]["require_clean_git"] and repository["dirty"]:
-        raise RuntimeError("formal pilot requires a clean Git checkout")
+        raise RuntimeError(f"formal {run_kind} requires a clean Git checkout")
 
     run_dir = ROOT / config["output"]["runs_root"] / args.run_id
     if run_dir.exists():
@@ -330,6 +385,11 @@ def main() -> None:
     if not trainable or any("lora_" not in name for name, _ in trainable):
         raise RuntimeError("only LoRA parameters may be trainable")
     trainable_parameter_count = sum(parameter.numel() for _, parameter in trainable)
+    expected_trainable = config["acceptance"].get("expected_trainable_parameter_count")
+    if expected_trainable is not None and trainable_parameter_count != expected_trainable:
+        raise RuntimeError(
+            f"trainable parameter count {trainable_parameter_count} does not match expected {expected_trainable}"
+        )
     neutral_logits = last_token_logits(model, probe_ids)
     torch.testing.assert_close(neutral_logits, base_logits, rtol=0.0, atol=0.0)
     frozen_versions = {name: parameter._version for name, parameter in frozen}
@@ -349,7 +409,7 @@ def main() -> None:
     model.train()
     for epoch in range(1, optimization["epochs"] + 1):
         epoch_started = time.perf_counter()
-        batches = epoch_batches(pilot, optimization["micro_batch_size"], seed, epoch)
+        batches = epoch_batches(training, optimization["micro_batch_size"], seed, epoch)
         schedule = [[item["example_id"] for item in batch] for batch in batches]
         micro_losses: list[float] = []
         step_records: list[dict[str, Any]] = []
@@ -388,6 +448,14 @@ def main() -> None:
         validation_seconds = time.perf_counter() - validation_started
         checkpoint = run_dir / "checkpoints" / f"epoch-{epoch:02d}"
         model.save_pretrained(checkpoint, safe_serialization=True)
+        checkpoint_identity = write_adapter_provenance(
+            checkpoint,
+            adapter_id=config["run"].get("adapter_id", "chatgnt-pilot-v1"),
+            adapter_version=f"{args.run_id}-epoch-{epoch:02d}",
+            training_run_id=args.run_id,
+            model_config=model_config,
+            data_evidence=data_evidence,
+        )
         epochs.append({
             "epoch": epoch,
             "optimizer_step_end": optimizer_step,
@@ -398,6 +466,10 @@ def main() -> None:
             "validation_seconds": validation_seconds,
             "epoch_seconds_including_validation_and_checkpoint": time.perf_counter() - epoch_started,
             "micro_batch_schedule": schedule,
+            "checkpoint_adapter": {
+                key: checkpoint_identity[key]
+                for key in ("adapter_id", "adapter_version", "adapter_digest", "provenance_sha256")
+            },
             "checkpoint_files": [file_record(path, run_dir) for path in sorted(checkpoint.iterdir()) if path.is_file()],
         })
         model.train()
@@ -416,22 +488,14 @@ def main() -> None:
 
     final_adapter = run_dir / "adapter"
     model.save_pretrained(final_adapter, safe_serialization=True)
-    unprovenanced = adapter_identity(final_adapter, allow_unprovenanced_diagnostic_adapter=True)
-    provenance = {
-        "schema_version": 1,
-        "adapter_id": "chatgnt-pilot-v1",
-        "adapter_version": args.run_id,
-        "adapter_digest": unprovenanced["adapter_digest"],
-        "base_model_id": model_config["base_model"]["id"],
-        "base_model_revision": model_config["base_model"]["revision"],
-        "base_weights_sha256": model_config["base_model"]["weights_sha256"],
-        "training_run_id": args.run_id,
-        "training_dataset_id": data_evidence["dataset_id"] + ":pilot",
-        "training_dataset_sha256": data_evidence["pilot"]["sha256"],
-        "peft_version": peft.__version__,
-    }
-    (final_adapter / "adapter-provenance.json").write_bytes(canonical_bytes(provenance))
-    formal_adapter_identity = adapter_identity(final_adapter)
+    formal_adapter_identity = write_adapter_provenance(
+        final_adapter,
+        adapter_id=config["run"].get("adapter_id", "chatgnt-pilot-v1"),
+        adapter_version=args.run_id,
+        training_run_id=args.run_id,
+        model_config=model_config,
+        data_evidence=data_evidence,
+    )
 
     peak_allocated = torch.cuda.max_memory_allocated(device)
     peak_reserved = torch.cuda.max_memory_reserved(device)
@@ -451,7 +515,7 @@ def main() -> None:
 
     wall_seconds = time.perf_counter() - wall_started
     hourly_price = args.hourly_price_usd
-    total_training_tokens = sum(item["total_tokens"] for item in pilot) * optimization["epochs"]
+    total_training_tokens = sum(item["total_tokens"] for item in training) * optimization["epochs"]
     measured_training_seconds = sum(all_step_seconds)
     report = {
         "schema_version": 1,
@@ -486,6 +550,10 @@ def main() -> None:
     print(json.dumps({"result": report["result"], "run_dir": run_dir.relative_to(ROOT).as_posix(), "report_sha256": sha256_file(report_path)}, indent=2))
     if report["result"] != "pass":
         raise SystemExit(1)
+
+
+def main() -> None:
+    execute(parse_args(), CONFIG_PATH, "pilot")
 
 
 def re_fullmatch_run_id(value: str) -> bool:

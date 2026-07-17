@@ -1878,3 +1878,20 @@ If none passes the complete gate, select no adapter. Diagnose the common failure
 Loss is useful for detecting overfitting and selecting a point along one fixed trajectory, but the pilot proved that lower teacher-forced loss does not guarantee viable free generation. Generated joint behaviour must therefore decide between candidate configurations, while a fixed minimum bar prevents an unusable model from winning by relative comparison alone.
 
 The full configuration, checkpoint, viability, ranking, and stopping procedure is frozen in `docs/stage-6/full-training-candidate-plan.md` before implementation or full-corpus training.
+
+## D-071 — Reuse one verified training core and automate bounded Runpod operation
+
+- **Date:** 2026-07-17
+- **Status:** Adopted; locally verified before GPU execution
+
+### Decision
+
+Generalise the successful pilot runner rather than implement a separate full-training pipeline. Keep the pilot as its backward-compatible default entry point and expose only the three frozen full-training configuration files through a restricted wrapper. Every epoch checkpoint and final adapter receives formal provenance tied to the exact base model, dataset, run, weights, and adapter identity.
+
+Verify the new Stage 6 contract in a separately identified script rather than adding files to the cryptographically frozen Stage 3 test-discovery set. Ignore generated `experiments/training/` output so all three candidates can run sequentially from one otherwise-clean checkout without candidate output invalidating the next run's clean-Git gate.
+
+Codex will operate the formal batch through the authenticated Runpod CLI under the existing `$20` training budget. One fresh Pod will run Candidates 1–3 sequentially, with an automatic termination deadline, detached logging, local checksum verification, and deletion after retrieval. Paid provisioning still requires an explicit start instruction; mechanical recovery may not change a candidate or broaden the experiment.
+
+### Rationale
+
+One training core minimises the chance that pilot and full runs differ for accidental implementation reasons. A separate verifier preserves historical evidence while making the new contract executable. Agent-operated infrastructure removes repetitive manual work, but the budget, scientific boundary, evidence, and teardown controls remain visible and auditable in `docs/stage-6/full-training-execution-plan.md`.

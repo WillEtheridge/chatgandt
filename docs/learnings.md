@@ -744,3 +744,15 @@ A training run can succeed at several nested levels without succeeding at the ne
 That does not make the earlier evidence false or the pilot wasted. It narrows the diagnosis: the implementation works and the adapter learned something, but the bounded exposure and configuration did not overcome the base model's ordinary-prose behaviour under a minimal prompt. The pilot therefore rejects this adapter as a viable candidate without establishing that supervised fine-tuning, the frozen dataset, or full-corpus training will fail.
 
 The evaluation rules should remain fixed when this happens. Adding an unplanned prompt, stripping prose or fences, relaxing the schema, or qualitatively scoring structurally ineligible outputs would turn a useful negative result into a different experiment. The appropriate response is to preserve the result and use it to choose a small, predeclared set of stronger full-training configurations.
+
+## 2026-07-17 — How should new verification coexist with a cryptographically frozen test suite?
+
+A historical test attestation proves the identity of the suite that ran at that point in the project. Adding a new Stage 6 test beneath the same discovery pattern changed that identity and correctly caused the older Stage 3 evidence check to fail. Updating the historical digest would falsely imply that the later test had existed during the earlier freeze.
+
+The proportionate solution was to leave the complete 128-test regression suite unchanged and add a separately named Stage 6 verifier. It checks the frozen candidate differences, dataset hashes, loss boundary, checkpoint provenance, tamper detection, and actual LoRA capacity without rewriting history. A frozen evidence boundary should remain stable while later checks accumulate beside it under their own visible identity.
+
+## 2026-07-17 — What changes when an agent becomes the infrastructure operator?
+
+Automation removes repeated copying, SSH setup, monitoring, retrieval, and teardown from the project author's workload; it does not remove the operational contract. The agent still needs an exact commit, a spending ceiling, a hardware policy, immutable run IDs, stop conditions, evidence checks, and a teardown requirement.
+
+The useful simplification is to document decisions and boundaries rather than every keystroke a human would type. Codex can handle mechanical recovery and live monitoring, while scientific changes, budget expansion, or evidence-bearing failures remain explicit decision points. This makes the procedure easier to operate without making it less reproducible.
