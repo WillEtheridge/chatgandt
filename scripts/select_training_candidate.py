@@ -36,13 +36,16 @@ def _read_jsonl(path: Path) -> list[dict[str, Any]]:
 
 def select_candidate(
     sources: list[tuple[str, Path, Path]], scoring_dir: Path, output_path: Path,
+    *, simplicity_order: tuple[str, ...] = SIMPLICITY_ORDER,
+    kind: str = "full-training-candidate-selection",
+    simplicity_rule_label: str = "simplicity_candidate_1_to_3",
 ) -> dict[str, Any]:
     """Summarise evidence, apply non-compensatory gates, then rank viable candidates."""
     if output_path.exists():
         raise ContractError(f"selection output already exists: {output_path}")
     labels = [label for label, _, _ in sources]
-    if len(sources) != 3 or set(labels) != set(SIMPLICITY_ORDER):
-        raise ContractError("sources must contain candidate-1, candidate-2, and candidate-3 exactly once")
+    if len(sources) != len(simplicity_order) or set(labels) != set(simplicity_order):
+        raise ContractError("sources must match the configured simplicity order exactly once")
     revealed = _read_jsonl(scoring_dir / "revealed-scores.jsonl")
     scores_by_source: dict[str, dict[str, dict[str, Any]]] = {label: {} for label in labels}
     for score in revealed:
@@ -88,17 +91,17 @@ def select_candidate(
             "average_generation_latency_ms": round(mean(item["generation_duration_ns"] for item in successful) / 1_000_000, 6),
             "average_generated_token_count": round(mean(item["generated_token_count"] for item in successful), 6),
             "successful_generation_count": len(successful), "gates": gates, "viable": all(gates.values())}
-    viable = [label for label in SIMPLICITY_ORDER if results[label]["viable"]]
+    viable = [label for label in simplicity_order if results[label]["viable"]]
     ranked = sorted(viable, key=lambda label: (-results[label]["joint_pass_count"],
         -results[label]["schema_valid_count"], -results[label]["total_qualitative_score"],
         results[label]["average_generation_latency_ms"], results[label]["average_generated_token_count"],
-        SIMPLICITY_ORDER.index(label)))
-    summary = {"schema_version": 1, "kind": "full-training-candidate-selection",
+        simplicity_order.index(label)))
+    summary = {"schema_version": 1, "kind": kind,
         "population_size_per_candidate": 10,
         "ranking_rule": ["joint_pass_count_desc", "schema_valid_count_desc", "total_qualitative_score_desc",
-            "average_generation_latency_ms_asc", "average_generated_token_count_asc", "simplicity_candidate_1_to_3"],
+            "average_generation_latency_ms_asc", "average_generated_token_count_asc", simplicity_rule_label],
         "latency_and_token_aggregation": "all generation-completed responses",
-        "candidates": {label: results[label] for label in SIMPLICITY_ORDER},
+        "candidates": {label: results[label] for label in simplicity_order},
         "viable_candidates_ranked": ranked, "selected_candidate": ranked[0] if ranked else None}
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_bytes(canonical_line(summary))

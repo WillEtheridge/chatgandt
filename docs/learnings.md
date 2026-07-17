@@ -791,11 +791,17 @@ Structured behaviour is not one indivisible skill. Candidate 3 produced valid JS
 
 This shows why structural validity, style, metaphor, and usefulness need separate measurements. The adapter had successfully learned the distinctive representation while substantive content selection and precise instruction-following lagged behind. A single aggregate preference or validation loss would have hidden that engineering diagnosis.
 
+The observed learning progression was layered rather than all-or-nothing. The pilot adapter changed outputs but could not reliably enter ChatG&T mode. Full-corpus Candidate 1 entered the structured mode much more often. Candidate 2 made that structure more reliable with repeated exposure. Candidate 3 made the representation fully reliable on this population, leaving answer selection and constraint adherence as the limiting layer. Fine-tuning can therefore move the bottleneck without completing the whole task.
+
 ## 2026-07-17 — What did the first three full candidates teach us about training levers?
 
 More of the same exposure and broader adaptation did not move behaviour equally. Candidate 2 doubled Candidate 1's epochs and improved structural validity from 7/10 to 9/10, but still failed the same three intent families and reached only 4/10 joint passes. Candidate 3 kept three epochs but extended LoRA across all attention projections; it reached 10/10 structure, represented every family, and achieved 6/10 joint passes.
 
-Ten prompts are a bounded diagnostic population rather than a statistical proof, so this does not establish a universal causal law. It does provide the experiment-specific direction required by the stopping policy: another duration increase is weakly motivated, while a carefully bounded target-surface or content-selection hypothesis is worth discussing before any second round.
+Candidate 1 also establishes that the complete 160-example training corpus provided a materially stronger free-generation signal than the 40-example pilot: structural validity moved from 0/10 to 7/10 without changing the narrow LoRA target surface. The dataset and implementation are therefore capable of teaching the behaviour; the result is not consistent with a completely ineffective training signal.
+
+Validation loss improved throughout all three trajectories, but it did not identify the user-facing winner. Candidate 3 also reached the lowest validation loss, yet the reason it is scientifically interesting is the separately measured behavioural shift—not the loss ordering itself. Loss supports checkpoint selection within a trajectory; structure, usefulness, metaphor, and style explain what the resulting model can actually do.
+
+Ten prompts are a bounded diagnostic population rather than a statistical proof. The observed counts are not estimates of a universal “true success rate,” and they do not establish that broad attention LoRA is generally superior. They do provide the experiment-specific direction required by the stopping policy: another duration increase is weakly motivated, while a carefully bounded target-surface or content-selection hypothesis is worth discussing before any second round.
 
 ## 2026-07-17 — Why distinguish transfer tooling from experiment tooling?
 

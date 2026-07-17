@@ -21,6 +21,7 @@ from typing import Any
 
 import peft
 import torch
+import torch.nn.functional as F
 import transformers
 from peft import LoraConfig, PeftModel, TaskType, get_peft_model
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -107,12 +108,97 @@ def group_events(events: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]
     return grouped
 
 
+def assistant_content_spans(response: dict[str, Any]) -> tuple[str, list[tuple[int, int]]]:
+    """Render canonical JSON and locate answer-bearing ingredient/method string spans."""
+
+    parts: list[str] = []
+    spans: list[tuple[int, int]] = []
+    length = 0
+
+    def append(value: str) -> None:
+        nonlocal length
+        parts.append(value)
+        length += len(value)
+
+    def append_json_string(value: str, weighted: bool = False) -> None:
+        literal = json.dumps(value, ensure_ascii=False, allow_nan=False)
+        start = length + 1
+        append(literal)
+        if weighted:
+            spans.append((start, length - 1))
+
+    append('{"title":')
+    append_json_string(response["title"])
+    append(',"ingredients":[')
+    for index, ingredient in enumerate(response["ingredients"]):
+        if index:
+            append(",")
+        append('{"amount":')
+        append(json.dumps(ingredient["amount"], ensure_ascii=False, allow_nan=False))
+        append(',"unit":')
+        append_json_string(ingredient["unit"])
+        append(',"name":')
+        append_json_string(ingredient["name"], weighted=True)
+        append("}")
+    append('],"method":[')
+    for index, step in enumerate(response["method"]):
+        if index:
+            append(",")
+        append_json_string(step, weighted=True)
+    append('],"garnish":')
+    append_json_string(response["garnish"])
+    append("}")
+    return "".join(parts), spans
+
+
+def content_loss_weights(
+    tokenizer: Any,
+    complete_ids: torch.Tensor,
+    prompt_token_count: int,
+    response: dict[str, Any],
+    base_weight: float,
+    content_weight: float,
+) -> tuple[torch.Tensor, int]:
+    """Map canonical content spans onto exact assistant token positions."""
+
+    rendered, spans = assistant_content_spans(response)
+    content_ids = tokenizer.encode(rendered, add_special_tokens=False)
+    content_tensor = torch.tensor(content_ids, dtype=complete_ids.dtype)
+    supervised = complete_ids[prompt_token_count:]
+    if content_tensor.numel() > supervised.numel() or not torch.equal(
+        supervised[: content_tensor.numel()], content_tensor
+    ):
+        raise ValueError("canonical assistant JSON tokens do not align with the complete chat template")
+
+    prefixes = [
+        tokenizer.decode(content_ids[:index], skip_special_tokens=False,
+                         clean_up_tokenization_spaces=False)
+        for index in range(len(content_ids) + 1)
+    ]
+    if prefixes[-1] != rendered or any(not rendered.startswith(prefix) for prefix in prefixes):
+        raise ValueError("token-to-character alignment does not reproduce canonical assistant JSON")
+
+    weights = torch.zeros(complete_ids.shape[0], dtype=torch.float32)
+    weights[prompt_token_count:] = base_weight
+    weighted_tokens = 0
+    for index in range(len(content_ids)):
+        start, end = len(prefixes[index]), len(prefixes[index + 1])
+        overlaps = any(start < span_end and end > span_start for span_start, span_end in spans)
+        if overlaps:
+            weights[prompt_token_count + index] = content_weight
+            weighted_tokens += 1
+    if weighted_tokens == 0:
+        raise ValueError("content-weighted example contains no weighted tokens")
+    return weights, weighted_tokens
+
+
 def tokenize_record(
     record: dict[str, Any],
     events: list[dict[str, Any]],
     contract: dict[str, Any],
     tokenizer: Any,
     maximum_length: int,
+    loss_config: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     messages = render_training_messages(record, events, contract)
     prompt_messages = messages[:-1]
@@ -131,7 +217,7 @@ def tokenize_record(
     supervised = int((labels != -100).sum().item())
     if supervised < 2:
         raise ValueError(f"{record['example_id']} has insufficient supervised tokens")
-    return {
+    result = {
         "example_id": record["example_id"],
         "input_ids": complete_ids,
         "labels": labels,
@@ -139,6 +225,14 @@ def tokenize_record(
         "total_tokens": int(complete_ids.shape[0]),
         "supervised_tokens": supervised,
     }
+    if loss_config is not None and loss_config.get("mode") == "content_weighted_assistant_only":
+        weights, weighted_tokens = content_loss_weights(
+            tokenizer, complete_ids, int(prompt_ids.shape[0]), record["assistant_response"],
+            float(loss_config["base_weight"]), float(loss_config["content_weight"]),
+        )
+        result["loss_weights"] = weights
+        result["content_weighted_tokens"] = weighted_tokens
+    return result
 
 
 def collate(items: list[dict[str, Any]], pad_token_id: int) -> dict[str, torch.Tensor]:
@@ -146,12 +240,41 @@ def collate(items: list[dict[str, Any]], pad_token_id: int) -> dict[str, torch.T
     input_ids = torch.full((len(items), width), pad_token_id, dtype=torch.long)
     attention_mask = torch.zeros((len(items), width), dtype=torch.long)
     labels = torch.full((len(items), width), -100, dtype=torch.long)
+    has_weights = ["loss_weights" in item for item in items]
+    if any(has_weights) and not all(has_weights):
+        raise ValueError("a batch cannot mix weighted and unweighted examples")
+    loss_weights = torch.zeros((len(items), width), dtype=torch.float32) if all(has_weights) else None
     for row, item in enumerate(items):
         length = item["input_ids"].shape[0]
         input_ids[row, :length] = item["input_ids"]
         attention_mask[row, :length] = 1
         labels[row, :length] = item["labels"]
-    return {"input_ids": input_ids, "attention_mask": attention_mask, "labels": labels}
+        if loss_weights is not None:
+            loss_weights[row, :length] = item["loss_weights"]
+    result = {"input_ids": input_ids, "attention_mask": attention_mask, "labels": labels}
+    if loss_weights is not None:
+        result["loss_weights"] = loss_weights
+    return result
+
+
+def weighted_causal_loss(
+    logits: torch.Tensor, labels: torch.Tensor, loss_weights: torch.Tensor
+) -> torch.Tensor:
+    """Weighted next-token cross-entropy, normalised by active weight mass."""
+
+    shifted_logits = logits[:, :-1, :].contiguous().float()
+    shifted_labels = labels[:, 1:].contiguous()
+    shifted_weights = loss_weights[:, 1:].contiguous()
+    active = shifted_labels != -100
+    active_weights = shifted_weights * active
+    denominator = active_weights.sum()
+    if not bool(torch.isfinite(denominator)) or float(denominator.item()) <= 0.0:
+        raise RuntimeError("weighted loss requires positive finite active weight mass")
+    token_losses = F.cross_entropy(
+        shifted_logits.view(-1, shifted_logits.shape[-1]), shifted_labels.view(-1),
+        reduction="none", ignore_index=-100,
+    ).view_as(shifted_labels)
+    return (token_losses * active_weights).sum() / denominator
 
 
 def epoch_batches(items: list[dict[str, Any]], batch_size: int, seed: int, epoch: int) -> list[list[dict[str, Any]]]:
@@ -207,6 +330,27 @@ def training_collection(config: dict[str, Any]) -> tuple[str, str, str]:
     raise ValueError(f"unsupported training role: {role}")
 
 
+def validate_loss_config(config: dict[str, Any]) -> dict[str, Any]:
+    loss = config.get("loss", {"mode": "standard_assistant_only"})
+    mode = loss.get("mode")
+    if mode == "standard_assistant_only":
+        if set(loss) != {"mode"}:
+            raise ValueError("standard loss configuration accepts only mode")
+        return loss
+    expected = {
+        "mode", "base_weight", "content_weight", "content_fields", "validation_mode",
+    }
+    if mode != "content_weighted_assistant_only" or set(loss) != expected:
+        raise ValueError("unsupported or incomplete training loss configuration")
+    if loss["base_weight"] != 1.0 or loss["content_weight"] != 2.0:
+        raise ValueError("content-weighted loss requires frozen weights 1.0 and 2.0")
+    if loss["content_fields"] != ["ingredients.name", "method"]:
+        raise ValueError("content-weighted loss fields drifted")
+    if loss["validation_mode"] != "standard_assistant_only":
+        raise ValueError("validation loss must remain standard assistant-only")
+    return loss
+
+
 def prepare_inputs(config: dict[str, Any]) -> tuple[dict[str, Any], Any, list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     project = load_project_configuration()
     selected = project.model.values["base_model"]
@@ -255,7 +399,12 @@ def prepare_inputs(config: dict[str, Any]) -> tuple[dict[str, Any], Any, list[di
 
     contract = load_dataset_contract()
     maximum = data["max_sequence_length"]
-    training = [tokenize_record(item, events[item["example_id"]], contract, tokenizer, maximum) for item in training_records]
+    loss_config = validate_loss_config(config)
+    training = [
+        tokenize_record(item, events[item["example_id"]], contract, tokenizer, maximum,
+                        loss_config=loss_config)
+        for item in training_records
+    ]
     validation = [tokenize_record(item, events[item["example_id"]], contract, tokenizer, maximum) for item in validation_records]
     evidence = {
         "dataset_id": manifest["dataset_id"],
@@ -270,12 +419,22 @@ def prepare_inputs(config: dict[str, Any]) -> tuple[dict[str, Any], Any, list[di
         "validation_token_range": [min(item["total_tokens"] for item in validation), max(item["total_tokens"] for item in validation)],
         "training_supervised_token_range": [min(item["supervised_tokens"] for item in training), max(item["supervised_tokens"] for item in training)],
         "validation_supervised_token_range": [min(item["supervised_tokens"] for item in validation), max(item["supervised_tokens"] for item in validation)],
+        "training_loss_mode": loss_config["mode"],
+        "training_content_weighted_token_range": None if loss_config["mode"] == "standard_assistant_only" else [
+            min(item["content_weighted_tokens"] for item in training),
+            max(item["content_weighted_tokens"] for item in training),
+        ],
+        "training_content_weighted_token_count_per_epoch": None if loss_config["mode"] == "standard_assistant_only" else sum(
+            item["content_weighted_tokens"] for item in training
+        ),
+        "validation_loss_mode": "standard_assistant_only",
         "truncated_examples": 0,
     }
     return project.model.values, tokenizer, training, validation, evidence
 
 
 def validate_config(config: dict[str, Any]) -> dict[str, int]:
+    validate_loss_config(config)
     optimization = config["optimization"]
     data = config["data"]
     _, _, expected_count_key = training_collection(config)
@@ -420,11 +579,17 @@ def execute(args: argparse.Namespace, config_path: Path, run_kind: str) -> None:
                 torch.cuda.synchronize(device)
                 accumulation_started = time.perf_counter()
             batch = {key: value.to(device) for key, value in collate(items, tokenizer.pad_token_id).items()}
-            output = model(**batch)
-            if not math.isfinite(float(output.loss.item())):
+            loss_weights = batch.pop("loss_weights", None)
+            if loss_weights is None:
+                output = model(**batch)
+                loss = output.loss
+            else:
+                output = model(input_ids=batch["input_ids"], attention_mask=batch["attention_mask"])
+                loss = weighted_causal_loss(output.logits, batch["labels"], loss_weights)
+            if not math.isfinite(float(loss.item())):
                 raise RuntimeError("training produced a non-finite loss")
-            micro_losses.append(float(output.loss.item()))
-            (output.loss / optimization["gradient_accumulation_steps"]).backward()
+            micro_losses.append(float(loss.item()))
+            (loss / optimization["gradient_accumulation_steps"]).backward()
             if micro_index % optimization["gradient_accumulation_steps"] == 0:
                 gradient_norm = torch.nn.utils.clip_grad_norm_([parameter for _, parameter in trainable], optimization["max_gradient_norm"])
                 if not math.isfinite(float(gradient_norm.item())):
@@ -502,7 +667,7 @@ def execute(args: argparse.Namespace, config_path: Path, run_kind: str) -> None:
     total_memory = device_properties.total_memory
     reserved_fraction = peak_reserved / total_memory
 
-    del output, optimizer, model, base_model, named_parameters, trainable, frozen
+    del output, loss, optimizer, model, base_model, named_parameters, trainable, frozen
     gc.collect()
     torch.cuda.empty_cache()
 

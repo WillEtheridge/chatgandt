@@ -1916,3 +1916,22 @@ Do not promote Candidate 3 merely because it ranked highest. Do not relax the ga
 Candidate 3 passed metaphorical coherence and recipe-style execution on all ten responses, while its four failures were substantive: an invented shift end, a poor schedule decision, a violated slogan constraint, and an incorrect backup conclusion. Doubling exposure did not resolve the recurring decision, creative, and transformation failures, whereas broader attention targeting improved every aggregate behavioural measure.
 
 This supports a target-surface or content-selection hypothesis more strongly than another duration increase, but it does not uniquely determine a second-round recipe. Freezing that recipe is a new scientific decision and should occur before further GPU work. The evidence, diagnosis, costs, and exact no-winner result are recorded in `docs/stage-6/full-training-candidate-selection-results.md`.
+
+## D-073 — Use the bounded second round for target reach and content-weighted loss
+
+- **Date:** 2026-07-17
+- **Status:** Adopted; configurations frozen before GPU execution
+
+### Decision
+
+Use both remaining Stage 6 candidate slots. Candidate 4 preserves Candidate 3's complete recipe but extends rank-8 LoRA from the four attention projections to all attention and MLP projections: `q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, and `down_proj`. It has exactly 9,232,384 trainable parameters.
+
+Candidate 5 preserves Candidate 3's adapter capacity and optimisation configuration. During training only, supervised tokens overlapping canonical JSON string contents in `ingredients[*].name` and `method[*]` receive weight 2 rather than 1. All other supervised assistant tokens remain weight 1; prompt and padding tokens remain excluded. Weighted cross-entropy is divided by active weight mass. Validation remains standard unweighted assistant-only loss.
+
+Both candidates use the same 160 training examples, 40 validation examples, three epochs, 60 updates, seed, batching, optimiser, learning rate, regularisation, checkpointing, and provenance rules. No paid infrastructure begins without a separate explicit instruction.
+
+### Rationale
+
+Candidate 2 weakened the case for still more repeated exposure. Candidate 3 strengthened the case that target breadth matters and isolated the remaining failure to underlying content and constraints rather than JSON, metaphor, or recipe voice. Candidate 4 asks whether the adapter needs access to MLP representations; Candidate 5 asks whether the same attention-wide capacity needs a less structure-dominated learning signal.
+
+These are distinct, interpretable interventions tied directly to observed evidence. If neither meets the unchanged viability gate, Stage 6 training stops with no sixth candidate. The exact hypotheses, weighting algorithm, selection rule, and execution boundary are recorded in `docs/stage-6/second-round-candidate-plan.md`.
