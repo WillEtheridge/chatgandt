@@ -29,4 +29,4 @@ The first Space builds exposed these compatibility constraints directly. Each co
 
 ## Remaining production handoff
 
-The frontend has not yet been deployed to Vercel because the project owner reserved that operation. Before public launch, create a narrowly scoped read token, configure the four production variables in the runbook, add route-specific Vercel rate limits, and repeat the end-to-end checks against the canonical origin.
+The frontend has not yet been deployed to Vercel because the project owner reserved that operation. Before public launch, create a narrowly scoped read token, configure `HF_SPACE_ID` and `HF_TOKEN`, add route-specific Vercel rate limits, and repeat the end-to-end checks against the canonical origin.

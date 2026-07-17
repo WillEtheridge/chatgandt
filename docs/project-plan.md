@@ -265,11 +265,11 @@ Stage 8 turns the measured experiment into a portfolio experience without presen
 | 3. Build the explanatory pages | Completed | The Lab and Results present the method, frozen findings, limitations, and no-winner decision separately from the interactive experience |
 | 4. Build Spirit Guide | Completed locally | The composer calls a typed same-origin API and renders either a validated recipe or an honest JSON/schema/provider failure |
 | 5. Build Tasting Room | Completed locally | Prompted-base and fine-tuned responses are generated with a matched seed, randomly ordered, identity-concealed until the visitor's unrecorded guess, and withheld together on pair failure |
-| 6. Define the deployment and security boundary | Completed | The browser talks only to Next.js route handlers; the private upstream token remains server-side, inputs are bounded, responses are uncached, and production origin checking is mandatory |
+| 6. Define the deployment and security boundary | Completed | The browser talks only to Next.js route handlers; the private upstream token remains server-side, inputs are bounded, responses are uncached, and public-route abuse is controlled at the deployment edge |
 | 7. Publish the adapter | Completed | A portable, provenance-linked adapter package is public at `wetheridge/chatgnt-qwen2.5-1.5b-lora` and its re-downloaded weights match exactly |
 | 8. Deploy model inference | Completed | A private Gradio Space at `wetheridge/chatgnt-api` is RUNNING on ZeroGPU and serves health, Spirit Guide, and Tasting Room endpoints without persistence, repair, or generation retries |
 | 9. Verify the integrated application | Completed locally | Unit, contract, type, lint, build, security, live-service, and local Next-to-private-Space checks pass |
-| 10. Deploy the frontend | Pending operator action | Import `frontend/` into Vercel, configure a fine-grained read token and exact origin, and apply the predeclared route-specific rate limits |
+| 10. Deploy the frontend | Pending operator action | Import `frontend/` into Vercel, configure `HF_SPACE_ID` and a fine-grained `HF_TOKEN`, and apply the predeclared route-specific rate limits |
 | 11. Validate the public origin | Pending | Repeat functional, mobile, cold-start, failure, secret-exposure, and rate-limit checks against the canonical deployed URL |
 
 The initial public release deliberately excludes Free Pour and persisted voting. Those features add serving, abuse, and interpretation work without being necessary to communicate the completed experiment; they can be considered as a later product slice.

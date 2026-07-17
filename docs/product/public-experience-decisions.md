@@ -216,13 +216,12 @@ The initial live slice includes Spirit Guide, Tasting Room, the Lab, and Results
 
 ### Rationale
 
-Private inference requires a trusted server boundary; a static export cannot hold the credential safely. Keeping the model host separate from the presentation host lets ZeroGPU handle Python inference while Vercel handles the web application, origin policy, and rate limiting. Deferring Free Pour avoids exposing an unrestricted instruction surface before the smaller product boundary is stable.
+Private inference requires a trusted server boundary; a static export cannot hold the credential safely. Keeping the model host separate from the presentation host lets ZeroGPU handle Python inference while Vercel handles the web application and rate limiting. Deferring Free Pour avoids exposing an unrestricted instruction surface before the smaller product boundary is stable.
 
 ### Implications
 
 - `HF_TOKEN` is never a `NEXT_PUBLIC_*` variable and never enters browser code.
-- Production refuses requests without an exact configured origin.
 - Tasting Room uses matched generation seeds and random identity ordering.
-- The frontend can use a deterministic mock provider without changing component contracts.
+- Local and production execution use the same Next.js application path and the same two environment variables.
 - Public judgments remain ephemeral and cannot be presented as evaluation evidence.
 - Vercel deployment and public-origin verification remain operator actions.

@@ -90,13 +90,9 @@ cd frontend
 npm run dev
 ```
 
-Next.js reads the same four server-side environment variables from `.env.local` that Vercel supplies in production. The ignored local file is never committed or sent to the browser. For deliberate UI-only work with deterministic fake responses, opt into the mock provider explicitly:
+Next.js reads the same two server-side environment variables from `.env.local` that Vercel supplies in production. The ignored local file is never committed or sent to the browser.
 
-```bash
-npm run dev:mock
-```
-
-Exercise both Spirit Guide and Tasting Room. The API routes enforce JSON content type, an exact one-field request contract, a 4 KiB body limit, a 500-character prompt limit, no-store responses, an exact production origin, and a four-minute provider timeout.
+Exercise both Spirit Guide and Tasting Room. The API routes enforce JSON content type, an exact one-field request contract, a 4 KiB body limit, a 500-character prompt limit, no-store responses, and a four-minute provider timeout.
 
 ## Vercel handoff
 
@@ -104,10 +100,8 @@ The frontend is ready for the operator to import `frontend/` as a Vercel project
 
 | Variable | Value |
 | --- | --- |
-| `CHATGNT_BACKEND` | `huggingface` |
 | `HF_SPACE_ID` | `wetheridge/chatgnt-api` |
 | `HF_TOKEN` | The same kind of fine-grained read token used locally, limited to the private Space |
-| `CHATGNT_ALLOWED_ORIGIN` | The exact canonical HTTPS frontend origin |
 
 Do not reuse the broad CLI token. Apply Vercel rate limits before announcing the site: 6 requests per 10 minutes per IP for `/api/spirit-guide`, and 3 per 10 minutes per IP for `/api/tasting-room`. The lower Tasting Room limit reflects its two generations per request. Keep the Space private and do not enable prepaid ZeroGPU credits without a new cost decision.
 

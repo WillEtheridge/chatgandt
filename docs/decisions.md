@@ -2022,7 +2022,7 @@ A public adapter makes the portfolio artifact inspectable and reusable without e
 
 Use same-origin Next.js route handlers for Spirit Guide and Tasting Room. The handlers validate a single bounded prompt, call the private Space with a server-only fine-grained Hugging Face read token, and return the typed product contract. They do not persist prompts, responses, or visitor choices.
 
-In production, require the exact canonical origin and apply Vercel limits of six Spirit Guide requests and three Tasting Room requests per ten minutes per IP. Treat model JSON/schema failures as explicit outcomes rather than transport failures. Do not repair or silently retry generations. The first public slice omits Free Pour and persisted votes.
+Apply Vercel limits of six Spirit Guide requests and three Tasting Room requests per ten minutes per IP. Treat model JSON/schema failures as explicit outcomes rather than transport failures. Do not repair or silently retry generations. The first public slice omits Free Pour and persisted votes. Local and production execution use the same Next.js path and require only `HF_SPACE_ID` plus the server-only `HF_TOKEN`.
 
 ### Rationale
 

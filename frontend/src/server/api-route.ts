@@ -51,12 +51,6 @@ export async function parsePromptRequest(request: Request): Promise<string> {
   return prompt;
 }
 
-export function originAllowed(request: Request): boolean {
-  if (process.env.NODE_ENV !== "production") return true;
-  const allowedOrigin = process.env.CHATGNT_ALLOWED_ORIGIN;
-  return Boolean(allowedOrigin && request.headers.get("origin") === allowedOrigin);
-}
-
 export function jsonResponse(value: unknown, status = 200): Response {
   return new Response(JSON.stringify(value), { headers: JSON_HEADERS, status });
 }

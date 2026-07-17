@@ -3,7 +3,6 @@ import {
   RequestContractError,
   errorResponse,
   jsonResponse,
-  originAllowed,
   parsePromptRequest,
   providerErrorResponse,
   requestId,
@@ -15,7 +14,6 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request): Promise<Response> {
   const id = requestId();
-  if (!originAllowed(request)) return errorResponse(id, "invalid_request", "Request origin is not allowed.", 403);
   let prompt: string;
   try {
     prompt = await parsePromptRequest(request);
