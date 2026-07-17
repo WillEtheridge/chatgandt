@@ -29,7 +29,7 @@ def main() -> int:
         }
     )
     print(f"Starting the frontend against private Space {SPACE_ID}; the token remains server-side.")
-    return subprocess.run(["npm", "run", "dev"], cwd=FRONTEND, env=environment, check=False).returncode
+    return subprocess.run(["npm", "run", "dev:next"], cwd=FRONTEND, env=environment, check=False).returncode
 
 
 if __name__ == "__main__":

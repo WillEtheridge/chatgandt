@@ -81,17 +81,17 @@ A `valid`, `invalid-json`, or `invalid-schema` Spirit result all prove that the 
 
 ## Run the frontend locally
 
-For UI-only development, use the deterministic mock provider:
+For normal local development, run against the private live Space:
 
 ```bash
 cd frontend
 npm run dev
 ```
 
-To run against the private live Space without copying a token into `.env.local`:
+The command reads the existing Hugging Face CLI login without copying a token into `.env.local`. For deliberate UI-only work with deterministic fake responses, opt into the mock provider explicitly:
 
 ```bash
-uv run --frozen python scripts/run_frontend_with_hf.py
+npm run dev:mock
 ```
 
 Exercise both Spirit Guide and Tasting Room. The API routes enforce JSON content type, an exact one-field request contract, a 4 KiB body limit, a 500-character prompt limit, no-store responses, an exact production origin, and a four-minute provider timeout.
