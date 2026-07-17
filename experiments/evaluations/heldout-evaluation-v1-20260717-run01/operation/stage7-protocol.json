@@ -1,0 +1,81 @@
+{
+  "asset_sha256": {
+    "contamination_calibration": "242d4fae46d975ca31d80c8765e2b9dae9521665c1fc5e9855970e148d1a626b",
+    "evaluation_generation_manifest_schema": "de4dace5ada6904f72b7b99fd83a3edfb350d6311fc028f232720d9571ee3652",
+    "heldout_freeze_bundle_schema": "7f8237b81beefa60a56887a2f3aea06febfef8c84169fdb99b01458a1581a680",
+    "heldout_prompt_schema": "e1f80752d4f0f9f8dbe7da100e77f4c7c05afc59f89831f2280436883fc30dbc",
+    "heldout_replacement_schema": "2d5a6bb6aa7e4d4a8b35a1a72ecc9e5b72ba0c52cee9162576991b70fe25b9f6",
+    "judge_calibration": "46ef76c16073998843045ed99221f67a18b6b61b737f939236436f2f393668f9",
+    "judge_manifest": "3a6344e1e09509a04101040161d417a3ab2cb1b82ad2da51e81be74b550f2c35",
+    "pairwise_judgment_schema": "a63779463e114393026ff10971033c9f6d2bd47c2e2803a0f4c94ccc574df7a6",
+    "prompt_overlap_review_schema": "06cd97517c81a788c856ace52b546e0796c6441fcfc922fe41ac1a91de24bb0b",
+    "protocol": "8d23e010e4b68a3e25248fc54d3e4ea80371b1e397b3117cf899adeb7d954cd4",
+    "protocol_schema": "f27ef6c3e4b638580c0770ba22458022b8cac5f603c8442bc20f85e6afd77d81",
+    "qualitative_judgment_schema": "3825255798b349eae63fa82d7d1bbb3c5d969dbcc5d8c7cca7a84a5db73f6009",
+    "response_similarity_calibration": "d156c5fd5a846fc37ccef73a41b805388569d9facbcc76ace181fc3e96631ccf",
+    "response_similarity_evidence_schema": "41cb6878a2bc63746dff1e4f66c6e9cf335fe6808ef8f4a7b075212ec2c503d0",
+    "response_similarity_review_schema": "3a481d63611f8a9ef64f9ef87b935699b000a858d10b48ed2afea4eee301dbf9",
+    "review_artifact_schema": "b80b2b410acd971e4226febc42c341aab7afe1672b864d3dbbff619c9a23c854",
+    "rubric": "710e18fc26e0563594164e1517de0e9c30914b7908e5265d617c1489d705ecbd",
+    "source_identity_schema": "fe14f4d2bce3822817e3399a44aae34dde527756bb4a1b5d585d3dc5e61332f1",
+    "stage3_verification_evidence_schema": "7d1e950ade1b84dbe9ced7f82488103080a7914b73571cfd7c4531bffebc849f",
+    "stage5_semantic_review_schema": "915856ab033c285c4712774f893640e4f6801b237ee4a7d0adac955144e9442f",
+    "withheld_domain_check_schema": "dae73313b84a0a856402b5c1bc4e41c03867d7c287e304821c040574db021490"
+  },
+  "calibration": {
+    "case_count": 12,
+    "case_types": {
+      "acceptable_shared_domain": 1,
+      "acceptable_shared_operation": 1,
+      "acceptable_shared_robustness_mechanism": 1,
+      "acceptable_shared_task_form": 1,
+      "borderline_changed_situation": 1,
+      "close_paraphrase": 1,
+      "creative_brief_paraphrase": 1,
+      "disguised_scenario_duplicate": 1,
+      "exact_duplicate": 1,
+      "supplied_code_paraphrase": 1,
+      "supplied_text_over_256_wordpieces": 1,
+      "surface_substitution": 1
+    },
+    "result": "pass"
+  },
+  "judge_calibration": {
+    "focus": [
+      "behaviour_pressure",
+      "compatible_content_constraint",
+      "dimension_boundary",
+      "format_pressure",
+      "pairwise_preference",
+      "pairwise_tie"
+    ],
+    "packet_count": 6,
+    "result": "pass"
+  },
+  "judge_manifest_sha256": "3a6344e1e09509a04101040161d417a3ab2cb1b82ad2da51e81be74b550f2c35",
+  "protocol_id": "chatgnt-evaluation-v1",
+  "protocol_manifest": {
+    "aggregate_sha256": "d0f8b186210062a86f313611968ade7a8de089e2fb25de99e9c61c235ec9a236",
+    "asset_count": 52,
+    "manifest_sha256": "9296a7308f64db49d77df1328554df6e6552423046984eea6f0e567a083adedb",
+    "protocol_normative_sha256": "9db43df16c74e2e44c7a244d6777d4363c1de2be2198fdf5d6145748342c45ad",
+    "result": "pass"
+  },
+  "protocol_sha256": "8d23e010e4b68a3e25248fc54d3e4ea80371b1e397b3117cf899adeb7d954cd4",
+  "response_similarity_calibration": {
+    "case_count": 2,
+    "hard_distractor_count": 2,
+    "result": "pass"
+  },
+  "result": "pass",
+  "retrieval_calibration": {
+    "case_count": 12,
+    "interpretation": "retrieval recall is a diagnostic; semantic collision decisions remain human-readable judgments",
+    "lexical_expected_match_recall_at_5": 1.0,
+    "semantic": {
+      "executed": false,
+      "expected_match_recall_at_5": null
+    }
+  },
+  "status": "frozen"
+}

@@ -1,0 +1,62 @@
+{
+  "canonical_prompt": {
+    "messages": [
+      {
+        "content": "",
+        "role": "system"
+      },
+      {
+        "content": "Respond with exactly the word READY and nothing else.",
+        "role": "user"
+      }
+    ],
+    "rendered": "<|im_start|>system\n<|im_end|>\n<|im_start|>user\nRespond with exactly the word READY and nothing else.<|im_end|>\n<|im_start|>assistant\n",
+    "token_count": 23,
+    "token_ids": [
+      151644,
+      8948,
+      198,
+      151645,
+      198,
+      151644,
+      872,
+      198,
+      65354,
+      448,
+      6896,
+      279,
+      3409,
+      85332,
+      323,
+      4302,
+      770,
+      13,
+      151645,
+      198,
+      151644,
+      77091,
+      198
+    ],
+    "vendor_system_message_present": false
+  },
+  "model_config": {
+    "architectures": [
+      "Qwen2ForCausalLM"
+    ],
+    "max_position_embeddings": 32768,
+    "model_type": "qwen2",
+    "pinned_max_context_tokens": 32768
+  },
+  "selection": {
+    "model_id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "snapshot_path": "artifacts/models/Qwen--Qwen2.5-1.5B-Instruct/989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+    "weights_sha256": "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee"
+  },
+  "tokenizer": {
+    "chat_template_sha256": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f",
+    "class": "Qwen2Tokenizer",
+    "length": 151665,
+    "model_max_length": 131072
+  }
+}
