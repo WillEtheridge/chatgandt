@@ -317,11 +317,11 @@ export default function ResultsPage() {
           <nav aria-label="Continue reading" className="mt-16 grid border-l border-t border-outline sm:grid-cols-3">
             <Link
               className="group flex min-h-48 flex-col justify-between border-b border-r border-outline p-5 hover:bg-steel hover:text-concrete sm:p-6"
-              href="/experiments"
+              href="/experiment"
             >
               <span className="text-xs uppercase">How it was tested</span>
               <span className="flex items-end justify-between gap-6 text-xl">
-                Experiments <span aria-hidden="true" className="group-hover:text-signal">↗</span>
+                Experiment <span aria-hidden="true" className="group-hover:text-signal">↗</span>
               </span>
             </Link>
             <Link

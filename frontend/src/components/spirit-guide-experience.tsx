@@ -54,7 +54,7 @@ export function SpiritGuideExperience() {
                 Tasting Room
               </Link>
               . Read about the{" "}
-              <Link className="text-signal" href="/experiments">
+              <Link className="text-signal" href="/experiment">
                 experimental method
               </Link>
               , view the{" "}

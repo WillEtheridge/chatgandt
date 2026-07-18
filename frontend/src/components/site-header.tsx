@@ -5,7 +5,7 @@ import Link from "next/link";
 const NAVIGATION = [
   { href: "/", label: "Spirit Guide" },
   { href: "/tasting-room", label: "Tasting Room" },
-  { href: "/experiments", label: "Experiments" },
+  { href: "/experiment", label: "Experiment" },
   { href: "/results", label: "Results" },
   { href: "/learning", label: "Learning" },
 ] as const;
