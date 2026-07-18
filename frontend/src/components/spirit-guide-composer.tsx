@@ -62,7 +62,7 @@ export function SpiritGuideComposer({
       )}
       <div className={`${hideLabel ? "" : "mt-4"} flex items-end border border-outline pl-2`}>
         <textarea
-          className="max-h-48 min-h-10 flex-1 self-center resize-none overflow-y-auto bg-transparent px-2 py-2 text-base leading-relaxed outline-none placeholder:text-steel sm:text-lg"
+          className="max-h-48 min-h-10 flex-1 self-center resize-none overflow-y-auto bg-transparent px-2 py-2 text-base leading-relaxed outline-none placeholder:text-muted sm:text-lg"
           id="order"
           maxLength={MAX_PROMPT_CHARACTERS}
           name="order"

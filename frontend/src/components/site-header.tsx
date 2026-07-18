@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 const NAVIGATION = [
@@ -13,7 +15,16 @@ export function SiteHeader({ activePath }: Readonly<{ activePath: SitePath }>) {
   return (
     <header className="relative border-b border-outline">
       <div className="mx-auto flex min-h-16 w-full max-w-5xl items-center justify-between gap-8 px-4 sm:px-6 lg:max-w-7xl">
-        <Link className="text-lg" href="/">
+        <Link
+          className="text-lg"
+          href="/"
+          onClick={(event) => {
+            if (activePath === "/") {
+              event.preventDefault();
+              window.location.reload();
+            }
+          }}
+        >
           ChatG<span className="text-signal">&amp;</span>T
         </Link>
 
