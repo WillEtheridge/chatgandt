@@ -1,0 +1,43 @@
+{
+  "name": "video",
+  "version": "1.0.0",
+  "description": "ChatG&T promotional video for LinkedIn",
+  "repository": {},
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@remotion/cli": "4.0.491",
+    "@remotion/fonts": "4.0.491",
+    "@remotion/media": "4.0.491",
+    "@remotion/tailwind-v4": "4.0.491",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.491",
+    "tailwindcss": "4.0.0"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.491",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "audio:teaser": "node scripts/generate-teaser-audio.mjs",
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "normalize:linkedin": "ffmpeg -y -hide_banner -loglevel error -i renders/ChatGnt-Promo-master.mp4 -map 0:v:0 -map 0:a:0 -c:v copy -af loudnorm=I=-17:LRA=9:TP=-1.5 -c:a aac -b:a 192k -ar 48000 -movflags +faststart renders/ChatGnt-Promo-LinkedIn.mp4",
+    "render:master": "remotion render ChatGntPromo renders/ChatGnt-Promo-master.mp4 --crf=16 --concurrency=4 --audio-bitrate=192k",
+    "render:preview": "remotion render ChatGntPromo renders/ChatGnt-Promo-preview.mp4 --scale=0.4 --crf=28 --concurrency=4",
+    "normalize:teaser": "ffmpeg -y -hide_banner -loglevel error -i renders/ChatGnt-Teaser-master.mp4 -map 0:v:0 -map 0:a:0 -c:v copy -af loudnorm=I=-15:LRA=7:TP=-1.5 -c:a aac -b:a 256k -ar 48000 -t 20 -movflags +faststart renders/ChatGnt-Teaser-LinkedIn.mp4",
+    "render:teaser": "remotion render ChatGntTeaser renders/ChatGnt-Teaser-master.mp4 --codec=h264 --crf=16 --concurrency=4 --audio-bitrate=320k",
+    "render:teaser:silent": "remotion render ChatGntTeaserSilent renders/ChatGnt-Teaser-Silent.mp4 --codec=h264 --crf=16 --concurrency=4 --muted",
+    "render:teaser-cover": "remotion still ChatGntTeaser renders/ChatGnt-Teaser-cover.png --frame=548",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}
