@@ -7,6 +7,27 @@ export const metadata: Metadata = {
   description: "The ChatG&T experiment.",
 };
 
+const EXPERIMENT_SECTIONS = [
+  { href: "#research-question", label: "The research question", number: "01" },
+  { href: "#framing-the-experiment", label: "Framing the experiment", number: "02" },
+  {
+    href: "#establishing-the-technical-baseline",
+    label: "Establishing the technical baseline",
+    number: "03",
+  },
+  { href: "#fixing-the-evaluation-method", label: "Fixing the evaluation method", number: "04" },
+  { href: "#building-the-supervised-dataset", label: "Building the supervised dataset", number: "05" },
+  { href: "#creating-the-held-out-test", label: "Creating the held-out test", number: "06" },
+  { href: "#training-the-adapters", label: "Training the adapters", number: "07" },
+  { href: "#preparing-the-final-comparison", label: "Preparing the final comparison", number: "08" },
+  { href: "#running-the-held-out-evaluation", label: "Running the held-out evaluation", number: "09" },
+  {
+    href: "#what-the-experiment-can-establish",
+    label: "What the experiment can establish",
+    number: "10",
+  },
+] as const;
+
 export default function ExperimentPage() {
   return (
     <main className="min-h-screen bg-concrete text-steel">
@@ -14,9 +35,23 @@ export default function ExperimentPage() {
 
       <article className="mx-auto max-w-5xl px-4 pb-20 pt-12 sm:px-6 sm:pb-32 sm:pt-20 lg:max-w-7xl">
         <header className="pb-16 sm:pb-24">
-          <h1 className="text-4xl leading-none tracking-tighter sm:text-7xl lg:text-8xl">
+          <h1 className="max-w-6xl text-4xl leading-none tracking-tighter sm:text-7xl lg:text-8xl">
             Experiment<span className="text-signal">.</span>
           </h1>
+
+          <nav aria-label="Experiment contents" className="mt-12">
+            <p className="text-xs uppercase text-signal">Contents</p>
+            <ol className="mt-5 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3 lg:grid-cols-5">
+              {EXPERIMENT_SECTIONS.map((section) => (
+                <li key={section.href}>
+                  <Link className="flex gap-3 text-xs leading-relaxed hover:text-signal" href={section.href}>
+                    <span className="text-signal">{section.number}</span>
+                    <span>{section.label}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </nav>
         </header>
 
         <section aria-labelledby="research-question" className="py-16 sm:py-24">

@@ -79,8 +79,7 @@ export default function ResultsPage() {
 
       <article className="mx-auto max-w-5xl px-4 pb-20 pt-12 sm:px-6 sm:pb-32 sm:pt-20 lg:max-w-7xl">
         <header className="pb-16 sm:pb-24">
-          <p className="text-xs uppercase text-signal">Results / Frozen held-out evaluation</p>
-          <h1 className="mt-6 max-w-6xl text-4xl leading-none tracking-tighter sm:text-6xl lg:text-7xl">
+          <h1 className="max-w-6xl text-4xl leading-none tracking-tighter sm:text-6xl lg:text-7xl">
             Fine-tuning improved the structure. <span className="text-signal">Answer quality remained uncertain.</span>
           </h1>
 
