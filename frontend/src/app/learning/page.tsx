@@ -116,7 +116,7 @@ export default function LearningPage() {
 
       <article className="mx-auto max-w-5xl px-4 pb-20 pt-12 sm:px-6 sm:pb-32 sm:pt-20 lg:max-w-7xl">
         <header className="pb-16 sm:pb-24">
-          <h1 className="max-w-6xl text-4xl leading-none tracking-tighter sm:text-7xl lg:text-8xl">
+          <h1 className="max-w-6xl text-4xl leading-none tracking-tighter sm:text-6xl lg:text-7xl">
             What the work <span className="text-signal">taught us.</span>
           </h1>
           <div className="mt-12 grid gap-6 border-t border-outline pt-6 lg:grid-cols-4 lg:gap-12">

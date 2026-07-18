@@ -35,7 +35,7 @@ export default function ExperimentPage() {
 
       <article className="mx-auto max-w-5xl px-4 pb-20 pt-12 sm:px-6 sm:pb-32 sm:pt-20 lg:max-w-7xl">
         <header className="pb-16 sm:pb-24">
-          <h1 className="max-w-6xl text-4xl leading-none tracking-tighter sm:text-7xl lg:text-8xl">
+          <h1 className="max-w-6xl text-4xl leading-none tracking-tighter sm:text-6xl lg:text-7xl">
             Experiment<span className="text-signal">.</span>
           </h1>
 
