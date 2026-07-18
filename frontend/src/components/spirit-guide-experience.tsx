@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { getRandomHouseSpecial } from "@/components/house-specials";
 import { MartiniLoader } from "@/components/martini-loader";
 import { FailureResult, type ModelOutcome } from "@/components/model-outcome";
@@ -40,8 +41,32 @@ export function SpiritGuideExperience() {
             Useful answers, <br /> <span className="text-signal">mixed differently.</span>
           </h1>
           <div className="mt-8 max-w-2xl text-base leading-relaxed sm:text-lg">
-            <p>An experiment in teaching a small language model to answer questions as cocktail recipes.</p>
-            <p className="mt-4">Built for low-stakes questions and fun.</p>
+            <p>
+              An experiment in teaching a small language model to answer questions as cocktail recipes by{" "}
+              <a className="text-signal" href="https://wjeth.com">
+                Will Etheridge
+              </a>
+              .
+            </p>
+            <p className="mt-4">
+              Make a drink by prompting below or compare the fine tuned model to a base model and prompt in the{" "}
+              <Link className="text-signal" href="/tasting-room">
+                Tasting Room
+              </Link>
+              . Read about the{" "}
+              <Link className="text-signal" href="/experiments">
+                experimental method
+              </Link>
+              , view the{" "}
+              <Link className="text-signal" href="/results">
+                results
+              </Link>
+              , or{" "}
+              <Link className="text-signal" href="/learning">
+                what I learned along the way
+              </Link>
+              .
+            </p>
           </div>
         </section>
 
