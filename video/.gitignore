@@ -1,0 +1,23 @@
+node_modules
+dist
+.DS_Store
+.env
+
+# Local AI-tool skill installations.
+.agents/
+.claude/
+.codex/
+.opencode/
+.pi/
+
+# Local render-review and audio-analysis artifacts.
+renders/checks/
+renders/revision-review/
+renders/teaser-review/
+renders/teaser-audio-raw.wav
+renders/teaser-audio-review.wav
+renders/teaser-audio-spectrum.png
+renders/teaser-audio-waveform.png
+
+# Ignore the output video from Git but not videos you import into src/.
+out
